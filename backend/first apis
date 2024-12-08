@@ -1,0 +1,126 @@
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.Eventing.Reader;
+using System.Text.RegularExpressions;
+using test.models;
+using tes.models;
+using System.Text.RegularExpressions;
+
+namespace test.Controllers
+
+{
+
+
+    [Route("api/[controller]")]
+    [ApiController]
+    public class studentController : ControllerBase
+    {
+        Db d = new Db();
+
+
+        [HttpPost]
+        [Route("signup")]
+        public IActionResult SignUp(studentDto std)
+        {
+
+
+            if (d.Students.Any(x => x.Email == std.email))
+
+            {
+                return BadRequest(ApiResponse.ErrorResponse("ValidationError", "email is already exicts"));
+            }
+            if (string.IsNullOrWhiteSpace(std.password))
+            {
+                return BadRequest(ApiResponse.ErrorResponse("ValidationError", "password is required"));
+            }
+            if (string.IsNullOrWhiteSpace(std.name))
+            {
+                return BadRequest(ApiResponse.ErrorResponse("ValidationError", "name is required"));
+            }
+
+            if (!Regex.IsMatch(std.email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
+                return BadRequest(ApiResponse.ErrorResponse("ValidationError", "invalid email format"));
+            }
+            if (!(std.email is string))
+            {
+                return BadRequest("Email must contain letters");
+            }
+            if (!Regex.IsMatch(std.password, @"^[A-Z][0-9a-zA-Z]{5,15}$"))
+            {
+                return BadRequest("Password must start with an uppercase letter and be 6-16 characters long, containing only alphanumeric characters");
+            }
+            Students students = new Students();
+            students.Email = std.email;
+            students.Password = std.password;
+            students.Name = std.name;
+            d.Students.Add(students);
+            d.SaveChanges();
+            return Ok(ApiResponse.SuccessResponse("saved"));
+
+
+        }
+
+
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login(loginDto login)
+        {
+            if (string.IsNullOrWhiteSpace(login.email))
+            {
+                return BadRequest(ApiResponse.ErrorResponse("ValidationError", "email is required"));
+            }
+
+            var studentExists = await d.Students.AnyAsync(x => x.Email == login.email && x.Password == login.password);
+
+            if (!studentExists)
+            {
+                return BadRequest(ApiResponse.ErrorResponse("ValidationError", "invalid email or password"));
+            }
+            
+
+
+            if (string.IsNullOrWhiteSpace(login.password))
+            {
+                return BadRequest(ApiResponse.ErrorResponse("ValidationError", "password is required"));
+            
+            }
+
+            return Ok(ApiResponse.SuccessResponse(" success."));
+
+
+
+        }
+
+
+
+        [HttpPut]
+        [Route("update")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto resetPasswordDto)
+        {
+            if (string.IsNullOrWhiteSpace(resetPasswordDto.Email) || string.IsNullOrWhiteSpace(resetPasswordDto.NewPassword))
+            {
+                return BadRequest(ApiResponse.ErrorResponse("ValidationError", "Email and password canot be empty"));
+            }
+
+            var student = await d.Students.FirstOrDefaultAsync(x => x.Email == resetPasswordDto.Email);
+            if (student == null)
+            {
+                return BadRequest(ApiResponse.ErrorResponse("ValidationError", "no such email request"));
+            }
+        
+           
+            student.Password = resetPasswordDto.NewPassword;
+
+            d.SaveChanges();
+
+            await d.SaveChangesAsync();
+
+            return Ok("Password modified.");
+        }
+    
+
+
+    }
+}
