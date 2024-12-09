@@ -1,0 +1,53 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\pure-learn\\backend\\test\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{43660C35-EC55-49C2-9E74-F82D4C5515C3}|test\\test.csproj|d:\\pure-learn\\backend\\test\\test\\models\\db.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{43660C35-EC55-49C2-9E74-F82D4C5515C3}|test\\test.csproj|solutionrelative:test\\models\\db.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43660C35-EC55-49C2-9E74-F82D4C5515C3}|test\\test.csproj|d:\\pure-learn\\backend\\test\\test\\controllers\\studentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{43660C35-EC55-49C2-9E74-F82D4C5515C3}|test\\test.csproj|solutionrelative:test\\controllers\\studentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Db.cs",
+              "DocumentMoniker": "D:\\pure-learn\\backend\\test\\test\\models\\Db.cs",
+              "RelativeDocumentMoniker": "test\\models\\Db.cs",
+              "ToolTip": "D:\\pure-learn\\backend\\test\\test\\models\\Db.cs",
+              "RelativeToolTip": "test\\models\\Db.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAsAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-07T07:56:20.166Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "studentController.cs",
+              "DocumentMoniker": "D:\\pure-learn\\backend\\test\\test\\Controllers\\studentController.cs",
+              "RelativeDocumentMoniker": "test\\Controllers\\studentController.cs",
+              "ToolTip": "D:\\pure-learn\\backend\\test\\test\\Controllers\\studentController.cs",
+              "RelativeToolTip": "test\\Controllers\\studentController.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-07T07:56:13.415Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
