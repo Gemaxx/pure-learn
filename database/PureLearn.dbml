@@ -1,0 +1,116 @@
+Table Learner {
+    id BIGINT [primary key, unique, increment]
+    Name NVARCHAR(255) [not null]
+    Email NVARCHAR(255) [not null, unique]
+    PasswordHash NVARCHAR(255) [not null]
+    ProfilePicture NVARCHAR(MAX)
+    Bio NVARCHAR(MAX)
+    CreatedAt DATETIME [default: 'GETDATE()']
+    UpdatedAt DATETIME [default: 'GETDATE()']
+    LastLogin DATETIME
+}
+
+Table Category {
+    id BIGINT [primary key, unique, increment]
+    Title NVARCHAR(255) [not null]
+    Color NVARCHAR(50) [not null]
+    Description NVARCHAR(MAX)
+    CreatedAt DATETIME [default: 'GETDATE()']
+    UpdatedAt DATETIME [default: 'GETDATE()']
+    ParentCategoryID BIGINT
+    LearnerID BIGINT [not null, ref: > Learner.id]
+}
+
+Table Goal {
+    id BIGINT [primary key, unique, increment]
+    Title NVARCHAR(255) [not null]
+    Description NVARCHAR(MAX) [not null]
+    Motivation NVARCHAR(MAX) [not null]
+    Status NVARCHAR(50) [not null]
+    CompletionDate DATE
+    CreatedAt DATETIME [default: 'GETDATE()']
+    UpdatedAt DATETIME [default: 'GETDATE()']
+    CategoryID BIGINT [ref: > Category.id]
+    LearnerID BIGINT [not null, ref: > Learner.id]
+}
+
+Table Subgoal {
+    id BIGINT [primary key, unique, increment]
+    Title NVARCHAR(255) [not null]
+    Description NVARCHAR(MAX) [not null]
+    Status NVARCHAR(50) [not null]
+    CreatedAt DATETIME [default: 'GETDATE()']
+    UpdatedAt DATETIME [default: 'GETDATE()']
+    GoalID BIGINT [not null, ref: > Goal.id]
+}
+
+Table LearningResourceType {
+    id BIGINT [primary key, unique, increment]
+    Name NVARCHAR(255) [not null, unique]
+}
+
+Table UnitType {
+    id BIGINT [primary key, unique, increment]
+    Name NVARCHAR(255) [not null, unique]
+}
+
+Table LearningResource {
+    id BIGINT [primary key, unique, increment]
+    Title NVARCHAR(255) [not null]
+    TypeID BIGINT [not null, ref: > LearningResourceType.id]
+    UnitTypeID BIGINT [not null, ref: > UnitType.id]
+    TotalUnits INT [not null, note: "CHECK (TotalUnits > 0)"]
+    Progress INT [not null, note: "CHECK (Progress >= 0 AND Progress <= TotalUnits)"]
+    Link NVARCHAR(MAX)
+    CreatedAt DATETIME [default: 'GETDATE()']
+    UpdatedAt DATETIME [default: 'GETDATE()']
+    LearnerID BIGINT [not null, ref: > Learner.id]
+    CategoryID BIGINT [ref: > Category.id]
+    GoalID BIGINT [ref: > Goal.id]
+    SubgoalID BIGINT [ref: > Subgoal.id]
+}
+
+Table KanbanStatus {
+    id BIGINT [primary key, unique, increment]
+    Name NVARCHAR(255) [not null, unique]
+}
+
+Table Task {
+    id BIGINT [primary key, unique, increment]
+    Title NVARCHAR(255) [not null]
+    KanbanStatusID BIGINT [not null, ref: > KanbanStatus.id]
+    EisenhowerStatus NVARCHAR(50) [not null, note: "CHECK (EisenhowerStatus IN ('Urgent & Important', 'Not Urgent but Important', 'Urgent but Not Important', 'Not Urgent & Not Important'))"]
+    TimeTaskRelated NVARCHAR(50) [not null, note: "CHECK (TimeTaskRelated IN ('Today', 'Tomorrow', 'This Week', 'Someday'))"]
+    DueDate DATE
+    EstimatedTime TIME
+    TimeSpent TIME
+    CreatedAt DATETIME [default: 'GETDATE()']
+    UpdatedAt DATETIME [default: 'GETDATE()']
+    LearnerID BIGINT [not null, ref: > Learner.id]
+    CategoryID BIGINT [ref: > Category.id]
+    GoalID BIGINT [ref: > Goal.id]
+    SubgoalID BIGINT [ref: > Subgoal.id]
+    LearningResourceID BIGINT [ref: > LearningResource.id]
+}
+
+Table Subtask {
+    id BIGINT [primary key, unique, increment]
+    Title NVARCHAR(255) [not null]
+    Status NVARCHAR(50) [not null, note: "CHECK (Status IN ('Not Started', 'In Progress', 'Completed'))"]
+    CreatedAt DATETIME [default: 'GETDATE()']
+    UpdatedAt DATETIME [default: 'GETDATE()']
+    TaskID BIGINT [not null, ref: > Task.id]
+}
+
+Table Note {
+    id BIGINT [primary key, unique, increment]
+    Title NVARCHAR(255) [not null]
+    Body NVARCHAR(MAX) [not null]
+    CreatedAt DATETIME [default: 'GETDATE()']
+    UpdatedAt DATETIME [default: 'GETDATE()']
+    CategoryID BIGINT [ref: > Category.id]
+    GoalID BIGINT [ref: > Goal.id]
+    SubgoalID BIGINT [ref: > Subgoal.id]
+    TaskID BIGINT [ref: > Task.id]
+    LearnerID BIGINT [not null, ref: > Learner.id]
+}

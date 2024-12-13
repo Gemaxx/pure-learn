@@ -1,6 +1,5 @@
 import "./App.css";
 import Layout from "./components/Layout/Layout";
-import VerifyResetCode from "./components/VerifyResetCode/VerifyResetCode";
 import ResetPassword from "./components/ResetPassword/ResetPassword";
 import Login from "./Pages/Login/Login";
 import Register from "./Pages/Register/Register";
