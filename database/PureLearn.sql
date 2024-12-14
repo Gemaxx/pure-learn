@@ -353,6 +353,7 @@
 
     -- Insert into Note
 
+
 -- Clear DB
         -- Clear data from Subtask table
     DELETE FROM Subtask;
