@@ -47,11 +47,7 @@ Table Subgoal {
 Table LearningResourceType {
     id BIGINT [primary key, unique, increment]
     Name NVARCHAR(255) [not null, unique]
-}
-
-Table UnitType {
-    id BIGINT [primary key, unique, increment]
-    Name NVARCHAR(255) [not null, unique]
+    UnitType NVARCHAR(255) [not null, unique]
 }
 
 Table LearningResource {
@@ -73,6 +69,14 @@ Table LearningResource {
 Table KanbanStatus {
     id BIGINT [primary key, unique, increment]
     Name NVARCHAR(255) [not null, unique]
+    MaxTasks [note: 'Maximum number of tasks allowed, must be positive']
+}
+
+Table TaskType {
+    id BIGINT [primary key, unique, increment]
+    Name NVARCHAR(255) [not null, unique]
+    Description NVARCHAR(500)
+    Icon VARBINARY(MAX)
 }
 
 Table Task {

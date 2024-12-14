@@ -48,16 +48,13 @@ CREATE TABLE Subgoal (
     GoalID BIGINT NOT NULL FOREIGN KEY REFERENCES Goal(id) ON DELETE CASCADE
 );
 
+--Resources
+
 -- Table: LearningResourceType
 CREATE TABLE LearningResourceType (
     id BIGINT PRIMARY KEY IDENTITY(1,1),
-    Name NVARCHAR(255) NOT NULL UNIQUE
-);
-
--- Table: UnitType
-CREATE TABLE UnitType (
-    id BIGINT PRIMARY KEY IDENTITY(1,1),
-    Name NVARCHAR(255) NOT NULL UNIQUE
+    Name NVARCHAR(255) NOT NULL UNIQUE,
+    UnitType NVARCHAR(255) NOT NULL UNIQUE
 );
 
 -- Table: LearningResource
@@ -81,27 +78,60 @@ CREATE TABLE LearningResource (
 -- Table: KanbanStatus
 CREATE TABLE KanbanStatus (
     id BIGINT PRIMARY KEY IDENTITY(1,1),
-    Name NVARCHAR(255) NOT NULL UNIQUE
+    Name NVARCHAR(255) NOT NULL UNIQUE,
+    MaxTasks INT NULL CHECK (MaxTasks > 0)
 );
+-- Table: TaskType
+ CREATE TABLE TaskType (
+    id BIGINT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(255) NOT NULL UNIQUE,
+    Description NVARCHAR(500),
+    Icon VARBINARY(MAX) NULL,
+ )
+
 
 -- Table: Task
 CREATE TABLE Task (
     id BIGINT PRIMARY KEY IDENTITY(1,1),
-    Title NVARCHAR(255) NOT NULL,
+    Title NVARCHAR(100) NOT NULL,
+    Type NVARCHAR(100) NOT NULL,
     KanbanStatusID BIGINT NOT NULL FOREIGN KEY REFERENCES KanbanStatus(id) ON DELETE CASCADE,
     EisenhowerStatus NVARCHAR(50) NOT NULL CHECK (EisenhowerStatus IN ('Urgent & Important', 'Not Urgent but Important', 'Urgent but Not Important', 'Not Urgent & Not Important')),
     TimeTaskRelated NVARCHAR(50) NOT NULL CHECK (TimeTaskRelated IN ('Today', 'Tomorrow', 'This Week', 'Someday')),
     DueDate DATE NULL,
     EstimatedTime TIME NULL,
     TimeSpent TIME NULL,
+
+    -- Repeat frequency: Daily, Weekly, Monthly, Annually, Custom
+    RepeatFrequency NVARCHAR(50) NOT NULL CHECK (RepeatFrequency IN ('None', 'Daily', 'Weekly', 'Monthly', 'Annually', 'Custom')),
+
+    -- For custom frequency (every # of days, weeks, months, or years)
+    RepeatInterval INT NULL,  -- Number of units for custom frequency (e.g., 2 for every 2 weeks)
+
+    -- Repeat on specific days of the week (for Weekly or Custom frequency)
+    RepeatOnSUNDAY BIT DEFAULT 0,   -- Sunday
+    RepeatOnMONDAY BIT DEFAULT 0,   -- Monday
+    RepeatOnTUESDAY BIT DEFAULT 0,  -- Tuesday
+    RepeatOnWEDNESDAY BIT DEFAULT 0, -- Wednesday
+    RepeatOnTHURSDAY BIT DEFAULT 0,  -- Thursday
+    RepeatOnFRIDAY BIT DEFAULT 0,   -- Friday
+    RepeatOnSATURDAY BIT DEFAULT 0, -- Saturday
+
+    -- End condition for recurrence
+    RepeatEnds NVARCHAR(50) NOT NULL CHECK (RepeatEnds IN ('Never', 'On Date', 'After Occurrences')),
+    RepeatEndDate DATE NULL,  -- If RepeatEnds = 'On Date', store the end date
+    RepeatEndOccurrences INT NULL,  -- If RepeatEnds = 'After Occurrences', store the number of repetitions
+
     CreatedAt DATETIME DEFAULT GETDATE(),
     UpdatedAt DATETIME DEFAULT GETDATE(),
+
     LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE CASCADE,
     CategoryID BIGINT NULL FOREIGN KEY REFERENCES Category(id) ON DELETE NO ACTION,
     GoalID BIGINT NULL FOREIGN KEY REFERENCES Goal(id) ON DELETE NO ACTION,
     SubgoalID BIGINT NULL FOREIGN KEY REFERENCES Subgoal(id) ON DELETE NO ACTION, 
     LearningResourceID BIGINT NULL FOREIGN KEY REFERENCES LearningResource(id) ON DELETE NO ACTION
 );
+
 
 -- Table: Subtask
 CREATE TABLE Subtask (
