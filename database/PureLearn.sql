@@ -280,6 +280,9 @@
     END;
     GO
 
+--Convert Tables into Models using "Database-First Aproach" 
+--=> command “dotnet ef dbcontext scaffold "Name=DefaultConnection" Microsoft.EntityFrameworkCore.SqlServer -o Models”
+
 -- Populate DB
 
     -- Insert learners into the Learner table
