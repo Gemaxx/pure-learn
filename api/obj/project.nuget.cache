@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "41v8nz7yXU0=",
+  "dgSpecHash": "+Elc2y44epA=",
   "success": true,
-  "projectFilePath": "d:\\pure-learn\\api\\api.csproj",
+  "projectFilePath": "D:\\pure-learn\\api\\api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\amedo\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\amedo\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

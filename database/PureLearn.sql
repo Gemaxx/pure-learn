@@ -103,8 +103,7 @@
             TimeSpent TIME NULL,
 
             -- Repeat frequency: Daily, Weekly, Monthly, Annually, Custom
-            RepeatFrequency NVARCHAR(50) NOT NULL CHECK (RepeatFrequency IN ('None', 'Daily', 'Weekly', 'Monthly', 'Annually', 'Custom')),
-
+            RepeatFrequency NVARCHAR(50) NOT NULL DEFAULT 'None' CHECK (RepeatFrequency IN ('None', 'Daily', 'Weekly', 'Monthly', 'Annually', 'Custom')),   
             -- For custom frequency (every # of days, weeks, months, or years)
             RepeatInterval INT NULL,  -- Number of units for custom frequency (e.g., 2 for every 2 weeks)
 
@@ -118,7 +117,7 @@
             RepeatOnSATURDAY BIT DEFAULT 0, -- Saturday
 
             -- End condition for recurrence
-            RepeatEnds NVARCHAR(50) NOT NULL CHECK (RepeatEnds IN ('Never', 'On Date', 'After Occurrences')),
+            RepeatEnds NVARCHAR(50) NULL CHECK (RepeatEnds IN ('Never', 'On Date', 'After Occurrences')),
             RepeatEndDate DATE NULL,  -- If RepeatEnds = 'On Date', store the end date
             RepeatEndOccurrences INT NULL,  -- If RepeatEnds = 'After Occurrences', store the number of repetitions
 
@@ -335,26 +334,61 @@
             'Front-End developer (React)'
         );
     
-    -- Insert into Category
+-- Insert into Category
+    INSERT INTO Category (Title, Color, Description, LearnerID) VALUES
+    ('Software Development', '#FF5733', 'All about software development', 1),
+    ('Project Management', '#33FF57', 'Managing projects effectively', 2),
+    ('AI Research', '#3357FF', 'Research in AI technologies', 7);
 
-    -- Insert into Goal
+-- Insert into Goal
+    INSERT INTO Goal (Title, Description, Motivation, Status, LearnerID, CategoryID) VALUES
+    ('Complete React Course', 'Finish the advanced React course', 'To improve front-end skills', 'In Progress', 1, 1),
+    ('Launch Mobile App', 'Develop and launch the new mobile app', 'To expand market reach', 'Not Started', 2, 2);
 
-    -- Insert into Subgoal
+-- Insert into Subgoal
+    INSERT INTO Subgoal (Title, Description, Status, GoalID) VALUES
+    ('Learn React Hooks', 'Understand and implement React Hooks', 'In Progress', 1),
+    ('Design App UI', 'Create the UI design for the mobile app', 'Not Started', 2);
 
-    -- Insert into LearningResourceType
- 
-    -- Insert into LearningResource
+-- Insert into LearningResourceType
+    INSERT INTO LearningResourceType (Name, UnitType) VALUES
+    ('Online Course', 'Hours'),
+    ('Book', 'Pages');
 
-    -- Insert into KanbanStatus
+-- Insert into LearningResource
+    INSERT INTO LearningResource (Title, TypeID, TotalUnits, Progress, LearnerID, CategoryID) VALUES
+    ('React for Beginners', 1, 20, 5, 1, 1),
+    ('AI: A Modern Approach', 2, 1000, 200, 7, 3);
 
-    -- Insert into Task
+-- Insert into KanbanStatus
+    INSERT INTO KanbanStatus (Name, MaxTasks) VALUES
+    ('To Do', 10),
+    ('In Progress', 5),
+    ('Completed', NULL);
 
-    -- Insert into Subtask
+-- Insert into TaskType
+    INSERT INTO TaskType (Name, Description) VALUES
+    ('Development', 'Tasks related to software development'),
+    ('Research', 'Tasks related to research activities');
 
-    -- Insert into Note
+-- Insert into Task
+    INSERT INTO Task (Title, TypeID, KanbanStatusID, EisenhowerStatus, TimeTaskRelated, RepeatFrequency, RepeatEnds, LearnerID) VALUES
+    ('Finish React Project', 1, 2, 'Urgent & Important', 'Today', 'None', 'Never', 1),
+    ('Prepare AI Presentation', 2, 1, 'Not Urgent but Important', 'This Week', 'None', 'Never', 7);
+
+-- Insert into Subtask
+    INSERT INTO Subtask (Title, Status, TaskID) VALUES
+    ('Implement Redux', 'In Progress', 1),
+    ('Create Slides', 'Not Started', 2);
+
+-- Insert into Note
+    INSERT INTO Note (Title, Body, LearnerID, CategoryID) VALUES
+    ('React Tips', 'Remember to use functional components.', 1, 1),
+    ('AI Trends', 'Explore the latest trends in AI.', 7, 3);
 
 
--- Clear DB
+
+-- !!!! Clear DB !!!!!
         -- Clear data from Subtask table
     DELETE FROM Subtask;
 

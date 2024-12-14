@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\pure-learn\\api\\api.csproj": {}
+    "D:\\pure-learn\\api\\api.csproj": {}
   },
   "projects": {
-    "d:\\pure-learn\\api\\api.csproj": {
+    "D:\\pure-learn\\api\\api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\pure-learn\\api\\api.csproj",
+        "projectUniqueName": "D:\\pure-learn\\api\\api.csproj",
         "projectName": "api",
-        "projectPath": "d:\\pure-learn\\api\\api.csproj",
+        "projectPath": "D:\\pure-learn\\api\\api.csproj",
         "packagesPath": "C:\\Users\\amedo\\.nuget\\packages\\",
-        "outputPath": "d:\\pure-learn\\api\\obj\\",
+        "outputPath": "D:\\pure-learn\\api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\amedo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -60,6 +60,8 @@
               "version": "[9.0.0, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.0, )"
             },
