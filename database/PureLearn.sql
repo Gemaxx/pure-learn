@@ -156,6 +156,7 @@
             LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE CASCADE
         );
 
+
 -- Indexes for performance optimization
 
     -- Index on Learner's Email for faster lookups
