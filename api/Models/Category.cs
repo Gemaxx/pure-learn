@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 
 namespace api.Models;
+//salma change
 
 public partial class Category
 {
-    public long Id { get; set; }
+    public long idd { get; set; }
 
-    public string Title { get; set; } = null!;
+    public string? ch { get; set; }
 
     public string Color { get; set; } = null!;
 
