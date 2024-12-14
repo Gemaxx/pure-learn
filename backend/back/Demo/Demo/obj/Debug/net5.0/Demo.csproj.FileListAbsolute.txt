@@ -1,0 +1,135 @@
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\appsettings.Development.json
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\appsettings.json
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Demo.exe
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Demo.deps.json
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Demo.runtimeconfig.json
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Demo.runtimeconfig.dev.json
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Demo.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\ref\Demo.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Demo.pdb
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Humanizer.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.Data.SqlClient.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.Identity.Client.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.OpenApi.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\System.Configuration.ConfigurationManager.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\System.Diagnostics.DiagnosticSource.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\System.Runtime.Caching.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\runtimes\unix\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\runtimes\win\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.pdb
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.pdb
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.pdb
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.pdb
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\obj\Debug\net5.0\Demo.csproj.AssemblyReference.cache
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\obj\Debug\net5.0\Demo.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\obj\Debug\net5.0\Demo.AssemblyInfoInputs.cache
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\obj\Debug\net5.0\Demo.AssemblyInfo.cs
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\obj\Debug\net5.0\Demo.csproj.CoreCompileInputs.cache
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\obj\Debug\net5.0\Demo.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\obj\Debug\net5.0\Demo.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\obj\Debug\net5.0\scopedcss\bundle\Demo.styles.css
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\obj\Debug\net5.0\staticwebassets\Demo.StaticWebAssets.Manifest.cache
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\obj\Debug\net5.0\Demo.RazorTargetAssemblyInfo.cache
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\obj\Debug\net5.0\Demo.csproj.CopyComplete
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\obj\Debug\net5.0\Demo.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\obj\Debug\net5.0\ref\Demo.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\obj\Debug\net5.0\Demo.pdb
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\obj\Debug\net5.0\Demo.genruntimeconfig.cache
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.Extensions.Identity.Core.dll
+C:\Users\Christen\Desktop\Monof Intake42 WEbAPi\Demo\Demo\bin\Debug\net5.0\Microsoft.Extensions.Identity.Stores.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\appsettings.Development.json
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\appsettings.json
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Demo.exe
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Demo.deps.json
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Demo.runtimeconfig.json
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Demo.runtimeconfig.dev.json
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Demo.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Demo.pdb
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Humanizer.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.Data.SqlClient.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Design.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Relational.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.Extensions.DependencyInjection.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.Extensions.Identity.Core.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.Extensions.Identity.Stores.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.Identity.Client.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.IdentityModel.Logging.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.IdentityModel.Tokens.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Microsoft.OpenApi.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\System.Configuration.ConfigurationManager.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\System.Diagnostics.DiagnosticSource.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\System.IdentityModel.Tokens.Jwt.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\System.Runtime.Caching.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\System.Security.Cryptography.ProtectedData.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\runtimes\unix\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\runtimes\win\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.pdb
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.pdb
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.pdb
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.pdb
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
+D:\raj\Iti\Api\day3\Demo\Demo\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\Demo.csproj.AssemblyReference.cache
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\Demo.GeneratedMSBuildEditorConfig.editorconfig
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\Demo.AssemblyInfoInputs.cache
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\Demo.AssemblyInfo.cs
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\Demo.csproj.CoreCompileInputs.cache
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\Demo.MvcApplicationPartsAssemblyInfo.cs
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\Demo.MvcApplicationPartsAssemblyInfo.cache
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\Demo.RazorTargetAssemblyInfo.cache
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\scopedcss\bundle\Demo.styles.css
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\staticwebassets\Demo.StaticWebAssets.Manifest.cache
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\staticwebassets\Demo.StaticWebAssets.Pack.cache
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\staticwebassets\msbuild.Demo.Microsoft.AspNetCore.StaticWebAssets.props
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\staticwebassets\msbuild.build.Demo.props
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\staticwebassets\msbuild.buildMultiTargeting.Demo.props
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\staticwebassets\msbuild.buildTransitive.Demo.props
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\Demo.csproj.Up2Date
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\Demo.dll
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\refint\Demo.dll
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\Demo.pdb
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\Demo.genruntimeconfig.cache
+D:\raj\Iti\Api\day3\Demo\Demo\obj\Debug\net5.0\ref\Demo.dll
