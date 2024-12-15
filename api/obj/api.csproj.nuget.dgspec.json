@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "d:\\pure-learn\\api\\api.csproj": {}
+    "C:\\Users\\Salma\\GPP\\pure-learn\\api\\api.csproj": {}
   },
   "projects": {
-    "d:\\pure-learn\\api\\api.csproj": {
+    "C:\\Users\\Salma\\GPP\\pure-learn\\api\\api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\pure-learn\\api\\api.csproj",
+        "projectUniqueName": "C:\\Users\\Salma\\GPP\\pure-learn\\api\\api.csproj",
         "projectName": "api",
-        "projectPath": "d:\\pure-learn\\api\\api.csproj",
-        "packagesPath": "C:\\Users\\amedo\\.nuget\\packages\\",
-        "outputPath": "d:\\pure-learn\\api\\obj\\",
+        "projectPath": "C:\\Users\\Salma\\GPP\\pure-learn\\api\\api.csproj",
+        "packagesPath": "C:\\Users\\Salma\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Salma\\GPP\\pure-learn\\api\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\amedo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Salma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -34,11 +38,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -53,15 +52,17 @@
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[8.0.0, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[8.0.0, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[8.0.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -79,6 +80,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.8, 8.0.8]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -87,7 +94,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.108/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
