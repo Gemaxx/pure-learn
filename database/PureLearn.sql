@@ -56,7 +56,7 @@
             id BIGINT PRIMARY KEY IDENTITY(1,1),
             Name NVARCHAR(255) NOT NULL UNIQUE,
             UnitType NVARCHAR(255) NOT NULL UNIQUE,
-            LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE CASCADE
+            LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE NO ACTION
         );
 
         -- Table: LearningResource
@@ -82,7 +82,7 @@
             id BIGINT PRIMARY KEY IDENTITY(1,1),
             Name NVARCHAR(255) NOT NULL UNIQUE,
             MaxTasks INT NULL CHECK (MaxTasks > 0),
-            LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE CASCADE,
+            LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE NO ACTION,
         );
         -- Table: TaskType
         CREATE TABLE TaskType (
@@ -90,7 +90,7 @@
             Name NVARCHAR(255) NOT NULL UNIQUE,
             Description NVARCHAR(500),
             Icon VARBINARY(MAX) NULL,
-            LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE CASCADE
+            LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE NO ACTION
         )
 
         -- Table: Task
