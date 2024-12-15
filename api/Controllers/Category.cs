@@ -19,7 +19,7 @@ namespace api.Controllers
             _context = context;
         }
 
-        // GET: api/categories
+        // GET: api/categories/GetCategories
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
@@ -32,7 +32,7 @@ namespace api.Controllers
                                             .ToListAsync();
         }
 
-        // GET: api/categories/5
+        // GET: api/categories/GetCategory
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> GetCategory(long id)
         {
