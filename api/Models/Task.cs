@@ -41,7 +41,7 @@ public partial class Task
 
     public bool? RepeatOnSaturday { get; set; }
 
-    public string RepeatEnds { get; set; } = null!;
+    public string? RepeatEnds { get; set; }
 
     public DateOnly? RepeatEndDate { get; set; }
 

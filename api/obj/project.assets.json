@@ -93,6 +93,28 @@
       },
       "Microsoft.CodeAnalysis.Analyzers/3.3.3": {
         "type": "package",
+<<<<<<< HEAD
+=======
+        "compile": {
+          "ref/net8.0/_._": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/_._": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
+      "Microsoft.Build.Locator/1.7.8": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/_._": {}
+        },
+        "runtime": {
+          "lib/net6.0/Microsoft.Build.Locator.dll": {}
+        },
+>>>>>>> f23807ba276469272e07180472c4b634b8ea3a15
         "build": {
           "build/_._": {}
         }
@@ -107,7 +129,11 @@
           "System.Text.Encoding.CodePages": "6.0.0"
         },
         "compile": {
+<<<<<<< HEAD
           "lib/netcoreapp3.1/_._": {
+=======
+          "lib/net7.0/_._": {
+>>>>>>> f23807ba276469272e07180472c4b634b8ea3a15
             "related": ".pdb;.xml"
           }
         },
@@ -164,7 +190,11 @@
           "Microsoft.CodeAnalysis.Common": "[4.5.0]"
         },
         "compile": {
+<<<<<<< HEAD
           "lib/netcoreapp3.1/_._": {
+=======
+          "lib/net7.0/_._": {
+>>>>>>> f23807ba276469272e07180472c4b634b8ea3a15
             "related": ".pdb;.xml"
           }
         },
@@ -224,7 +254,11 @@
           "Microsoft.CodeAnalysis.Workspaces.Common": "[4.5.0]"
         },
         "compile": {
+<<<<<<< HEAD
           "lib/netcoreapp3.1/_._": {
+=======
+          "lib/net7.0/_._": {
+>>>>>>> f23807ba276469272e07180472c4b634b8ea3a15
             "related": ".pdb;.xml"
           }
         },
@@ -286,7 +320,11 @@
           "System.Threading.Channels": "6.0.0"
         },
         "compile": {
+<<<<<<< HEAD
           "lib/netcoreapp3.1/_._": {
+=======
+          "lib/net7.0/_._": {
+>>>>>>> f23807ba276469272e07180472c4b634b8ea3a15
             "related": ".pdb;.xml"
           }
         },
@@ -332,7 +370,74 @@
           "lib/netcoreapp3.1/zh-Hans/Microsoft.CodeAnalysis.Workspaces.resources.dll": {
             "locale": "zh-Hans"
           },
+<<<<<<< HEAD
           "lib/netcoreapp3.1/zh-Hant/Microsoft.CodeAnalysis.Workspaces.resources.dll": {
+=======
+          "lib/net7.0/zh-Hant/Microsoft.CodeAnalysis.Workspaces.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        }
+      },
+      "Microsoft.CodeAnalysis.Workspaces.MSBuild/4.8.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Build.Framework": "16.10.0",
+          "Microsoft.CodeAnalysis.Common": "[4.8.0]",
+          "Microsoft.CodeAnalysis.Workspaces.Common": "[4.8.0]",
+          "System.Text.Json": "7.0.3"
+        },
+        "compile": {
+          "lib/net7.0/_._": {
+            "related": ".pdb;.runtimeconfig.json;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net7.0/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.dll": {
+            "related": ".pdb;.runtimeconfig.json;.xml"
+          },
+          "lib/net7.0/Microsoft.CodeAnalysis.Workspaces.MSBuild.dll": {
+            "related": ".BuildHost.pdb;.BuildHost.runtimeconfig.json;.BuildHost.xml;.pdb;.xml"
+          }
+        },
+        "resource": {
+          "lib/net7.0/cs/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll": {
+            "locale": "cs"
+          },
+          "lib/net7.0/de/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll": {
+            "locale": "de"
+          },
+          "lib/net7.0/es/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll": {
+            "locale": "es"
+          },
+          "lib/net7.0/fr/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/net7.0/it/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll": {
+            "locale": "it"
+          },
+          "lib/net7.0/ja/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/net7.0/ko/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/net7.0/pl/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll": {
+            "locale": "pl"
+          },
+          "lib/net7.0/pt-BR/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "lib/net7.0/ru/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll": {
+            "locale": "ru"
+          },
+          "lib/net7.0/tr/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll": {
+            "locale": "tr"
+          },
+          "lib/net7.0/zh-Hans/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/net7.0/zh-Hant/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll": {
+>>>>>>> f23807ba276469272e07180472c4b634b8ea3a15
             "locale": "zh-Hant"
           }
         }
@@ -925,7 +1030,11 @@
           "System.CodeDom": "4.4.0"
         },
         "compile": {
+<<<<<<< HEAD
           "lib/netstandard2.0/_._": {}
+=======
+          "lib/net6.0/_._": {}
+>>>>>>> f23807ba276469272e07180472c4b634b8ea3a15
         },
         "runtime": {
           "lib/netstandard2.0/Mono.TextTemplating.dll": {}
@@ -1024,7 +1133,27 @@
           "buildTransitive/netcoreapp3.1/_._": {}
         }
       },
+<<<<<<< HEAD
       "System.Composition/6.0.0": {
+=======
+      "System.Collections.Immutable/7.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net7.0/_._": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net7.0/System.Collections.Immutable.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net6.0/_._": {}
+        }
+      },
+      "System.Composition/7.0.0": {
+>>>>>>> f23807ba276469272e07180472c4b634b8ea3a15
         "type": "package",
         "dependencies": {
           "System.Composition.AttributedModel": "6.0.0",
@@ -1040,7 +1169,11 @@
       "System.Composition.AttributedModel/6.0.0": {
         "type": "package",
         "compile": {
+<<<<<<< HEAD
           "lib/net6.0/_._": {
+=======
+          "lib/net7.0/_._": {
+>>>>>>> f23807ba276469272e07180472c4b634b8ea3a15
             "related": ".xml"
           }
         },
@@ -1059,7 +1192,11 @@
           "System.Composition.AttributedModel": "6.0.0"
         },
         "compile": {
+<<<<<<< HEAD
           "lib/net6.0/_._": {
+=======
+          "lib/net7.0/_._": {
+>>>>>>> f23807ba276469272e07180472c4b634b8ea3a15
             "related": ".xml"
           }
         },
@@ -1078,7 +1215,11 @@
           "System.Composition.Runtime": "6.0.0"
         },
         "compile": {
+<<<<<<< HEAD
           "lib/net6.0/_._": {
+=======
+          "lib/net7.0/_._": {
+>>>>>>> f23807ba276469272e07180472c4b634b8ea3a15
             "related": ".xml"
           }
         },
@@ -1094,7 +1235,11 @@
       "System.Composition.Runtime/6.0.0": {
         "type": "package",
         "compile": {
+<<<<<<< HEAD
           "lib/net6.0/_._": {
+=======
+          "lib/net7.0/_._": {
+>>>>>>> f23807ba276469272e07180472c4b634b8ea3a15
             "related": ".xml"
           }
         },
@@ -1115,7 +1260,11 @@
           "System.Composition.Runtime": "6.0.0"
         },
         "compile": {
+<<<<<<< HEAD
           "lib/net6.0/_._": {
+=======
+          "lib/net7.0/_._": {
+>>>>>>> f23807ba276469272e07180472c4b634b8ea3a15
             "related": ".xml"
           }
         },
@@ -1283,7 +1432,11 @@
           "System.Collections.Immutable": "6.0.0"
         },
         "compile": {
+<<<<<<< HEAD
           "lib/net6.0/_._": {
+=======
+          "lib/net7.0/_._": {
+>>>>>>> f23807ba276469272e07180472c4b634b8ea3a15
             "related": ".xml"
           }
         },
@@ -1336,7 +1489,7 @@
       "System.Runtime.CompilerServices.Unsafe/6.0.0": {
         "type": "package",
         "compile": {
-          "lib/net6.0/System.Runtime.CompilerServices.Unsafe.dll": {
+          "lib/net6.0/_._": {
             "related": ".xml"
           }
         },
@@ -1540,7 +1693,11 @@
       "System.Threading.Channels/6.0.0": {
         "type": "package",
         "compile": {
+<<<<<<< HEAD
           "lib/net6.0/_._": {
+=======
+          "lib/net7.0/_._": {
+>>>>>>> f23807ba276469272e07180472c4b634b8ea3a15
             "related": ".xml"
           }
         },
@@ -4493,11 +4650,19 @@
   "project": {
     "version": "1.0.0",
     "restore": {
+<<<<<<< HEAD
       "projectUniqueName": "C:\\Users\\Salma\\GPP\\pure-learn\\api\\api.csproj",
       "projectName": "api",
       "projectPath": "C:\\Users\\Salma\\GPP\\pure-learn\\api\\api.csproj",
       "packagesPath": "C:\\Users\\Salma\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\Salma\\GPP\\pure-learn\\api\\obj\\",
+=======
+      "projectUniqueName": "D:\\pure-learn\\api\\api.csproj",
+      "projectName": "api",
+      "projectPath": "D:\\pure-learn\\api\\api.csproj",
+      "packagesPath": "C:\\Users\\amedo\\.nuget\\packages\\",
+      "outputPath": "D:\\pure-learn\\api\\obj\\",
+>>>>>>> f23807ba276469272e07180472c4b634b8ea3a15
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

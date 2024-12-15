@@ -103,8 +103,7 @@
             TimeSpent TIME NULL,
 
             -- Repeat frequency: Daily, Weekly, Monthly, Annually, Custom
-            RepeatFrequency NVARCHAR(50) NOT NULL CHECK (RepeatFrequency IN ('None', 'Daily', 'Weekly', 'Monthly', 'Annually', 'Custom')),
-
+            RepeatFrequency NVARCHAR(50) NOT NULL DEFAULT 'None' CHECK (RepeatFrequency IN ('None', 'Daily', 'Weekly', 'Monthly', 'Annually', 'Custom')),   
             -- For custom frequency (every # of days, weeks, months, or years)
             RepeatInterval INT NULL,  -- Number of units for custom frequency (e.g., 2 for every 2 weeks)
 
@@ -118,7 +117,7 @@
             RepeatOnSATURDAY BIT DEFAULT 0, -- Saturday
 
             -- End condition for recurrence
-            RepeatEnds NVARCHAR(50) NOT NULL CHECK (RepeatEnds IN ('Never', 'On Date', 'After Occurrences')),
+            RepeatEnds NVARCHAR(50) NULL CHECK (RepeatEnds IN ('Never', 'On Date', 'After Occurrences')),
             RepeatEndDate DATE NULL,  -- If RepeatEnds = 'On Date', store the end date
             RepeatEndOccurrences INT NULL,  -- If RepeatEnds = 'After Occurrences', store the number of repetitions
 
@@ -281,80 +280,120 @@
     END;
     GO
 
--- Populate DB 
+--Convert Tables into Models using "Database-First Aproach" 
+--=> command “dotnet ef dbcontext scaffold "Name=DefaultConnection" Microsoft.EntityFrameworkCore.SqlServer -o Models”
+
+-- Populate DB
+
     -- Insert learners into the Learner table
-        insert into
-        learner (name, email, passwordhash, bio)
-        values
-        (
-            'Ahmed Ibrahim',
-            'Gemax.hope@gmail.com',
-            'Ww123@123',
-            'Team Lead\nProduct Owner\nScrum Master\nSoftware Engineer\nDB Engineer\nFront-End developer (React)'
-        ),
-        (
-            'Fatema Emara',
-            'fatemaemara133@gmail.com',
-            'Ww123@123',
-            'Team Lead\nAndroid developer'
-        ),
-        (
-            'Alaa Khalid',
-            'alaakhalid227@gmail.com',
-            'Ww123@123',
-            'Team Lead\nFront-End developer (React)'
-        ),
-        (
-            'Ibrahem Syam',
-            'ibrahemsyam19@gmail.com',
-            'Ww123@123',
-            'Front-End developer (React)'
-        ),
-        (
-            'Noran Ahmed',
-            'nora200336@gmail.com',
-            'Ww123@123',
-            'Back-End Developer (ASP.Net)'
-        ),
-        (
-            'Youssef Rajander',
-            'youssefdid8@gmail.com',
-            'Ww123@123',
-            'Back-End Developer (ASP.Net)'
-        ),
-        (
-            'Salma El-Sayed',
-            'salma.elsayed.karam.2003@gmail.com',
-            'Ww123@123',
-            'AI'
-        ),
-        (
-            'Amal Tarek',
-            'amaltarek631@gmail.com',
-            'Ww123@123',
-            'Front-End developer (React)'
-        );
-    
+            insert into
+            learner (name, email, passwordhash, bio)
+            values
+            (
+                'Ahmed Ibrahim',
+                'Gemax.hope@gmail.com',
+                'Ww123@123',
+                'Team Lead\nProduct Owner\nScrum Master\nSoftware Engineer\nDB Engineer\nFront-End developer (React)'
+            ),
+            (
+                'Fatema Emara',
+                'fatemaemara133@gmail.com',
+                'Ww123@123',
+                'Team Lead\nAndroid developer'
+            ),
+            (
+                'Alaa Khalid',
+                'alaakhalid227@gmail.com',
+                'Ww123@123',
+                'Team Lead\nFront-End developer (React)'
+            ),
+            (
+                'Ibrahem Syam',
+                'ibrahemsyam19@gmail.com',
+                'Ww123@123',
+                'Front-End developer (React)'
+            ),
+            (
+                'Noran Ahmed',
+                'nora200336@gmail.com',
+                'Ww123@123',
+                'Back-End Developer (ASP.Net)'
+            ),
+            (
+                'Youssef Rajander',
+                'youssefdid8@gmail.com',
+                'Ww123@123',
+                'Back-End Developer (ASP.Net)'
+            ),
+            (
+                'Salma El-Sayed',
+                'salma.elsayed.karam.2003@gmail.com',
+                'Ww123@123',
+                'AI'
+            ),
+            (
+                'Amal Tarek',
+                'amaltarek631@gmail.com',
+                'Ww123@123',
+                'Front-End developer (React)'
+            );
+        
     -- Insert into Category
+        INSERT INTO Category (Title, Color, Description, LearnerID) VALUES
+        ('Software Development', '#FF5733', 'All about software development', 1),
+        ('Project Management', '#33FF57', 'Managing projects effectively', 2),
+        ('AI Research', '#3357FF', 'Research in AI technologies', 7);
 
     -- Insert into Goal
+        INSERT INTO Goal (Title, Description, Motivation, Status, LearnerID, CategoryID) VALUES
+        ('Complete React Course', 'Finish the advanced React course', 'To improve front-end skills', 'In Progress', 1, 1),
+        ('Launch Mobile App', 'Develop and launch the new mobile app', 'To expand market reach', 'Not Started', 2, 2);
 
     -- Insert into Subgoal
+        INSERT INTO Subgoal (Title, Description, Status, GoalID) VALUES
+        ('Learn React Hooks', 'Understand and implement React Hooks', 'In Progress', 1),
+        ('Design App UI', 'Create the UI design for the mobile app', 'Not Started', 2);
 
     -- Insert into LearningResourceType
- 
+        INSERT INTO LearningResourceType (Name, UnitType) VALUES
+        ('Online Course', 'Hours'),
+        ('Book', 'Pages');
+
     -- Insert into LearningResource
+        INSERT INTO LearningResource (Title, TypeID, TotalUnits, Progress, LearnerID, CategoryID) VALUES
+        ('React for Beginners', 1, 20, 5, 1, 1),
+        ('AI: A Modern Approach', 2, 1000, 200, 7, 3);
 
     -- Insert into KanbanStatus
+        INSERT INTO KanbanStatus (Name, MaxTasks) VALUES
+        ('To Do', 10),
+        ('In Progress', 5),
+        ('Completed', NULL);
+
+    -- Insert into TaskType
+        INSERT INTO TaskType (Name, Description) VALUES
+        ('Development', 'Tasks related to software development'),
+        ('Research', 'Tasks related to research activities');
 
     -- Insert into Task
+        INSERT INTO Task (Title, TypeID, KanbanStatusID, EisenhowerStatus, TimeTaskRelated, RepeatFrequency, RepeatEnds, LearnerID) VALUES
+        ('Finish React Project', 1, 2, 'Urgent & Important', 'Today', 'None', NULL, 1),
+        ('Prepare AI Presentation', 2, 1, 'Not Urgent but Important', 'This Week', 'None', NULL, 7);
 
     -- Insert into Subtask
+        INSERT INTO Subtask (Title, Status, TaskID) VALUES
+        ('Implement Redux', 'In Progress', 1),
+        ('Create Slides', 'Not Started', 2);
 
     -- Insert into Note
+        INSERT INTO Note (Title, Body, LearnerID, CategoryID) VALUES
+        ('React Tips', 'Remember to use functional components.', 1, 1),
+        ('AI Trends', 'Explore the latest trends in AI.', 7, 3);
 
 
--- Clear DB
+
+
+-- !!!! Clear DB !!!!!
         -- Clear data from Subtask table
     DELETE FROM Subtask;
 

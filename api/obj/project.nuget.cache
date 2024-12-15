@@ -1,8 +1,14 @@
 {
   "version": 2,
+<<<<<<< HEAD
   "dgSpecHash": "u5oqPn3I8MYj8FcOYKoCPC/fpmt1OjAFozjbqLizLRxzFU9Bsulpvet7Zxh3pK06NCUnPTN5moXgxi9IcdT6IQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Salma\\GPP\\pure-learn\\api\\api.csproj",
+=======
+  "dgSpecHash": "+Elc2y44epA=",
+  "success": true,
+  "projectFilePath": "D:\\pure-learn\\api\\api.csproj",
+>>>>>>> f23807ba276469272e07180472c4b634b8ea3a15
   "expectedPackageFiles": [
     "C:\\Users\\Salma\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\Salma\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
