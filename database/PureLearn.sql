@@ -1,162 +1,164 @@
--- Creating Tables
-    -- Table: Learner
-        CREATE TABLE Learner (
-            id BIGINT PRIMARY KEY IDENTITY(1,1),
-            Name NVARCHAR(255) NOT NULL,
-            Email NVARCHAR(255) NOT NULL UNIQUE,
-            PasswordHash NVARCHAR(255) NOT NULL,
-            ProfilePicture NVARCHAR(MAX),
-            Bio NVARCHAR(MAX),
-            CreatedAt DATETIME DEFAULT GETDATE(),
-            UpdatedAt DATETIME DEFAULT GETDATE(),
-            LastLogin DATETIME
-        );
+    -- Creating Tables
+        -- Table: Learner
+            CREATE TABLE Learner (
+                id BIGINT PRIMARY KEY IDENTITY(1,1),
+                Name NVARCHAR(255) NOT NULL,
+                Email NVARCHAR(255) NOT NULL UNIQUE,
+                PasswordHash NVARCHAR(255) NOT NULL,
+                ProfilePicture NVARCHAR(MAX),
+                Bio NVARCHAR(MAX),
+                CreatedAt DATETIME DEFAULT GETDATE(),
+                UpdatedAt DATETIME DEFAULT GETDATE(),
+                LastLogin DATETIME
+            );
 
-    -- Table: Category -> Parent Child Relationship
-        CREATE TABLE Category (
-            id BIGINT PRIMARY KEY IDENTITY(1,1),
-            Title NVARCHAR(255) NOT NULL,
-            Color NVARCHAR(50) NOT NULL,
-            Description NVARCHAR(MAX),
-            CreatedAt DATETIME DEFAULT GETDATE(),
-            UpdatedAt DATETIME DEFAULT GETDATE(),
-            ParentCategoryID BIGINT NULL,
-            LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE CASCADE,
-            FOREIGN KEY (ParentCategoryID) REFERENCES Category(id) ON DELETE NO ACTION -- for childs
-        );
+        -- Table: Category -> Parent Child Relationship
+            CREATE TABLE Category (
+                id BIGINT PRIMARY KEY IDENTITY(1,1),
+                Title NVARCHAR(255) NOT NULL,
+                Color NVARCHAR(50) NOT NULL,
+                Description NVARCHAR(MAX),
+                CreatedAt DATETIME DEFAULT GETDATE(),
+                UpdatedAt DATETIME DEFAULT GETDATE(),
+                ParentCategoryID BIGINT NULL,
+                LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE CASCADE,
+                FOREIGN KEY (ParentCategoryID) REFERENCES Category(id) ON DELETE NO ACTION -- for childs
+            );
 
-    -- Goal & Subgoal tables
-        CREATE TABLE Goal (
-            id BIGINT PRIMARY KEY IDENTITY(1,1),
-            Title NVARCHAR(255) NOT NULL,
-            Description NVARCHAR(MAX) NOT NULL,
-            Motivation NVARCHAR(MAX) NOT NULL,
-            Status NVARCHAR(50) NOT NULL,
-            CompletionDate DATE NULL,
-            CreatedAt DATETIME DEFAULT GETDATE(),
-            UpdatedAt DATETIME DEFAULT GETDATE(),
-            CategoryID BIGINT NULL FOREIGN KEY REFERENCES Category(id) ON DELETE CASCADE,
-            LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE NO ACTION -- Changed to NO ACTION
-        );
+        -- Goal & Subgoal tables
+            CREATE TABLE Goal (
+                id BIGINT PRIMARY KEY IDENTITY(1,1),
+                Title NVARCHAR(255) NOT NULL,
+                Description NVARCHAR(MAX) NOT NULL,
+                Motivation NVARCHAR(MAX) NOT NULL,
+                Term NVARCHAR(50) NOT NULL CHECK (Term IN ('Long-Term', 'Medium-Term', 'Short-Term')), 
+                Status NVARCHAR(50) NOT NULL CHECK (Status IN ('Not-Started', 'In-Progress', 'On-Hold', 'Done', 'Canceled')), -- Restricted values for Status
+                CompletionDate DATE NULL,
+                CreatedAt DATETIME DEFAULT GETDATE(),
+                UpdatedAt DATETIME DEFAULT GETDATE(),
+                CategoryID BIGINT NULL FOREIGN KEY REFERENCES Category(id) ON DELETE CASCADE,
+                LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE NO ACTION -- Learner reference
+            );
 
-        CREATE TABLE Subgoal (
-                    id BIGINT PRIMARY KEY IDENTITY(1,1),
-                    Title NVARCHAR(255) NOT NULL,
-                    Description NVARCHAR(MAX) NOT NULL,
-                    Status NVARCHAR(50) NOT NULL,
-                    CreatedAt DATETIME DEFAULT GETDATE(),
-                    UpdatedAt DATETIME DEFAULT GETDATE(),
-                    GoalID BIGINT NOT NULL FOREIGN KEY REFERENCES Goal(id) ON DELETE CASCADE
-                );
 
-    -- Learning Resources Tables
+            CREATE TABLE Subgoal (
+                        id BIGINT PRIMARY KEY IDENTITY(1,1),
+                        Title NVARCHAR(255) NOT NULL,
+                        Description NVARCHAR(MAX) NOT NULL,
+                        Status NVARCHAR(50) NOT NULL,
+                        CreatedAt DATETIME DEFAULT GETDATE(),
+                        UpdatedAt DATETIME DEFAULT GETDATE(),
+                        GoalID BIGINT NOT NULL FOREIGN KEY REFERENCES Goal(id) ON DELETE CASCADE
+                    );
 
-        -- Table: LearningResourceType
-        CREATE TABLE LearningResourceType (
-            id BIGINT PRIMARY KEY IDENTITY(1,1),
-            Name NVARCHAR(255) NOT NULL UNIQUE,
-            UnitType NVARCHAR(255) NOT NULL UNIQUE,
-            LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE NO ACTION
-        );
+        -- Learning Resources Tables
 
-        -- Table: LearningResource
-        CREATE TABLE LearningResource (
-            id BIGINT PRIMARY KEY IDENTITY(1,1),
-            Title NVARCHAR(255) NOT NULL,
-            TypeID BIGINT NOT NULL FOREIGN KEY REFERENCES LearningResourceType(id) ON DELETE CASCADE,
-            TotalUnits INT NOT NULL CHECK (TotalUnits > 0),
-            Progress INT NOT NULL,
-            Link NVARCHAR(MAX) NULL,
-            CreatedAt DATETIME DEFAULT GETDATE(),
-            UpdatedAt DATETIME DEFAULT GETDATE(),
-            LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE CASCADE,
-            CategoryID BIGINT NULL FOREIGN KEY REFERENCES Category(id) ON DELETE NO ACTION,
-            GoalID BIGINT NULL FOREIGN KEY REFERENCES Goal(id) ON DELETE NO ACTION,
-            SubgoalID BIGINT NULL FOREIGN KEY REFERENCES Subgoal(id) ON DELETE NO ACTION,
-            CONSTRAINT CHK_Progress CHECK (Progress >= 0 AND Progress <= TotalUnits)
-        );
+            -- Table: LearningResourceType
+            CREATE TABLE LearningResourceType (
+                id BIGINT PRIMARY KEY IDENTITY(1,1),
+                Name NVARCHAR(255) NOT NULL UNIQUE,
+                UnitType NVARCHAR(255) NOT NULL UNIQUE,
+                LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE NO ACTION
+            );
 
-    -- Tasks & Subtasks Tables
-        -- Table: KanbanStatus
-        CREATE TABLE KanbanStatus (
-            id BIGINT PRIMARY KEY IDENTITY(1,1),
-            Name NVARCHAR(255) NOT NULL UNIQUE,
-            MaxTasks INT NULL CHECK (MaxTasks > 0),
-            LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE NO ACTION,
-        );
-        -- Table: TaskType
-        CREATE TABLE TaskType (
-            id BIGINT PRIMARY KEY IDENTITY(1,1),
-            Name NVARCHAR(255) NOT NULL UNIQUE,
-            Description NVARCHAR(500),
-            Icon VARBINARY(MAX) NULL,
-            LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE NO ACTION
-        )
+            -- Table: LearningResource
+            CREATE TABLE LearningResource (
+                id BIGINT PRIMARY KEY IDENTITY(1,1),
+                Title NVARCHAR(255) NOT NULL,
+                TypeID BIGINT NOT NULL FOREIGN KEY REFERENCES LearningResourceType(id) ON DELETE CASCADE,
+                TotalUnits INT NOT NULL CHECK (TotalUnits > 0),
+                Progress INT NOT NULL,
+                Link NVARCHAR(MAX) NULL,
+                CreatedAt DATETIME DEFAULT GETDATE(),
+                UpdatedAt DATETIME DEFAULT GETDATE(),
+                LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE CASCADE,
+                CategoryID BIGINT NULL FOREIGN KEY REFERENCES Category(id) ON DELETE NO ACTION,
+                GoalID BIGINT NULL FOREIGN KEY REFERENCES Goal(id) ON DELETE NO ACTION,
+                SubgoalID BIGINT NULL FOREIGN KEY REFERENCES Subgoal(id) ON DELETE NO ACTION,
+                CONSTRAINT CHK_Progress CHECK (Progress >= 0 AND Progress <= TotalUnits)
+            );
 
-        -- Table: Task
-        CREATE TABLE Task (
-            id BIGINT PRIMARY KEY IDENTITY(1,1),
-            Title NVARCHAR(100) NOT NULL,
-            TypeID BIGINT NOT NULL REFERENCES TaskType(id) ON DELETE CASCADE,            
-            KanbanStatusID BIGINT NOT NULL FOREIGN KEY REFERENCES KanbanStatus(id) ON DELETE CASCADE,
-            EisenhowerStatus NVARCHAR(50) NOT NULL CHECK (EisenhowerStatus IN ('Urgent & Important', 'Not Urgent but Important', 'Urgent but Not Important', 'Not Urgent & Not Important')),
-            TimeTaskRelated NVARCHAR(50) NOT NULL CHECK (TimeTaskRelated IN ('Today', 'Tomorrow', 'This Week', 'Someday')),
-            DueDate DATE NULL,
-            EstimatedTime TIME NULL,
-            TimeSpent TIME NULL,
+        -- Tasks & Subtasks Tables
+            -- Table: KanbanStatus
+            CREATE TABLE KanbanStatus (
+                id BIGINT PRIMARY KEY IDENTITY(1,1),
+                Name NVARCHAR(255) NOT NULL UNIQUE,
+                MaxTasks INT NULL CHECK (MaxTasks > 0),
+                LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE NO ACTION,
+            );
+            -- Table: TaskType
+            CREATE TABLE TaskType (
+                id BIGINT PRIMARY KEY IDENTITY(1,1),
+                Name NVARCHAR(255) NOT NULL UNIQUE,
+                Description NVARCHAR(500),
+                Icon VARBINARY(MAX) NULL,
+                LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE NO ACTION
+            )
 
-            -- Repeat frequency: Daily, Weekly, Monthly, Annually, Custom
-            RepeatFrequency NVARCHAR(50) NOT NULL DEFAULT 'None' CHECK (RepeatFrequency IN ('None', 'Daily', 'Weekly', 'Monthly', 'Annually', 'Custom')),   
-            -- For custom frequency (every # of days, weeks, months, or years)
-            RepeatInterval INT NULL,  -- Number of units for custom frequency (e.g., 2 for every 2 weeks)
+            -- Table: Task
+            CREATE TABLE Task (
+                id BIGINT PRIMARY KEY IDENTITY(1,1),
+                Title NVARCHAR(100) NOT NULL,
+                TypeID BIGINT NOT NULL REFERENCES TaskType(id) ON DELETE CASCADE,            
+                KanbanStatusID BIGINT NOT NULL FOREIGN KEY REFERENCES KanbanStatus(id) ON DELETE CASCADE,
+                EisenhowerStatus NVARCHAR(50) NOT NULL CHECK (EisenhowerStatus IN ('Urgent & Important', 'Not Urgent but Important', 'Urgent but Not Important', 'Not Urgent & Not Important')),
+                TimeTaskRelated NVARCHAR(50) NOT NULL CHECK (TimeTaskRelated IN ('Today', 'Tomorrow', 'This Week', 'Someday')),
+                DueDate DATE NULL,
+                EstimatedTime TIME NULL,
+                TimeSpent TIME NULL,
 
-            -- Repeat on specific days of the week (for Weekly or Custom frequency)
-            RepeatOnSUNDAY BIT DEFAULT 0,   -- Sunday
-            RepeatOnMONDAY BIT DEFAULT 0,   -- Monday
-            RepeatOnTUESDAY BIT DEFAULT 0,  -- Tuesday
-            RepeatOnWEDNESDAY BIT DEFAULT 0, -- Wednesday
-            RepeatOnTHURSDAY BIT DEFAULT 0,  -- Thursday
-            RepeatOnFRIDAY BIT DEFAULT 0,   -- Friday
-            RepeatOnSATURDAY BIT DEFAULT 0, -- Saturday
+                -- Repeat frequency: Daily, Weekly, Monthly, Annually, Custom
+                RepeatFrequency NVARCHAR(50) NOT NULL DEFAULT 'None' CHECK (RepeatFrequency IN ('None', 'Daily', 'Weekly', 'Monthly', 'Annually', 'Custom')),   
+                -- For custom frequency (every # of days, weeks, months, or years)
+                RepeatInterval INT NULL,  -- Number of units for custom frequency (e.g., 2 for every 2 weeks)
 
-            -- End condition for recurrence
-            RepeatEnds NVARCHAR(50) NULL CHECK (RepeatEnds IN ('Never', 'On Date', 'After Occurrences')),
-            RepeatEndDate DATE NULL,  -- If RepeatEnds = 'On Date', store the end date
-            RepeatEndOccurrences INT NULL,  -- If RepeatEnds = 'After Occurrences', store the number of repetitions
+                -- Repeat on specific days of the week (for Weekly or Custom frequency)
+                RepeatOnSUNDAY BIT DEFAULT 0,   -- Sunday
+                RepeatOnMONDAY BIT DEFAULT 0,   -- Monday
+                RepeatOnTUESDAY BIT DEFAULT 0,  -- Tuesday
+                RepeatOnWEDNESDAY BIT DEFAULT 0, -- Wednesday
+                RepeatOnTHURSDAY BIT DEFAULT 0,  -- Thursday
+                RepeatOnFRIDAY BIT DEFAULT 0,   -- Friday
+                RepeatOnSATURDAY BIT DEFAULT 0, -- Saturday
 
-            CreatedAt DATETIME DEFAULT GETDATE(),
-            UpdatedAt DATETIME DEFAULT GETDATE(),
+                -- End condition for recurrence
+                RepeatEnds NVARCHAR(50) NULL CHECK (RepeatEnds IN ('Never', 'On Date', 'After Occurrences')),
+                RepeatEndDate DATE NULL,  -- If RepeatEnds = 'On Date', store the end date
+                RepeatEndOccurrences INT NULL,  -- If RepeatEnds = 'After Occurrences', store the number of repetitions
 
-            LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE CASCADE,
-            CategoryID BIGINT NULL FOREIGN KEY REFERENCES Category(id) ON DELETE NO ACTION,
-            GoalID BIGINT NULL FOREIGN KEY REFERENCES Goal(id) ON DELETE NO ACTION,
-            SubgoalID BIGINT NULL FOREIGN KEY REFERENCES Subgoal(id) ON DELETE NO ACTION, 
-            LearningResourceID BIGINT NULL FOREIGN KEY REFERENCES LearningResource(id) ON DELETE NO ACTION
-        );
+                CreatedAt DATETIME DEFAULT GETDATE(),
+                UpdatedAt DATETIME DEFAULT GETDATE(),
 
-        -- Table: Subtask
-        CREATE TABLE Subtask (
-            id BIGINT PRIMARY KEY IDENTITY(1,1),
-            Title NVARCHAR(255) NOT NULL,
-            Status NVARCHAR(50) NOT NULL CHECK (Status IN ('Not Started', 'In Progress', 'Completed')),
-            CreatedAt DATETIME DEFAULT GETDATE(),
-            UpdatedAt DATETIME DEFAULT GETDATE(),
-            TaskID BIGINT NOT NULL FOREIGN KEY REFERENCES Task(id) ON DELETE CASCADE
-        );
+                LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE CASCADE,
+                CategoryID BIGINT NULL FOREIGN KEY REFERENCES Category(id) ON DELETE NO ACTION,
+                GoalID BIGINT NULL FOREIGN KEY REFERENCES Goal(id) ON DELETE NO ACTION,
+                SubgoalID BIGINT NULL FOREIGN KEY REFERENCES Subgoal(id) ON DELETE NO ACTION, 
+                LearningResourceID BIGINT NULL FOREIGN KEY REFERENCES LearningResource(id) ON DELETE NO ACTION
+            );
 
-    -- Table: Note
-        CREATE TABLE Note (
-            id BIGINT PRIMARY KEY IDENTITY(1,1),
-            Title NVARCHAR(255) NOT NULL,
-            Body NVARCHAR(MAX) NOT NULL, 
-            CreatedAt DATETIME DEFAULT GETDATE(),
-            UpdatedAt DATETIME DEFAULT GETDATE(),
-            CategoryID BIGINT NULL FOREIGN KEY REFERENCES Category(id) ON DELETE NO ACTION,
-            GoalID BIGINT NULL FOREIGN KEY REFERENCES Goal(id) ON DELETE NO ACTION,
-            SubgoalID BIGINT NULL FOREIGN KEY REFERENCES Subgoal(id) ON DELETE NO ACTION,
-            TaskID BIGINT NULL FOREIGN KEY REFERENCES Task(id) ON DELETE NO ACTION,
-            LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE CASCADE
-        );
+            -- Table: Subtask
+            CREATE TABLE Subtask (
+                id BIGINT PRIMARY KEY IDENTITY(1,1),
+                Title NVARCHAR(255) NOT NULL,
+                Status NVARCHAR(50) NOT NULL CHECK (Status IN ('Not Started', 'In Progress', 'Completed')),
+                CreatedAt DATETIME DEFAULT GETDATE(),
+                UpdatedAt DATETIME DEFAULT GETDATE(),
+                TaskID BIGINT NOT NULL FOREIGN KEY REFERENCES Task(id) ON DELETE CASCADE
+            );
+
+        -- Table: Note
+            CREATE TABLE Note (
+                id BIGINT PRIMARY KEY IDENTITY(1,1),
+                Title NVARCHAR(255) NOT NULL,
+                Body NVARCHAR(MAX) NOT NULL, 
+                CreatedAt DATETIME DEFAULT GETDATE(),
+                UpdatedAt DATETIME DEFAULT GETDATE(),
+                CategoryID BIGINT NULL FOREIGN KEY REFERENCES Category(id) ON DELETE NO ACTION,
+                GoalID BIGINT NULL FOREIGN KEY REFERENCES Goal(id) ON DELETE NO ACTION,
+                SubgoalID BIGINT NULL FOREIGN KEY REFERENCES Subgoal(id) ON DELETE NO ACTION,
+                TaskID BIGINT NULL FOREIGN KEY REFERENCES Task(id) ON DELETE NO ACTION,
+                LearnerID BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE CASCADE
+            );
 
 
 -- Indexes for performance optimization
@@ -167,7 +169,7 @@
 
     -- Index on Task KanbanStatusID for faster status-based queries
         CREATE INDEX idx_task_kanbanstatus ON Task (KanbanStatusID);
-        GO
+        GO  
 
     -- Index on Goal's LearnerID for faster queries by learner
         CREATE INDEX idx_goal_learner_id ON Goal (LearnerID);
