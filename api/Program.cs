@@ -21,3 +21,8 @@ app.MapControllers();
 
 app.Run();
 
+
+
+
+
+// "DefaultConnection": "Data Source=Gemax\\MSSQLSERVER;Initial Catalog=PureLearnDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
