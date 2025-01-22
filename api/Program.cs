@@ -1,3 +1,7 @@
+using System.Text.Json.Serialization;
+using api.Models;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +9,22 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Adding DbContext
+builder.Services.AddDbContext<PureLearnDbContext>(options => {
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+
+// Configure JSON serialization options to ignore cycles when serializing objects
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Set the reference handler to ignore cycles, preventing stack overflows and other issues
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
+
+
 
 var app = builder.Build();
 
@@ -24,5 +44,5 @@ app.Run();
 
 
 
-
+// Gemax Db connection till we host a shared db or we do Container 
 // "DefaultConnection": "Data Source=GEMAX\\SQLEXPRESS;Initial Catalog=PureLearnDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
