@@ -23,6 +23,8 @@ public partial class Learner
 
     public DateTime? LastLogin { get; set; }
 
+    public DateTime? DeletedAt { get; set; }
+
     public virtual ICollection<Category> Categories { get; set; } = new List<Category>();
 
     public virtual ICollection<Goal> Goals { get; set; } = new List<Goal>();

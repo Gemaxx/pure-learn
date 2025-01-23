@@ -17,5 +17,7 @@ public partial class Subtask
 
     public long TaskId { get; set; }
 
+    public DateTime? DeletedAt { get; set; }
+
     public virtual Task Task { get; set; } = null!;
 }

@@ -13,6 +13,8 @@ public partial class Goal
 
     public string Motivation { get; set; } = null!;
 
+    public string Term { get; set; } = null!;
+
     public string Status { get; set; } = null!;
 
     public DateOnly? CompletionDate { get; set; }
@@ -24,6 +26,8 @@ public partial class Goal
     public long? CategoryId { get; set; }
 
     public long LearnerId { get; set; }
+
+    public DateTime? DeletedAt { get; set; }
 
     public virtual Category? Category { get; set; }
 

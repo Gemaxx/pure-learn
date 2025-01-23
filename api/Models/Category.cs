@@ -21,6 +21,8 @@ public partial class Category
 
     public long LearnerId { get; set; }
 
+    public DateTime? DeletedAt { get; set; }
+
     public virtual ICollection<Goal> Goals { get; set; } = new List<Goal>();
 
     public virtual ICollection<Category> InverseParentCategory { get; set; } = new List<Category>();

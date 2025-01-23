@@ -15,6 +15,8 @@ public partial class TaskType
 
     public long LearnerId { get; set; }
 
+    public DateTime? DeletedAt { get; set; }
+
     public virtual Learner Learner { get; set; } = null!;
 
     public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();

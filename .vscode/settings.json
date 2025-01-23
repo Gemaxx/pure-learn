@@ -1,3 +1,9 @@
 {
-    "CodeGPT.apiKey": "CodeGPT Plus Beta"
+    "CodeGPT.apiKey": "CodeGPT Plus Beta",
+    "dataworkspace.excludedProjects": [
+        "enter/enter.sqlproj",
+        "newDB/newDB.sqlproj",
+        "DatabaseProjectnewDB/DatabaseProjectnewDB.sqlproj",
+        "DatabaseProjectnewDB/DatabaseProjectnewDB/DatabaseProjectnewDB.sqlproj"
+    ]
 }

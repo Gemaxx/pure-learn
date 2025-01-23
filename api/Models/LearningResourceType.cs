@@ -13,6 +13,8 @@ public partial class LearningResourceType
 
     public long LearnerId { get; set; }
 
+    public DateTime? DeletedAt { get; set; }
+
     public virtual Learner Learner { get; set; } = null!;
 
     public virtual ICollection<LearningResource> LearningResources { get; set; } = new List<LearningResource>();

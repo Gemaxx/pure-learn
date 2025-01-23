@@ -29,6 +29,8 @@ public partial class LearningResource
 
     public long? SubgoalId { get; set; }
 
+    public DateTime? DeletedAt { get; set; }
+
     public virtual Category? Category { get; set; }
 
     public virtual Goal? Goal { get; set; }

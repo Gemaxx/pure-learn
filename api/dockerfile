@@ -1,0 +1,31 @@
+# Use the official .NET SDK image to build the application
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /app
+
+# Copy project files and restore dependencies
+COPY api.csproj ./
+RUN dotnet restore
+
+# Copy the remaining files and publish the application
+COPY . ./
+RUN dotnet publish -c Release -o /out
+
+# Use the runtime image to run the application
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app
+COPY --from=build /out ./
+
+# Set the environment to Development (needed for Swagger in Development)
+ENV ASPNETCORE_ENVIRONMENT=Development
+
+# Explicitly set the application URL to match your local setup
+ENV ASPNETCORE_URLS=http://+:5115
+
+# Expose the port that the application runs on
+EXPOSE 5115
+
+# Start the application
+ENTRYPOINT ["dotnet", "api.dll"]
+
+# http://localhost:5115/swagger/index.html
+

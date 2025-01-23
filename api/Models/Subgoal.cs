@@ -19,6 +19,8 @@ public partial class Subgoal
 
     public long GoalId { get; set; }
 
+    public DateTime? DeletedAt { get; set; }
+
     public virtual Goal Goal { get; set; } = null!;
 
     public virtual ICollection<LearningResource> LearningResources { get; set; } = new List<LearningResource>();

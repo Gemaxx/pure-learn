@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using api.Data;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,9 +12,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Adding DbContext
-builder.Services.AddDbContext<PureLearnDbContext>(options => {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+builder.Services.AddDbContext<PureLearnDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,              // Maximum number of retries
+            maxRetryDelay: TimeSpan.FromSeconds(30), // Maximum delay between retries
+            errorNumbersToAdd: null        // Optional: List of SQL error numbers to retry
+        )
+    )
+);
+
 
 
 // Configure JSON serialization options to ignore cycles when serializing objects
