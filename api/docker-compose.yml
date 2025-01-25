@@ -1,0 +1,14 @@
+services:
+  backend:
+    image: api
+    build:
+      context: . # Path to the directory containing the Dockerfile
+      dockerfile: Dockerfile
+    ports:
+      - "5115:5115" # Map host port 5115 to container port 5115
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5115
+      - ConnectionStrings__DefaultConnection=Server=tcp:purelearn.database.windows.net,1433;Initial Catalog=PureLearnDB;User ID=gemax;Password=${AZURE_SQL_PASSWORD};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+    env_file:
+      - .env # Load environment variables from the .env file
