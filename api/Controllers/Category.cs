@@ -24,17 +24,22 @@ namespace api.Controllers
 
         // GET: api/categories/GetCategoriesByLearnerId
         [HttpGet("GetCategoriesByLearnerId/{learnerId}")]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategoriesByLearnerId(long learnerId)
+        public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategoriesByLearnerId(long learnerId)
         {
-            var categories = (await _context.Categories.Where(c => c.LearnerId == learnerId).ToListAsync()).Select(s => s.ToCategoryDto());
-            return Ok(categories);
+            var categories = await _context.Categories
+                .Where(c => c.LearnerId == learnerId && c.DeletedAt == null)
+                .ToListAsync();
+
+            return Ok(categories.Select(s => s.ToCategoryDto()));
         }
-        
+
         // GET: api/categories/GetCategoryByLearnerIdAndCategoryId
         [HttpGet("GetCategoryByLearnerIdAndCategoryId/{learnerId}/{categoryId}")]
-        public async Task<ActionResult<Category>> GetCategoryByLearnerIdAndCategoryId(long learnerId, long categoryId)
+        public async Task<ActionResult<CategoryDto>> GetCategoryByLearnerAndCategoryId (long learnerId, long categoryId)
         {
-            var category = await _context.Categories.FirstOrDefaultAsync(c => c.LearnerId == learnerId && c.Id == categoryId);
+            var category = await _context.Categories
+                .Where(c => c.LearnerId == learnerId && c.Id == categoryId && c.DeletedAt == null)
+                .FirstOrDefaultAsync();
 
             if (category == null)
             {
@@ -43,70 +48,96 @@ namespace api.Controllers
 
             return Ok(category.ToCategoryDto());
         }
-        
+
         // PUT: api/categories/5
-        [HttpPut]
-        [Route("{id}")]
-        public IActionResult UpdateCategory([FromRoute] long id, [FromBody] UpdateCategoryRequestDto updateCategoryRequestDto){
-            // Get the category
-            var category = _context.Categories.Find(id);
+        [HttpPut("{id}")]
+        public async Task<IActionResult >UpdateCategory(long id, [FromBody] UpdateCategoryRequestDto updateCategoryRequestDto)
+        {
+            var category = await _context.Categories.FindAsync(id);
             if (category == null)
             {
                 return NotFound();
             }
-            // Update the category
+
             category.Title = updateCategoryRequestDto.Title;
             category.Description = updateCategoryRequestDto.Description;
             category.Color = updateCategoryRequestDto.Color;
 
-            _context.SaveChanges();
+            await  _context.SaveChangesAsync();
             return Ok(category.ToCategoryDto());
         }
 
         // POST: api/category
         [HttpPost]
-        public IActionResult CreateCategory([FromBody] CreateCategoryRequestDto categoryDto){
-            var category =  categoryDto.toCategoryFromCreateDto();
-            _context.Categories.Add(category);
-            _context.SaveChanges();
-            return CreatedAtAction("GetCategory", new { id = category.Id }, category);
+        public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequestDto categoryDto)
+        {
+            var category = categoryDto.ToCategoryFromCreateDto();
+            await _context.Categories.AddAsync(category);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetCategoryByLearnerAndCategoryId), new { id = category.Id }, category);
         }
 
         // DELETE: api/categories/5
-        [HttpDelete]
-        [Route("{id}")]
-        public IActionResult Delete([FromRoute] long id){
-            var category = _context.Categories.FirstOrDefault(c => c.Id == id);
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCategory(long id)
+        {
+            var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
 
             if (category == null)
             {
                 return NotFound();
             }
-            
+
             _context.Categories.Remove(category);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        
         // Soft delete
-        // DELETE: api/categories/5
-        [HttpDelete]
-        [Route("softDelete/{id}")]
-        public IActionResult SoftDelete([FromRoute] long id){
-            var category = _context.Categories.FirstOrDefault(c => c.Id == id);
+        // DELETE: api/categories/softDelete/5
+        [HttpDelete("softDelete/{id}")]
+        public async Task<IActionResult> SoftDeleteCategory(long id)
+        {
+            var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
 
             if (category == null)
             {
                 return NotFound();
             }
-            
-            category.DeletedAt = DateTime.Now;
-            _context.SaveChanges();
+
+            if (category.DeletedAt != null)
+            {
+                return BadRequest(new { Message = "Category is already soft-deleted." });
+            }
+
+            category.DeletedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
-        
+
+        // Restore
+        // PUT: api/categories/restore/5
+        [HttpPut("restore/{id}")]
+        public async Task<IActionResult> RestoreCategory(long id)
+        {
+            var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            if (category.DeletedAt == null)
+            {
+                return BadRequest(new { Message = "Category is not deleted." });
+            }
+
+            category.DeletedAt = null;
+            await _context.SaveChangesAsync();
+
+            return Ok(category.ToCategoryDto());
+        }
     }
 }

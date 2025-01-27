@@ -22,7 +22,7 @@ namespace api.Mapper
         }
 
         // Map CreateCategoryDto to Category
-        public static Category toCategoryFromCreateDto(this CreateCategoryRequestDto categoyDto){
+        public static Category ToCategoryFromCreateDto(this CreateCategoryRequestDto categoyDto){
             return new Category
             {
                 LearnerId = categoyDto.LearnerId,
