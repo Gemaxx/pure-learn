@@ -5,7 +5,7 @@ CREATE TABLE [dbo].[Subtask] (
     [CREATEd_at] DATETIME2 (7)  DEFAULT (sysdatetime()) NULL,
     [updated_at] DATETIME2 (7)  DEFAULT (sysdatetime()) NULL,
     [task_id]    BIGINT         NOT NULL,
-    [deleted_at] DATETIME2 (7)  NULL,
+    [deleted_at] DATETIME2 (7)  NULL, 
     PRIMARY KEY CLUSTERED ([id] ASC),
     CHECK ([status]='Completed' OR [status]='In Progress' OR [status]='Not Started'),
     FOREIGN KEY ([task_id]) REFERENCES [dbo].[Task] ([id]) ON DELETE CASCADE

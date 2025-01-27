@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
+using api.Dtos.Category;
+using api.Mapper;
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,98 +22,91 @@ namespace api.Controllers
             _context = context;
         }
 
-        // GET: api/categories/GetCategories
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
+        // GET: api/categories/GetCategoriesByLearnerId
+        [HttpGet("GetCategoriesByLearnerId/{learnerId}")]
+        public async Task<ActionResult<IEnumerable<Category>>> GetCategoriesByLearnerId(long learnerId)
         {
-            return await _context.Categories.Include(c => c.Learner)
-                                            .Include(c => c.ParentCategory)
-                                            .Include(c => c.Goals)
-                                            .Include(c => c.LearningResources)
-                                            .Include(c => c.Notes)
-                                            .Include(c => c.Tasks)
-                                            .ToListAsync();
+            var categories = (await _context.Categories.Where(c => c.LearnerId == learnerId).ToListAsync()).Select(s => s.ToCategoryDto());
+            return Ok(categories);
         }
-
-        // GET: api/categories/GetCategory
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategory(long id)
+        
+        // GET: api/categories/GetCategoryByLearnerIdAndCategoryId
+        [HttpGet("GetCategoryByLearnerIdAndCategoryId/{learnerId}/{categoryId}")]
+        public async Task<ActionResult<Category>> GetCategoryByLearnerIdAndCategoryId(long learnerId, long categoryId)
         {
-            var category = await _context.Categories.Include(c => c.Learner)
-                                                     .Include(c => c.ParentCategory)
-                                                     .Include(c => c.Goals)
-                                                     .Include(c => c.LearningResources)
-                                                     .Include(c => c.Notes)
-                                                     .Include(c => c.Tasks)
-                                                     .FirstOrDefaultAsync(c => c.Id == id);
+            var category = await _context.Categories.FirstOrDefaultAsync(c => c.LearnerId == learnerId && c.Id == categoryId);
 
             if (category == null)
             {
                 return NotFound();
             }
 
-            return category;
+            return Ok(category.ToCategoryDto());
         }
-
+        
         // PUT: api/categories/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(long id, Category category)
-        {
-            if (id != category.Id)
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult UpdateCategory([FromRoute] long id, [FromBody] UpdateCategoryRequestDto updateCategoryRequestDto){
+            // Get the category
+            var category = _context.Categories.Find(id);
+            if (category == null)
             {
-                return BadRequest();
+                return NotFound();
             }
+            // Update the category
+            category.Title = updateCategoryRequestDto.Title;
+            category.Description = updateCategoryRequestDto.Description;
+            category.Color = updateCategoryRequestDto.Color;
 
-            _context.Entry(category).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CategoryExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            _context.SaveChanges();
+            return Ok(category.ToCategoryDto());
         }
 
-        // POST: api/categories
+        // POST: api/category
         [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
-        {
+        public IActionResult CreateCategory([FromBody] CreateCategoryRequestDto categoryDto){
+            var category =  categoryDto.toCategoryFromCreateDto();
             _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
-
+            _context.SaveChanges();
             return CreatedAtAction("GetCategory", new { id = category.Id }, category);
         }
 
         // DELETE: api/categories/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Category>> DeleteCategory(long id)
-        {
-            var category = await _context.Categories.FindAsync(id);
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult Delete([FromRoute] long id){
+            var category = _context.Categories.FirstOrDefault(c => c.Id == id);
+
             if (category == null)
             {
                 return NotFound();
             }
-
+            
             _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
-            return category;
+            return NoContent();
         }
 
-        private bool CategoryExists(long id)
-        {
-            return _context.Categories.Any(e => e.Id == id);
+        
+        // Soft delete
+        // DELETE: api/categories/5
+        [HttpDelete]
+        [Route("softDelete/{id}")]
+        public IActionResult SoftDelete([FromRoute] long id){
+            var category = _context.Categories.FirstOrDefault(c => c.Id == id);
+
+            if (category == null)
+            {
+                return NotFound();
+            }
+            
+            category.DeletedAt = DateTime.Now;
+            _context.SaveChanges();
+
+            return NoContent();
         }
+        
     }
 }

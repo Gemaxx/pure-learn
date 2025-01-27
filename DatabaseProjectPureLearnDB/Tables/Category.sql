@@ -53,8 +53,5 @@ GO
         SET updated_at = SYSDATETIME()
         WHERE id IN (SELECT id FROM inserted);
     END;
-
-    -- Trigger to Update `updated_at` for Goal
-
 GO
 
