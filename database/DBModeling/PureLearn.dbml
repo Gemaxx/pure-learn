@@ -8,6 +8,7 @@ Table Learner {
     CreatedAt DATETIME [default: 'GETDATE()']
     UpdatedAt DATETIME [default: 'GETDATE()']
     LastLogin DATETIME
+    DeletedAt DATETIME
 }
 
 Table Category {
@@ -17,22 +18,24 @@ Table Category {
     Description NVARCHAR(MAX)
     CreatedAt DATETIME [default: 'GETDATE()']
     UpdatedAt DATETIME [default: 'GETDATE()']
-    ParentCategoryID BIGINT
+    ParentCategoryID BIGINT [ref: > Category.id]
     LearnerID BIGINT [not null, ref: > Learner.id]
+    DeletedAt DATETIME
 }
-
 
 Table Goal {
     id BIGINT [primary key, unique, increment]
     Title NVARCHAR(255) [not null]
     Description NVARCHAR(MAX) [not null]
     Motivation NVARCHAR(MAX) [not null]
-    Status NVARCHAR(50) [not null]
+    Term NVARCHAR(50) [not null, note: "CHECK (Term IN ('Long-Term', 'Medium-Term', 'Short-Term'))"]
+    Status NVARCHAR(50) [not null, note: "CHECK (Status IN ('Not-Started', 'In-Progress', 'On-Hold', 'Done', 'Canceled'))"]
     CompletionDate DATE
     CreatedAt DATETIME [default: 'GETDATE()']
     UpdatedAt DATETIME [default: 'GETDATE()']
     CategoryID BIGINT [ref: > Category.id]
     LearnerID BIGINT [not null, ref: > Learner.id]
+    DeletedAt DATETIME
 }
 
 Table Subgoal {
@@ -43,12 +46,15 @@ Table Subgoal {
     CreatedAt DATETIME [default: 'GETDATE()']
     UpdatedAt DATETIME [default: 'GETDATE()']
     GoalID BIGINT [not null, ref: > Goal.id]
+    DeletedAt DATETIME
 }
 
 Table LearningResourceType {
     id BIGINT [primary key, unique, increment]
     Name NVARCHAR(255) [not null, unique]
     UnitType NVARCHAR(255) [not null, unique]
+    LearnerID BIGINT [not null, ref: > Learner.id]
+    DeletedAt DATETIME
 }
 
 Table LearningResource {
@@ -64,6 +70,7 @@ Table LearningResource {
     CategoryID BIGINT [ref: > Category.id]
     GoalID BIGINT [ref: > Goal.id]
     SubgoalID BIGINT [ref: > Subgoal.id]
+    DeletedAt DATETIME
 }
 
 Table KanbanStatus {
@@ -71,6 +78,7 @@ Table KanbanStatus {
     Name NVARCHAR(255) [not null, unique]
     MaxTasks INT [note: 'Maximum number of tasks allowed, must be positive']
     LearnerID BIGINT [not null, ref: > Learner.id]
+    DeletedAt DATETIME
 }
 
 Table TaskType {
@@ -79,6 +87,7 @@ Table TaskType {
     Description NVARCHAR(500)
     Icon VARBINARY(MAX)
     LearnerID BIGINT [not null, ref: > Learner.id]
+    DeletedAt DATETIME
 }
 
 Table Task {
@@ -91,6 +100,18 @@ Table Task {
     DueDate DATE
     EstimatedTime TIME
     TimeSpent TIME
+    RepeatFrequency NVARCHAR(50) [not null, default: 'None', note: "CHECK (RepeatFrequency IN ('None', 'Daily', 'Weekly', 'Monthly', 'Annually', 'Custom'))"]
+    RepeatInterval INT
+    RepeatOnSunday BIT [default: 0]
+    RepeatOnMonday BIT [default: 0]
+    RepeatOnTuesday BIT [default: 0]
+    RepeatOnWednesday BIT [default: 0]
+    RepeatOnThursday BIT [default: 0]
+    RepeatOnFriday BIT [default: 0]
+    RepeatOnSaturday BIT [default: 0]
+    RepeatEnds NVARCHAR(50) [note: "CHECK (RepeatEnds IN ('Never', 'On Date', 'After Occurrences'))"]
+    RepeatEndDate DATE
+    RepeatEndOccurrences INT
     CreatedAt DATETIME [default: 'GETDATE()']
     UpdatedAt DATETIME [default: 'GETDATE()']
     LearnerID BIGINT [not null, ref: > Learner.id]
@@ -98,6 +119,7 @@ Table Task {
     GoalID BIGINT [ref: > Goal.id]
     SubgoalID BIGINT [ref: > Subgoal.id]
     LearningResourceID BIGINT [ref: > LearningResource.id]
+    DeletedAt DATETIME
 }
 
 Table Subtask {
@@ -107,6 +129,7 @@ Table Subtask {
     CreatedAt DATETIME [default: 'GETDATE()']
     UpdatedAt DATETIME [default: 'GETDATE()']
     TaskID BIGINT [not null, ref: > Task.id]
+    DeletedAt DATETIME
 }
 
 Table Note {
@@ -120,4 +143,5 @@ Table Note {
     SubgoalID BIGINT [ref: > Subgoal.id]
     TaskID BIGINT [ref: > Task.id]
     LearnerID BIGINT [not null, ref: > Learner.id]
+    DeletedAt DATETIME
 }

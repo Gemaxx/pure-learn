@@ -7,8 +7,7 @@ namespace api.Dtos.Category
 {
     public class CreateCategoryRequestDto
     {
-        public long LearnerId { get; set; }
-
+    
         public string Title { get; set; } = null!;
 
         public string? Description { get; set; }

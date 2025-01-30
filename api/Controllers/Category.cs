@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.Dtos.Category;
+using api.Interfaces;
 using api.Mapper;
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -16,19 +17,26 @@ namespace api.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly PureLearnDbContext _context;
+        private readonly ICategoryRepository _categoryRepo;
+        private readonly ILearnerRepository _learnerRepo;
 
-        public CategoriesController(PureLearnDbContext context)
+
+        public CategoriesController(PureLearnDbContext context, ICategoryRepository categoryRepo, ILearnerRepository learnerRepo)
         {
+            _categoryRepo = categoryRepo;
             _context = context;
+            _learnerRepo = learnerRepo;
         }
 
         // GET: api/categories/GetCategoriesByLearnerId
         [HttpGet("GetCategoriesByLearnerId/{learnerId}")]
         public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategoriesByLearnerId(long learnerId)
         {
-            var categories = await _context.Categories
-                .Where(c => c.LearnerId == learnerId && c.DeletedAt == null)
-                .ToListAsync();
+            // check if learner exists
+            var validationResult = await _learnerRepo.ValidateLearnerExistsAsync(learnerId);
+            if (validationResult != null) return validationResult;
+
+            var categories = await _categoryRepo.GetCategoriesByLearnerIdAsync(learnerId);
 
             return Ok(categories.Select(s => s.ToCategoryDto()));
         }
@@ -37,6 +45,11 @@ namespace api.Controllers
         [HttpGet("GetCategoryByLearnerIdAndCategoryId/{learnerId}/{categoryId}")]
         public async Task<ActionResult<CategoryDto>> GetCategoryByLearnerAndCategoryId (long learnerId, long categoryId)
         {
+            
+            // check if learner exists
+            var validationResult = await _learnerRepo.ValidateLearnerExistsAsync(learnerId);
+            if (validationResult != null) return validationResult;
+            
             var category = await _context.Categories
                 .Where(c => c.LearnerId == learnerId && c.Id == categoryId && c.DeletedAt == null)
                 .FirstOrDefaultAsync();
@@ -67,15 +80,27 @@ namespace api.Controllers
             return Ok(category.ToCategoryDto());
         }
 
+      
         // POST: api/category
-        [HttpPost]
-        public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequestDto categoryDto)
+        [HttpPost("CreateCategoryByLearnerId/{learnerId}")]
+        public async Task<IActionResult> CreateCategoryByLearnerId(long learnerId, [FromBody] CreateCategoryRequestDto categoryDto)
         {
+            
+            // check if learner exists
+            var validationResult = await _learnerRepo.ValidateLearnerExistsAsync(learnerId);
+            if (validationResult != null) return validationResult;
+
             var category = categoryDto.ToCategoryFromCreateDto();
-            await _context.Categories.AddAsync(category);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetCategoryByLearnerAndCategoryId), new { id = category.Id }, category);
+            await _categoryRepo.CreateCategoryAsync(learnerId, category);
+
+            // Return the created category with a reference to the learner's ID
+            return CreatedAtAction(
+            nameof(GetCategoriesByLearnerId), 
+            new { learnerId = category.LearnerId }, 
+            category.ToCategoryDto()
+            );
         }
+
 
         // DELETE: api/categories/5
         [HttpDelete("{id}")]

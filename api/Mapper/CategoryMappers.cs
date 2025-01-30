@@ -9,7 +9,6 @@ namespace api.Mapper
 {
     public static class CategoryMappers
     {
-        // Map Category to CategoryDto
         public static CategoryDto ToCategoryDto(this Category categoryModel)
         {
             return new CategoryDto
@@ -21,11 +20,9 @@ namespace api.Mapper
             };
         }
 
-        // Map CreateCategoryDto to Category
         public static Category ToCategoryFromCreateDto(this CreateCategoryRequestDto categoyDto){
             return new Category
             {
-                LearnerId = categoyDto.LearnerId,
                 Title = categoyDto.Title,
                 Description = categoyDto.Description,
                 Color = categoyDto.Color
