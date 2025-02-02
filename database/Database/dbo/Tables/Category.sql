@@ -8,6 +8,7 @@ CREATE TABLE [dbo].[Category] (
     [parent_category_id] BIGINT         NULL,
     [learner_id]         BIGINT         NOT NULL,
     [deleted_at]         DATETIME2 (7)  NULL,
+    [is_deleted]         BIT            DEFAULT ((0)) NULL,
     PRIMARY KEY CLUSTERED ([id] ASC),
     FOREIGN KEY ([learner_id]) REFERENCES [dbo].[Learner] ([id]) ON DELETE CASCADE,
     FOREIGN KEY ([parent_category_id]) REFERENCES [dbo].[Category] ([id])
@@ -53,5 +54,8 @@ GO
         SET updated_at = SYSDATETIME()
         WHERE id IN (SELECT id FROM inserted);
     END;
+
+    -- Trigger to Update `updated_at` for Goal
+
 GO
 

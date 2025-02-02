@@ -1,22 +1,33 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using api.Helpers;
 using api.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace api.Interfaces
 {
     public interface ICategoryRepository
     {
-        Task<List<Category>> GetCategoriesByLearnerIdAsync(long learnerId);
-        Task<Category?> GetCategoryByLearnerAndCategoryIdAsync(long learnerId, long categoryId);
-        Task<Category> UpdateCategoryAsync(long id, Category category);
-        Task<Category> CreateCategoryAsync(long id, Category category);
-        Task<Category> DeleteCategoryAsync(long categoryId);
-        Task<Category> SoftDeleteCategoryAsync(long categoryId);
-        Task<Category> RestoreCategoryAsync(long categoryId);
+        // Get all categories for a specific learner
+        Task<List<Category>> GetCategoriesAsync(long learnerId, CategoryQueryObject query);
 
+        // Get a specific category by learner ID and category ID
+        Task<Category?> GetCategoryAsync(long learnerId, long categoryId, CategoryQueryObject query);
 
+        // Create a new category for a specific learner
+        Task<Category> CreateCategoryAsync(long learnerId, Category category);
+
+        // Update an existing category
+        Task<Category?> UpdateCategoryAsync(long learnerId, long categoryId, Category category);
+
+        // Delete a category permanently
+        Task<bool> DeleteCategoryAsync(long learnerId, long categoryId);
+
+        // Soft delete a category (mark as deleted)
+        Task<bool> SoftDeleteCategoryAsync(long learnerId, long categoryId);
+
+        // Restore a soft-deleted category
+        Task<bool> RestoreCategoryAsync(long learnerId, long categoryId);
+        
     }
 }

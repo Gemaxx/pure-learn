@@ -8,6 +8,6 @@ namespace api.Interfaces
 {
     public interface ILearnerRepository
     {
-        Task<ActionResult?> ValidateLearnerExistsAsync(long learnerId);
+        Task<bool> LearnerExistsAsync(long learnerId);
     }
 }
