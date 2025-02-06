@@ -1,0 +1,12 @@
+d:\pure-learn\database\Database\bin\Debug\Database.dacpac
+d:\pure-learn\database\Database\bin\Debug\Database.dll
+d:\pure-learn\database\Database\bin\Debug\Database.pdb
+d:\pure-learn\database\Database\obj\Debug\Database.sqlproj.AssemblyReference.cache
+d:\pure-learn\database\Database\obj\Debug\Database.GeneratedMSBuildEditorConfig.editorconfig
+d:\pure-learn\database\Database\obj\Debug\Database.sourcelink.json
+d:\pure-learn\database\Database\obj\Debug\Model.xml
+d:\pure-learn\database\Database\obj\Debug\refactor.xml
+d:\pure-learn\database\Database\obj\Debug\postdeploy.sql
+d:\pure-learn\database\Database\obj\Debug\predeploy.sql
+d:\pure-learn\database\Database\obj\Debug\Database.dll
+d:\pure-learn\database\Database\obj\Debug\Database.pdb

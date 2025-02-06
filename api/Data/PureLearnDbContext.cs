@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using api.Models;
 
-namespace api.Data;
+namespace api.Models;
 
 public partial class PureLearnDbContext : DbContext
 {
@@ -34,7 +33,7 @@ public partial class PureLearnDbContext : DbContext
 
     public virtual DbSet<Subtask> Subtasks { get; set; }
 
-    public virtual DbSet<Models.Task> Tasks { get; set; }
+    public virtual DbSet<Task> Tasks { get; set; }
 
     public virtual DbSet<TaskType> TaskTypes { get; set; }
 
@@ -68,6 +67,9 @@ public partial class PureLearnDbContext : DbContext
                 .HasColumnName("CREATEd_at");
             entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
             entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.IsDeleted)
+                .HasDefaultValue(false)
+                .HasColumnName("is_deleted");
             entity.Property(e => e.LearnerId).HasColumnName("learner_id");
             entity.Property(e => e.ParentCategoryId).HasColumnName("parent_category_id");
             entity.Property(e => e.Title)
@@ -108,6 +110,9 @@ public partial class PureLearnDbContext : DbContext
                 .HasColumnName("CREATEd_at");
             entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
             entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.IsDeleted)
+                .HasDefaultValue(false)
+                .HasColumnName("is_deleted");
             entity.Property(e => e.LearnerId).HasColumnName("learner_id");
             entity.Property(e => e.Motivation).HasColumnName("motivation");
             entity.Property(e => e.Status)
@@ -146,6 +151,9 @@ public partial class PureLearnDbContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(e => e.IsDeleted)
+                .HasDefaultValue(false)
+                .HasColumnName("is_deleted");
             entity.Property(e => e.LearnerId).HasColumnName("learner_id");
             entity.Property(e => e.MaxTasks).HasColumnName("max_tasks");
             entity.Property(e => e.Name)
@@ -175,6 +183,9 @@ public partial class PureLearnDbContext : DbContext
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .HasColumnName("email");
+            entity.Property(e => e.IsDeleted)
+                .HasDefaultValue(false)
+                .HasColumnName("is_deleted");
             entity.Property(e => e.LastLogin).HasColumnName("last_login");
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
@@ -211,6 +222,9 @@ public partial class PureLearnDbContext : DbContext
                 .HasColumnName("CREATEd_at");
             entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
             entity.Property(e => e.GoalId).HasColumnName("goal_id");
+            entity.Property(e => e.IsDeleted)
+                .HasDefaultValue(false)
+                .HasColumnName("is_deleted");
             entity.Property(e => e.LearnerId).HasColumnName("learner_id");
             entity.Property(e => e.Link).HasColumnName("link");
             entity.Property(e => e.Progress).HasColumnName("progress");
@@ -259,6 +273,9 @@ public partial class PureLearnDbContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(e => e.IsDeleted)
+                .HasDefaultValue(false)
+                .HasColumnName("is_deleted");
             entity.Property(e => e.LearnerId).HasColumnName("learner_id");
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
@@ -297,6 +314,9 @@ public partial class PureLearnDbContext : DbContext
                 .HasColumnName("CREATEd_at");
             entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
             entity.Property(e => e.GoalId).HasColumnName("goal_id");
+            entity.Property(e => e.IsDeleted)
+                .HasDefaultValue(false)
+                .HasColumnName("is_deleted");
             entity.Property(e => e.LearnerId).HasColumnName("learner_id");
             entity.Property(e => e.SubgoalId).HasColumnName("subgoal_id");
             entity.Property(e => e.TaskId).HasColumnName("task_id");
@@ -343,6 +363,9 @@ public partial class PureLearnDbContext : DbContext
             entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.GoalId).HasColumnName("goal_id");
+            entity.Property(e => e.IsDeleted)
+                .HasDefaultValue(false)
+                .HasColumnName("is_deleted");
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .HasColumnName("status");
@@ -371,6 +394,9 @@ public partial class PureLearnDbContext : DbContext
                 .HasDefaultValueSql("(sysdatetime())")
                 .HasColumnName("CREATEd_at");
             entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(e => e.IsDeleted)
+                .HasDefaultValue(false)
+                .HasColumnName("is_deleted");
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .HasColumnName("status");
@@ -387,7 +413,7 @@ public partial class PureLearnDbContext : DbContext
                 .HasConstraintName("FK__Subtask__task_id__245D67DE");
         });
 
-        modelBuilder.Entity<Models.Task>(entity =>
+        modelBuilder.Entity<Task>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Task__3213E83F69BC2DC8");
 
@@ -425,6 +451,9 @@ public partial class PureLearnDbContext : DbContext
                 .HasColumnName("eisenhower_status");
             entity.Property(e => e.EstimatedTime).HasColumnName("estimated_time");
             entity.Property(e => e.GoalId).HasColumnName("goal_id");
+            entity.Property(e => e.IsDeleted)
+                .HasDefaultValue(false)
+                .HasColumnName("is_deleted");
             entity.Property(e => e.KanbanStatusId).HasColumnName("kanban_status_id");
             entity.Property(e => e.LearnerId).HasColumnName("learner_id");
             entity.Property(e => e.LearningResourceId).HasColumnName("learning_resource_id");
@@ -517,6 +546,9 @@ public partial class PureLearnDbContext : DbContext
                 .HasMaxLength(500)
                 .HasColumnName("description");
             entity.Property(e => e.Icon).HasColumnName("icon");
+            entity.Property(e => e.IsDeleted)
+                .HasDefaultValue(false)
+                .HasColumnName("is_deleted");
             entity.Property(e => e.LearnerId).HasColumnName("learner_id");
             entity.Property(e => e.Name)
                 .HasMaxLength(255)

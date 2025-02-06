@@ -1,0 +1,59 @@
+{
+  "format": 1,
+  "restore": {
+    "d:\\pure-learn\\database\\Database\\Database.sqlproj": {}
+  },
+  "projects": {
+    "d:\\pure-learn\\database\\Database\\Database.sqlproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "d:\\pure-learn\\database\\Database\\Database.sqlproj",
+        "projectName": "Database",
+        "projectPath": "d:\\pure-learn\\database\\Database\\Database.sqlproj",
+        "packagesPath": "C:\\Users\\amedo\\.nuget\\packages\\",
+        "outputPath": "d:\\pure-learn\\database\\Database\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\amedo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net46": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "noWarn": [
+            "NU5128"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net46": {
+          "targetAlias": "netstandard2.1",
+          "dependencies": {
+            "Microsoft.NETFramework.ReferenceAssemblies": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.0.0, )",
+              "autoReferenced": true
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,8 @@
 using System.Text.Json.Serialization;
-using api.Data;
+using api.Interfaces;
 using api.Models;
+using api.Repos;
+using api.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,8 +25,6 @@ builder.Services.AddDbContext<PureLearnDbContext>(options =>
     )
 );
 
-
-
 // Configure JSON serialization options to ignore cycles when serializing objects
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -33,6 +33,8 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
 
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ILearnerRepository, LearnerRepository>();
 
 
 var app = builder.Build();

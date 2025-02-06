@@ -31,6 +31,8 @@ public partial class LearningResource
 
     public DateTime? DeletedAt { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     public virtual Category? Category { get; set; }
 
     public virtual Goal? Goal { get; set; }

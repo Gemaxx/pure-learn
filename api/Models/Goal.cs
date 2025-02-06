@@ -29,6 +29,8 @@ public partial class Goal
 
     public DateTime? DeletedAt { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     public virtual Category? Category { get; set; }
 
     public virtual Learner Learner { get; set; } = null!;
