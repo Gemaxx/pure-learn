@@ -100,9 +100,18 @@ public class CategoryRepository : ICategoryRepository
             return null;
         }
 
-        existingCategory.Title = category.Title;
-        existingCategory.Description = category.Description;
-        existingCategory.Color = category.Color;
+        if (category.Title != null) 
+        {
+            existingCategory.Title = category.Title;
+        }
+        if (category.Description != null)
+        {
+            existingCategory.Description = category.Description;
+        }
+        if (category.Color != null)
+        {
+            existingCategory.Color = category.Color;
+        }
 
         await _context.SaveChangesAsync();
         return existingCategory;

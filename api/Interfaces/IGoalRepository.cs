@@ -33,7 +33,8 @@ namespace api.Interfaces
         // Restore a soft-deleted goal
         Task<bool> RestoreGoalAsync(long learnerId, long goalId);
 
-        // Find a goal, even if it is soft-deleted
-        Task<Goal?> FindGoalAsync(long learnerId, long goalId);
+        // find soft deleted goals
+        Task<Goal?> FindDeletedGoalAsync(long learnerId, long goalId);
+
     }
 }

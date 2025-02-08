@@ -8,7 +8,7 @@ using api.Dtos.Note;
 using api.Dtos.Task;
 using api.Models;
 
-namespace api.Dtos.Goal 
+namespace api.Dtos.Goal
 {
      public class GoalDetailDto : GoalDto
     {
@@ -21,8 +21,7 @@ namespace api.Dtos.Goal
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
-        [Required(ErrorMessage = "CategoryId is required.")]
-        public string? CategoryName { get; set; }
+        public DateOnly? CompletionDate { get; set; }
 
         public List<TaskDto> Tasks { get; set; } = new();
         public List<LearningResourceDto> LearningResources { get; set; } = new();

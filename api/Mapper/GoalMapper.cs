@@ -16,7 +16,6 @@ namespace api.Mapper
                 Title = goal.Title,
                 Term = goal.Term,
                 Status = goal.Status,
-                CompletionDate = goal.CompletionDate
             };
         }
 
@@ -32,7 +31,6 @@ namespace api.Mapper
                 Status = goal.Status,
                 CompletionDate = goal.CompletionDate,
                 CategoryId = goal.CategoryId,
-                CategoryName = goal.Category?.Title,
             };
         }
         public static Goal ToGoalFromCreateDto(this CreateGoalRequestDto createGoalRequestDto) {
@@ -43,18 +41,6 @@ namespace api.Mapper
                 Motivation     = createGoalRequestDto.Motivation,
                 Term           = createGoalRequestDto.Term,
                 Status         = createGoalRequestDto.Status,
-            };
-        }
-
-        public static Goal ToGoalFromUpdateDto(this UpdateGoalRequestDto updateGoalRequestDto) {
-            return new Goal {
-                Title = updateGoalRequestDto.Title,
-                Description = updateGoalRequestDto.Description,
-                Motivation = updateGoalRequestDto.Motivation,
-                Term = updateGoalRequestDto.Term,
-                Status = updateGoalRequestDto.Status,
-                CompletionDate = updateGoalRequestDto.CompletionDate,
-                CategoryId = updateGoalRequestDto.CategoryId,
             };
         }
 
