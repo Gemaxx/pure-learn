@@ -8,6 +8,9 @@ namespace api.Interfaces
 {
     public interface ICategoryRepository
     {
+        // Check if a category exists
+        Task<bool> CategoryExistsAsync(long categoryId);
+        
         // Get all categories for a specific learner
         Task<List<Category>> GetCategoriesAsync(long learnerId, CategoryQueryObject query);
 

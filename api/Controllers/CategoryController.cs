@@ -51,21 +51,29 @@ namespace api.Controllers
             return Ok(category.ToCategoryDetailDto());
         }
 
-        // PUT: api/learners/{learnerId}/categories/{categoryId:long}
-        [HttpPut("{categoryId:long}")]
-        public async Task<IActionResult> UpdateCategory(long learnerId, long categoryId, [FromBody] UpdateCategoryRequestDto updateCategoryRequestDto, [FromQuery] CategoryQueryObject query)
+        // PATCH: api/learners/{learnerId}/categories/{categoryId:long}
+        [HttpPatch("{categoryId:long}")]
+        public async Task<IActionResult> PatchCategory(long learnerId, long categoryId, [FromBody] UpdateCategoryRequestDto updateCategoryRequestDto, [FromQuery] CategoryQueryObject query)
         {
-            query.IsDeleted= true;
             var category = await _categoryRepo.GetCategoryAsync(learnerId, categoryId, query);
 
             if (category == null)
             {
-                return NotFound(new { Message = "Category not found or does not belong to the learner." });
+            return NotFound(new { Message = "Category not found or does not belong to the learner." });
             }
 
+            if (updateCategoryRequestDto.Title != null)
+            {
             category.Title = updateCategoryRequestDto.Title;
+            }
+            if (updateCategoryRequestDto.Description != null)
+            {
             category.Description = updateCategoryRequestDto.Description;
+            }
+            if (updateCategoryRequestDto.Color != null)
+            {
             category.Color = updateCategoryRequestDto.Color;
+            }
 
             await _categoryRepo.UpdateCategoryAsync(learnerId, categoryId, category);
             return Ok(category.ToCategoryDto());
@@ -73,7 +81,7 @@ namespace api.Controllers
 
         // POST: api/learners/{learnerId}/categories
         [HttpPost]
-        public async Task<IActionResult> CreateCategory(long learnerId, [FromBody] CreateCategoryRequestDto categoryDto)
+        public async Task<IActionResult> CreateCategory(long learnerId, [FromBody] CreateCategoryRequestDto     categoryDto)
         {
             // Check if learner exists
             var learnerExists = await _learnerRepo.LearnerExistsAsync(learnerId);

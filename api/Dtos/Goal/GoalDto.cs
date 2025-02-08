@@ -4,11 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace api.Dtos
+namespace api.Dtos.Goal 
 {
      public class GoalDto
     {
         public long Id { get; set; }
+
+        public long? CategoryId { get; set; }
 
         [Required]
         [StringLength(255, MinimumLength = 3, ErrorMessage = "Title must be between 3 and 255 characters.")]

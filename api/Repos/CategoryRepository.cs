@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Data;
 using api.Helpers;
 using api.Interfaces;
 using api.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Repository
@@ -16,6 +18,13 @@ public class CategoryRepository : ICategoryRepository
     public CategoryRepository(PureLearnDbContext context)
     {
         _context = context;
+    }
+
+    // check if a category exists
+    public async Task<bool> CategoryExistsAsync(long categoryId)
+    {
+        return await _context.Categories
+            .AnyAsync(c => c.Id == categoryId && c.IsDeleted == false);
     }
 
     public async Task<Category> CreateCategoryAsync(long learnerId, Category category)
@@ -66,7 +75,6 @@ public class CategoryRepository : ICategoryRepository
         await _context.SaveChangesAsync();
         return true;
     }
-
     public async Task<bool> SoftDeleteCategoryAsync(long learnerId, long categoryId)
     {
         var category = await _context.Categories
@@ -99,7 +107,6 @@ public class CategoryRepository : ICategoryRepository
         await _context.SaveChangesAsync();
         return existingCategory;
     }
-
     }
 
 }

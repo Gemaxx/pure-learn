@@ -2,17 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
-namespace api.Dtos.Goal
-{
-    using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel;
 
-namespace api.DTOs
+namespace api.Dtos.Goal 
 {
     public class CreateGoalRequestDto
     {
+        [ForeignKey("CategoryId")]
+        
+        public long? CategoryId { get; set; } = null;
+
         [Required]
         [StringLength(255, MinimumLength = 3, ErrorMessage = "Title must be between 3 and 255 characters.")]
         public required string Title { get; set; }
@@ -30,15 +31,6 @@ namespace api.DTOs
         [Required]
         [RegularExpression("Not-Started|In-Progress|On-Hold|Done|Canceled", ErrorMessage = "Status must be Not-Started, In-Progress, On-Hold, Done, or Canceled.")]
         public required string Status { get; set; } = "Not-Started";
-
-        public DateOnly? CompletionDate { get; set; }
-        public long? CategoryId { get; set; }
-
-        [Required(ErrorMessage = "LearnerId is required.")]
-        public long LearnerId { get; set; }
+        
     }
-
-
-
-}
 }

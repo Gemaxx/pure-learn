@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using api.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Models;
+namespace api.Data;
 
 public partial class PureLearnDbContext : DbContext
 {
@@ -33,7 +34,7 @@ public partial class PureLearnDbContext : DbContext
 
     public virtual DbSet<Subtask> Subtasks { get; set; }
 
-    public virtual DbSet<Task> Tasks { get; set; }
+    public virtual DbSet<Models.Task> Tasks { get; set; }
 
     public virtual DbSet<TaskType> TaskTypes { get; set; }
 
@@ -413,7 +414,7 @@ public partial class PureLearnDbContext : DbContext
                 .HasConstraintName("FK__Subtask__task_id__245D67DE");
         });
 
-        modelBuilder.Entity<Task>(entity =>
+        modelBuilder.Entity<Models.Task>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Task__3213E83F69BC2DC8");
 

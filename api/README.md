@@ -64,12 +64,18 @@ Not Yet
 ## Development 
 
 1️⃣ Create Models (Category.cs)
+
 2️⃣ Setup DbContext (AppDbContext.cs)
+
 3️⃣ Define DTOs (CategoryDTO.cs)
+
 4️⃣ Configure Manual Mapper (CategoryMappers.cs)
 
 5️⃣ Create Repository Interface (ICategoryRepository.cs)
-    Create QueryObject
+    Create QueryObject in [Helpers Dir](Helpers)
+
 6️⃣ Implement Repository (CategoryRepository.cs)
+
 7️⃣ Create Controller (CategorysController.cs)
+
 8️⃣ Register Dependencies in Program.cs

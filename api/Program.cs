@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
+using api.Data;
 using api.Interfaces;
-using api.Models;
 using api.Repos;
 using api.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 // Adding DbContext
 builder.Services.AddDbContext<PureLearnDbContext>(options =>
@@ -35,6 +36,7 @@ builder.Services.AddControllers()
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ILearnerRepository, LearnerRepository>();
+builder.Services.AddScoped<IGoalRepository, GoalRepository>();
 
 
 var app = builder.Build();
@@ -51,9 +53,3 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
-
-
-
-
-// Gemax Db connection till we host a shared db or we do Container 
-// "DefaultConnection": "Data Source=GEMAX\\SQLEXPRESS;Initial Catalog=PureLearnDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"

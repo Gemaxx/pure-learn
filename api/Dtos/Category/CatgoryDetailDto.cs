@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using api.Dtos.Goal;
 
 
 namespace api.Dtos.Category

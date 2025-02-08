@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using api.Dtos;
 using api.Dtos.Goal;
-using api.Dtos.Goal.api.DTOs;
 using api.Models;
 
 namespace api.Mapper
@@ -13,6 +11,7 @@ namespace api.Mapper
     {
         public static GoalDto ToGoalDto(this Goal goal) {
             return new GoalDto {
+                CategoryId = goal.CategoryId,
                 Id = goal.Id,
                 Title = goal.Title,
                 Term = goal.Term,
@@ -38,15 +37,12 @@ namespace api.Mapper
         }
         public static Goal ToGoalFromCreateDto(this CreateGoalRequestDto createGoalRequestDto) {
             return new Goal {
+                CategoryId     = createGoalRequestDto.CategoryId ?? null,
                 Title          = createGoalRequestDto.Title,
                 Description    = createGoalRequestDto.Description,
                 Motivation     = createGoalRequestDto.Motivation,
                 Term           = createGoalRequestDto.Term,
                 Status         = createGoalRequestDto.Status,
-                CompletionDate = createGoalRequestDto.CompletionDate,
-                CategoryId     = createGoalRequestDto.CategoryId,
-                LearnerId      = createGoalRequestDto.LearnerId
-
             };
         }
 
