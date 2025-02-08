@@ -21,10 +21,10 @@ public class CategoryRepository : ICategoryRepository
     }
 
     // check if a category exists
-    public async Task<bool> CategoryExistsAsync(long categoryId)
+    public async Task<bool> CategoryExistsAsync(long learnerId, long categoryId)
     {
         return await _context.Categories
-            .AnyAsync(c => c.Id == categoryId && c.IsDeleted == false);
+            .AnyAsync(c => c.LearnerId == learnerId && c.Id == categoryId && c.IsDeleted == false);
     }
 
     public async Task<Category> CreateCategoryAsync(long learnerId, Category category)

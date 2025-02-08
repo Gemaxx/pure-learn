@@ -23,6 +23,7 @@ namespace api.Dtos.Goal
         public string? Status { get; set; }
 
         public DateOnly? CompletionDate { get; set; }
+        
         [ForeignKey("CategoryId")]
         public long? CategoryId { get; set; }
     }

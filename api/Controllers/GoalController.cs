@@ -44,7 +44,7 @@ namespace api.Controllers
             // Check if category exists
             if (goalDto.CategoryId.HasValue)
             {
-                var categoryExists = await _categoryRepo.CategoryExistsAsync(goalDto.CategoryId.Value);
+                var categoryExists = await _categoryRepo.CategoryExistsAsync(learnerId, goalDto.CategoryId.Value);
                 if (!categoryExists) return NotFound(new { Message = "Category not found." });
             }
             
@@ -81,7 +81,7 @@ namespace api.Controllers
              // Check if category exists
             if (goalDto.CategoryId.HasValue)
             {
-                var categoryExists = await _categoryRepo.CategoryExistsAsync(goalDto.CategoryId.Value);
+                var categoryExists = await _categoryRepo.CategoryExistsAsync(learnerId, goalDto.CategoryId.Value);
                 if (!categoryExists) return NotFound(new { Message = "Category not found." });
             }
             

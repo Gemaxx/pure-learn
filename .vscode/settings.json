@@ -1,5 +1,5 @@
 {
-    "CodeGPT.apiKey": "CodeGPT Plus Beta",
+    "CodeGPT.apiKey": "Ollama",
     "dataworkspace.excludedProjects": [
         "enter/enter.sqlproj",
         "newDB/newDB.sqlproj",
