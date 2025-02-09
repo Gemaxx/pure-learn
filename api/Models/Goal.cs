@@ -23,7 +23,7 @@ public partial class Goal
 
     public DateTime? UpdatedAt { get; set; }
 
-    public long? CategoryId { get; set; }
+    public long? CategoryId { get; set; } 
 
     public long LearnerId { get; set; }
 

@@ -26,7 +26,11 @@ namespace api.Mapper
                 Title = categoryModel.Title,
                 Color = categoryModel.Color,
                 Description = categoryModel.Description ?? string.Empty,
-    
+                CreatedAt = categoryModel.CreatedAt,
+                UpdatedAt = categoryModel.UpdatedAt,
+                ParentCategoryId = categoryModel.ParentCategoryId,
+                LearnerId = categoryModel.LearnerId,
+                IsDeleted = categoryModel.IsDeleted    
             };
         }
 
@@ -42,14 +46,22 @@ namespace api.Mapper
         }
 
         // Mapping from UpdateCategoryRequestDto to Category model (added this method)
-        public static Category ToCategoryFromUpdateDto(this UpdateCategoryRequestDto updateCategoryRequestDto)
+        public static void UpdateCategoryFromUpdateDto(this Category category, UpdateCategoryRequestDto updateCategoryRequestDto)
         {
-            return new Category
+            if (updateCategoryRequestDto.Title != null)
             {
-                Title = updateCategoryRequestDto.Title,
-                Description = updateCategoryRequestDto.Description,
-                Color = updateCategoryRequestDto.Color
-            };
+            category.Title = updateCategoryRequestDto.Title;
+            }
+
+            if (updateCategoryRequestDto.Description != null)
+            {
+            category.Description = updateCategoryRequestDto.Description;
+            }
+
+            if (updateCategoryRequestDto.Color != null)
+            {
+            category.Color = updateCategoryRequestDto.Color;
+            }
         }
     }
 

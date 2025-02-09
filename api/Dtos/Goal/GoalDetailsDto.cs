@@ -21,9 +21,7 @@ namespace api.Dtos.Goal
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
-        [Required(ErrorMessage = "CategoryId is required.")]
-        public long? CategoryId { get; set; } = null!;
-        public string? CategoryName { get; set; }
+        public DateOnly? CompletionDate { get; set; }
 
         public List<TaskDto> Tasks { get; set; } = new();
         public List<LearningResourceDto> LearningResources { get; set; } = new();

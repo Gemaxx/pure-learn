@@ -9,6 +9,9 @@ namespace api.Interfaces
 {
     public interface IGoalRepository
     {
+        // Check if a goal exists
+        Task<bool> GoalExistsAsync(long learnerId, long goalId);
+        
         // Get all goals for a specific learner with optional query parameters (e.g., Category, status, term, etc.)
         Task<List<Goal>> GetGoalsAsync(long learnerId, GoalQueryObject query);
 
@@ -30,16 +33,8 @@ namespace api.Interfaces
         // Restore a soft-deleted goal
         Task<bool> RestoreGoalAsync(long learnerId, long goalId);
 
-        // Find a goal, even if it is soft-deleted
-        Task<Goal?> FindGoalAsync(long learnerId, long goalId);
+        // find soft deleted goals
+        Task<Goal?> FindDeletedGoalAsync(long learnerId, long goalId);
 
-        // Get all goals within a specific category for a learner
-        Task<List<Goal>> GetGoalsByCategoryAsync(long learnerId, long categoryId);
-
-        // Get goals based on their status (e.g., In-Progress, Done, etc.)
-        Task<List<Goal>> GetGoalsByStatusAsync(long learnerId, string status);
-
-        // Get goals based on their term (e.g., Short-Term, Long-Term)
-        Task<List<Goal>> GetGoalsByTermAsync(long learnerId, string term);
     }
 }
