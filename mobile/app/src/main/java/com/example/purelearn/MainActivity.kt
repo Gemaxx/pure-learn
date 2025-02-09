@@ -4,20 +4,26 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.example.purelearn.domain.model.Category
-import com.example.purelearn.domain.model.Category.Companion.CategoryCardColors
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.purelearn.domain.model.Goal
 import com.example.purelearn.domain.model.Task
 import com.example.purelearn.ui.theme.PureLearnTheme
-import com.example.purelearn.ui.theme.navigation.MyAppNavigation
+import com.example.purelearn.ui.theme.home.HomeScreen
 
+import com.example.purelearn.ui.theme.navigation.MyAppNavigation
+import dagger.hilt.android.AndroidEntryPoint
+
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             PureLearnTheme {
-            MyAppNavigation()
+                HomeScreen()
+          //  MyAppNavigation()
             }
         }
     }
@@ -87,75 +93,75 @@ val goals= listOf(
     )
 )
 
-val categories= listOf(
-    Category(
-    categoryId = 1,
-    title = "Category1",
-    colors =CategoryCardColors[0],
-    description = "",
-    goals = goals
-),
-    Category(
-        categoryId = 1,
-        title = "Category1",
-        colors =CategoryCardColors[0],
-        description = "",
-        goals = goals
-    ),
-    Category(
-        categoryId = 1,
-        title = "Category1",
-        colors =CategoryCardColors[0],
-        description = "",
-        goals = goals
-    ),
-    Category(
-        categoryId = 1,
-        title = "Category1",
-        colors =CategoryCardColors[0],
-        description = "",
-        goals = goals
-    ),
-    Category(
-        categoryId = 1,
-        title = "Category1",
-        colors =CategoryCardColors[0],
-        description = "",
-        goals = goals
-    ),
-    Category(
-        categoryId = 1,
-        title = "Category1",
-        colors =CategoryCardColors[0],
-        description = "",
-        goals = goals
-    ),
-    Category(
-        categoryId = 1,
-        title = "Category1",
-        colors =CategoryCardColors[0],
-        description = "",
-        goals = goals
-    ),
-    Category(
-        categoryId = 1,
-        title = "Category1",
-        colors =CategoryCardColors[0],
-        description = "",
-        goals = goals
-    ),
-    Category(
-        categoryId = 1,
-        title = "Category1",
-        colors =CategoryCardColors[0],
-        description = "",
-        goals = goals
-    ),
-    Category(
-        categoryId = 1,
-        title = "Category1",
-        colors =CategoryCardColors[0],
-        description = "",
-        goals = goals
-    ),
-)
+//val categories= listOf(
+//    Category(
+//    categoryId = 1,
+//    title = "Category1",
+//    colors =CategoryCardColors[0],
+//    description = "",
+//    goals = goals
+//),
+//    Category(
+//        categoryId = 1,
+//        title = "Category1",
+//        colors =CategoryCardColors[0],
+//        description = "",
+//        goals = goals
+//    ),
+//    Category(
+//        categoryId = 1,
+//        title = "Category1",
+//        colors =CategoryCardColors[0],
+//        description = "",
+//        goals = goals
+//    ),
+//    Category(
+//        categoryId = 1,
+//        title = "Category1",
+//        colors =CategoryCardColors[0],
+//        description = "",
+//        goals = goals
+//    ),
+//    Category(
+//        categoryId = 1,
+//        title = "Category1",
+//        colors =CategoryCardColors[0],
+//        description = "",
+//        goals = goals
+//    ),
+//    Category(
+//        categoryId = 1,
+//        title = "Category1",
+//        colors =CategoryCardColors[0],
+//        description = "",
+//        goals = goals
+//    ),
+//    Category(
+//        categoryId = 1,
+//        title = "Category1",
+//        colors =CategoryCardColors[0],
+//        description = "",
+//        goals = goals
+//    ),
+//    Category(
+//        categoryId = 1,
+//        title = "Category1",
+//        colors =CategoryCardColors[0],
+//        description = "",
+//        goals = goals
+//    ),
+//    Category(
+//        categoryId = 1,
+//        title = "Category1",
+//        colors =CategoryCardColors[0],
+//        description = "",
+//        goals = goals
+//    ),
+//    Category(
+//        categoryId = 1,
+//        title = "Category1",
+//        colors =CategoryCardColors[0],
+//        description = "",
+//        goals = goals
+//    ),
+//)

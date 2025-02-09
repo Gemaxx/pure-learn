@@ -109,4 +109,26 @@ dependencies {
     implementation(libs.datastore)
     implementation(libs.lottie.compose)
 
+    implementation( "com.squareup.okhttp3:logging-interceptor:4.9.3")
+
+    implementation("io.ktor:ktor-client-android:2.2.3")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.2.3")
+    implementation("io.ktor:ktor-client-content-negotiation:2.2.3")
+    implementation("io.ktor:ktor-client-logging:2.2.3")
+    implementation("io.ktor:ktor-client-gson:2.2.3")
+    implementation("io.ktor:ktor-serialization-gson:2.2.3")
+
+
+
+    //moshi
+    implementation ("com.squareup.moshi:moshi-kotlin:1.13.0")
+
+    implementation( "com.squareup.retrofit2:converter-moshi:2.9.0")
+
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
+
+    // define any required OkHttp artifacts without version
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation("com.squareup.okhttp3:logging-interceptor")
+
 }
