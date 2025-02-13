@@ -39,6 +39,7 @@ builder.Services.AddScoped<ILearnerRepository, LearnerRepository>();
 builder.Services.AddScoped<IGoalRepository, GoalRepository>();
 
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

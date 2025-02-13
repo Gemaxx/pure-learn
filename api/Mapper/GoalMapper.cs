@@ -35,7 +35,7 @@ namespace api.Mapper
         }
         public static Goal ToGoalFromCreateDto(this CreateGoalRequestDto createGoalRequestDto) {
             return new Goal {
-                CategoryId     = createGoalRequestDto.CategoryId ?? null,
+                CategoryId     = createGoalRequestDto.CategoryId,
                 Title          = createGoalRequestDto.Title,
                 Description    = createGoalRequestDto.Description,
                 Motivation     = createGoalRequestDto.Motivation,
@@ -44,16 +44,28 @@ namespace api.Mapper
             };
         }
 
-        public static Goal ToGoalFromPatchDto(this PatchGoalRequestDto patchGoalRequestDto) {
-            return new Goal {
-                Title = patchGoalRequestDto.Title ?? string.Empty,
-                Description = patchGoalRequestDto.Description ?? string.Empty,
-                Motivation = patchGoalRequestDto.Motivation ?? string.Empty,
-                Term = patchGoalRequestDto.Term ?? string.Empty,
-                Status = patchGoalRequestDto.Status ?? string.Empty,
-                CompletionDate = patchGoalRequestDto.CompletionDate,
-                CategoryId = patchGoalRequestDto.CategoryId,
-            };
+        public static void UpdateGoalFromPatchDto(this Goal goal, PatchGoalRequestDto patchGoalRequestDto) {
+            if (patchGoalRequestDto.Title != null) {
+            goal.Title = patchGoalRequestDto.Title;
+            }
+            if (patchGoalRequestDto.Description != null) {
+            goal.Description = patchGoalRequestDto.Description;
+            }
+            if (patchGoalRequestDto.Motivation != null) {
+            goal.Motivation = patchGoalRequestDto.Motivation;
+            }
+            if (patchGoalRequestDto.Term != null) {
+            goal.Term = patchGoalRequestDto.Term;
+            }
+            if (patchGoalRequestDto.Status != null) {
+            goal.Status = patchGoalRequestDto.Status;
+            }
+            if (patchGoalRequestDto.CompletionDate != null) {
+            goal.CompletionDate = patchGoalRequestDto.CompletionDate;
+            }
+            if (patchGoalRequestDto.CategoryId != null) {
+            goal.CategoryId = patchGoalRequestDto.CategoryId;
+            }
+        }
         }
     }
-}

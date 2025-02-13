@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using api.Dtos.Category;
 using api.Helpers;
@@ -27,8 +28,8 @@ namespace api.Controllers
         public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories(long learnerId, [FromQuery] CategoryQueryObject queryObject)
         {
             // Check if learner exists
-            var learnerExists = await _learnerRepo.LearnerExistsAsync(learnerId);
-            if (!learnerExists) return NotFound(new { Message = "Learner not found." });
+            var existedLearner = await _learnerRepo.GetLearnerAsync(learnerId);
+            if (existedLearner == null) return NotFound(new { Message = "Learner not found." });
 
             var categories = await _categoryRepo.GetCategoriesAsync(learnerId, queryObject);
             return Ok(categories.Select(c => c.ToCategoryDto()));
@@ -36,13 +37,13 @@ namespace api.Controllers
 
         // GET: api/learners/{learnerId}/categories/{categoryId:long}
         [HttpGet("{categoryId:long}")]
-        public async Task<ActionResult<CategoryDto>> GetCategory(long learnerId, long categoryId, [FromQuery] CategoryQueryObject query)
+        public async Task<ActionResult<CategoryDto>> GetCategory(long learnerId, long categoryId)
         {
             // Check if learner exists
-            var learnerExists = await _learnerRepo.LearnerExistsAsync(learnerId);
-            if (!learnerExists) return NotFound(new { Message = "Learner not found." });
+            var existedLearner = await _learnerRepo.GetLearnerAsync(learnerId);
+            if (existedLearner == null) return NotFound(new { Message = "Learner not found." });
 
-            var category = await _categoryRepo.GetCategoryAsync(learnerId, categoryId, query);
+            var category = await _categoryRepo.GetCategoryAsync(learnerId, categoryId);
             if (category == null)
             {
                 return NotFound(new { Message = "Category not found." });
@@ -53,9 +54,9 @@ namespace api.Controllers
 
         // PATCH: api/learners/{learnerId}/categories/{categoryId:long}
         [HttpPatch("{categoryId:long}")]
-        public async Task<IActionResult> PatchCategory(long learnerId, long categoryId, [FromBody] UpdateCategoryRequestDto updateCategoryRequestDto, [FromQuery] CategoryQueryObject query)
+        public async Task<IActionResult> PatchCategory(long learnerId, long categoryId, [FromBody] UpdateCategoryRequestDto updateCategoryRequestDto)
         {
-            var category = await _categoryRepo.GetCategoryAsync(learnerId, categoryId, query);
+            var category = await _categoryRepo.GetCategoryAsync(learnerId, categoryId);
 
             if (category == null)
             {
@@ -84,8 +85,8 @@ namespace api.Controllers
         public async Task<IActionResult> CreateCategory(long learnerId, [FromBody] CreateCategoryRequestDto     categoryDto)
         {
             // Check if learner exists
-            var learnerExists = await _learnerRepo.LearnerExistsAsync(learnerId);
-            if (!learnerExists) return NotFound(new { Message = "Learner not found." });
+            var existedLearner = await _learnerRepo.GetLearnerAsync(learnerId);
+            if (existedLearner == null) return NotFound(new { Message = "Learner not found." });
 
             var category = categoryDto.ToCategoryFromCreateDto();
             await _categoryRepo.CreateCategoryAsync(learnerId, category);
@@ -101,7 +102,7 @@ namespace api.Controllers
         [HttpDelete("{categoryId:long}")]
         public async Task<IActionResult> DeleteCategory(long learnerId, long categoryId, [FromQuery] CategoryQueryObject query)
         {
-            var category = await _categoryRepo.GetCategoryAsync(learnerId, categoryId, query);
+            var category = await _categoryRepo.GetCategoryAsync(learnerId, categoryId);
 
             if (category == null)
             {
@@ -114,34 +115,26 @@ namespace api.Controllers
 
         // Soft delete: api/learners/{learnerId}/categories/softDelete/{categoryId:long}
         [HttpDelete("softDelete/{categoryId:long}")]
-        public async Task<IActionResult> SoftDeleteCategory(long learnerId, long categoryId, [FromQuery] CategoryQueryObject query)
+        public async Task<IActionResult> SoftDeleteCategory(long learnerId, long categoryId)
         {
-            var category = await _categoryRepo.GetCategoryAsync(learnerId, categoryId, query);
-
-            if (category == null)
+            if (await _categoryRepo.SoftDeleteCategoryAsync(learnerId, categoryId) == false)
             {
-                return NotFound(new { Message = "Category not found or does not belong to the learner." });
+                return NotFound(new { Message = "Category not found or a;ready soft Deleted" });
             }
-
-
-            await _categoryRepo.SoftDeleteCategoryAsync(learnerId, categoryId);
-            return NoContent();
+            
+            return Ok(new {message = "Category is Soft-Deleted"});
         }
 
         // Restore: api/learners/{learnerId}/categories/restore/{categoryId:long}
-        [HttpPut("restore/{categoryId:long}")]
-        public async Task<IActionResult> RestoreCategory(long learnerId, long categoryId, [FromQuery] CategoryQueryObject query)
+        [HttpPatch("restore/{categoryId:long}")]
+        public async Task<IActionResult> RestoreCategory(long learnerId, long categoryId)
         {
-            query.IsDeleted = true;
-            var category = await _categoryRepo.GetCategoryAsync(learnerId, categoryId, query);
-
-            if (category == null)
+            if (await _categoryRepo.RestoreCategoryAsync(learnerId, categoryId) == false)
             {
-                return NotFound(new { Message = "Category not found or does not belong to the learner." });
+                return NotFound(new { Message = "Category not found or not soft Deleted" });
             }
 
-            await _categoryRepo.RestoreCategoryAsync(learnerId, categoryId);
-            return Ok(category.ToCategoryDto());
+            return Ok(new {message = "Category Restored"});
         }
     }
 }

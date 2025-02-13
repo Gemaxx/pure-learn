@@ -7,26 +7,24 @@ using System.Threading.Tasks;
 
 namespace api.Dtos.LearningResource
 {
-     public class LearningResourceDto
+    public class PatchLearningResourceRequestDto
     {
-        public long Id { get; set; }
-
         [ForeignKey("Goal")]
         public long? GoalId { get; set; }
 
-        [Required(ErrorMessage = "Title is required.")]
         [StringLength(100, ErrorMessage = "Title length can't be more than 100 characters.")]
-        public string Title { get; set; } = null!;
+        public string? Title { get; set; } = null!;
 
-        [Required(ErrorMessage = "TypeId is required.")]
         [ForeignKey("LearningResourceType")]
-        public long TypeId { get; set; }
+        public long? TypeId { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "TotalUnits must be greater than 0.")]
         public int? TotalUnits { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "Progress cannot be negative.")]
         public int? Progress { get; set; }
-    }
 
+        [Url(ErrorMessage = "Link must be a valid URL.")]
+        public string? Link { get; set; } 
+    }
 }

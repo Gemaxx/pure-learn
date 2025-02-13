@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
+using api.Dtos.Goal;
 using api.Helpers;
 using api.Interfaces;
 using api.Models;
@@ -19,14 +20,7 @@ public class CategoryRepository : ICategoryRepository
     {
         _context = context;
     }
-
-    // check if a category exists
-    public async Task<bool> CategoryExistsAsync(long learnerId, long categoryId)
-    {
-        return await _context.Categories
-            .AnyAsync(c => c.LearnerId == learnerId && c.Id == categoryId && c.IsDeleted == false);
-    }
-
+    
     public async Task<Category> CreateCategoryAsync(long learnerId, Category category)
     {
         category.LearnerId = learnerId;
@@ -55,15 +49,15 @@ public class CategoryRepository : ICategoryRepository
         return await _context.Categories.Where(c => c.LearnerId == learnerId && c.IsDeleted == query.IsDeleted).ToListAsync();
     }
 
-    public async Task<Category?> GetCategoryAsync(long learnerId, long categoryId, CategoryQueryObject query)
+    public async Task<Category?> GetCategoryAsync(long learnerId, long categoryId)
     {
         return await _context.Categories
-            .FirstOrDefaultAsync(c => c.LearnerId == learnerId && c.Id == categoryId && c.IsDeleted == query.IsDeleted);
+            .FirstOrDefaultAsync(c => c.LearnerId == learnerId && c.Id == categoryId && c.IsDeleted == false);
     }
     public async Task<bool> RestoreCategoryAsync(long learnerId, long categoryId)
     {
         var category = await _context.Categories
-            .FirstOrDefaultAsync(c => c.LearnerId == learnerId && c.Id == categoryId && c.IsDeleted);
+            .FirstOrDefaultAsync(c => c.LearnerId == learnerId && c.Id == categoryId && c.IsDeleted == true);
 
         if (category == null)
         {

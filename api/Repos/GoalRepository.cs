@@ -19,13 +19,6 @@ namespace api.Repos
             _context = context;
         }
 
-        // check if goal exists (Done)
-        public async Task<bool> GoalExistsAsync(long learnerId, long goalId)
-        {
-            return await _context.Goals
-                .AnyAsync(g => g.LearnerId == learnerId && g.Id == goalId && g.IsDeleted == false);
-        }
-
         // Get goals (Done)
         public async Task<List<Goal>> GetGoalsAsync(long learnerId, GoalQueryObject query)
         {
@@ -50,7 +43,7 @@ namespace api.Repos
             }
 
             // Sort goals by title
-            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            if (query.SortBy == "title")
             {
                 if (query.IsSortAscending)
                 {
@@ -62,6 +55,19 @@ namespace api.Repos
                 }
             }
 
+            // Sort goals by Create date    
+            if (query.SortBy == "CreatedAt")
+            {
+                if (query.IsSortAscending)
+                {
+                    goals = goals.OrderBy(g => g.CreatedAt);
+                }
+                else
+                {
+                    goals = goals.OrderByDescending(g => g.CreatedAt);
+                }
+            }
+
             return await goals.ToListAsync();
 
 
@@ -70,7 +76,9 @@ namespace api.Repos
        // Create goal (Done)
         public async Task<Goal> CreateGoalAsync(long learnerId, Goal goal)
         {
+            
             goal.LearnerId = learnerId;
+
             await _context.Goals.AddAsync(goal);
             await _context.SaveChangesAsync();
             return goal;
@@ -176,12 +184,6 @@ namespace api.Repos
             await _context.SaveChangesAsync();
 
             return existingGoal;
-        }
-
-        public async Task<Goal?> FindDeletedGoalAsync(long learnerId, long goalId)
-        {
-            return await _context.Goals
-                .FirstOrDefaultAsync(g => g.LearnerId == learnerId && g.Id == goalId && g.IsDeleted == true);
         }
     }
 }

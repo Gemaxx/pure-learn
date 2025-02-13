@@ -1,6 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using api.Dtos.Goal;
-
 
 namespace api.Dtos.Category
 {
@@ -18,7 +16,5 @@ namespace api.Dtos.Category
         public long LearnerId { get; set; }
 
         public bool IsDeleted { get; set; } = false;
-
-        public virtual ICollection<GoalDto> Goals { get; set; } = new List<GoalDto>();
     }
 }

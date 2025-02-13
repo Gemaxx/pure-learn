@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace api.Dtos.LearningResource
 {
-     public class LearningResourceDto
+    public class LearningResourceDetailDto
     {
         public long Id { get; set; }
 
@@ -27,6 +27,16 @@ namespace api.Dtos.LearningResource
 
         [Range(0, int.MaxValue, ErrorMessage = "Progress cannot be negative.")]
         public int? Progress { get; set; }
-    }
 
+        [Url(ErrorMessage = "Link must be a valid URL.")]
+        public string? Link { get; set; } 
+
+        public DateTime? CreatedAt { get; set; }
+
+        public DateTime? UpdatedAt { get; set; }
+
+        public DateTime? DeletedAt { get; set; }
+
+        public bool IsDeleted { get; set; }   
+    }
 }

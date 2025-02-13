@@ -63,11 +63,11 @@ Not Yet
 
 ## Development 
 
-1️⃣ Create Models (Category.cs)
+1️⃣ Create Models (Category.cs) (already created at [Modlels](Models) ✅)
 
-2️⃣ Setup DbContext (AppDbContext.cs)
+2️⃣ Setup DbContext (AppDbContext.cs) (already done at [PureLearnDbContext.cs](Data/PureLearnDbContext.cs))
 
-3️⃣ Define DTOs (CategoryDTO.cs)
+3️⃣ Define DTOs (CategoryDTO.cs) for different endpoints as needed at [text](Dtos)
 
 4️⃣ Configure Manual Mapper (CategoryMappers.cs)
 

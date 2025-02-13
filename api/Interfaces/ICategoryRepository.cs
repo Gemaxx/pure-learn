@@ -7,15 +7,12 @@ using api.Models;
 namespace api.Interfaces
 {
     public interface ICategoryRepository
-    {
-        // Check if a category exists
-        Task<bool> CategoryExistsAsync(long learnerId , long categoryId);
-        
+    {        
         // Get all categories for a specific learner
         Task<List<Category>> GetCategoriesAsync(long learnerId, CategoryQueryObject query);
 
         // Get a specific category by learner ID and category ID
-        Task<Category?> GetCategoryAsync(long learnerId, long categoryId, CategoryQueryObject query);
+        Task<Category?> GetCategoryAsync(long learnerId, long categoryId);
 
         // Create a new category for a specific learner
         Task<Category> CreateCategoryAsync(long learnerId, Category category);

@@ -8,10 +8,7 @@ using api.Models;
 namespace api.Interfaces
 {
     public interface IGoalRepository
-    {
-        // Check if a goal exists
-        Task<bool> GoalExistsAsync(long learnerId, long goalId);
-        
+    {      
         // Get all goals for a specific learner with optional query parameters (e.g., Category, status, term, etc.)
         Task<List<Goal>> GetGoalsAsync(long learnerId, GoalQueryObject query);
 
@@ -32,9 +29,6 @@ namespace api.Interfaces
 
         // Restore a soft-deleted goal
         Task<bool> RestoreGoalAsync(long learnerId, long goalId);
-
-        // find soft deleted goals
-        Task<Goal?> FindDeletedGoalAsync(long learnerId, long goalId);
 
     }
 }

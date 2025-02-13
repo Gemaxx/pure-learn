@@ -10,9 +10,9 @@ namespace api.Dtos.Goal
 {
     public class CreateGoalRequestDto
     {
-        [ForeignKey("CategoryId")]
-        
-        public long? CategoryId { get; set; } = null;
+        [ForeignKey("Category")]
+        [Required]
+        public long CategoryId { get; set; }
 
         [Required]
         [StringLength(255, MinimumLength = 3, ErrorMessage = "Title must be between 3 and 255 characters.")]

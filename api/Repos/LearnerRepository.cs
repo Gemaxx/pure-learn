@@ -17,11 +17,10 @@ namespace api.Repos
             _context = context;
         }
 
-        // Check if a learner exists
-        public async Task<bool> LearnerExistsAsync(long learnerId)
+        public async Task<Learner?> GetLearnerAsync(long learnerId)
         {
-            return await _context.Learners
-                .AnyAsync(l => l.Id == learnerId && l.IsDeleted == false);
+            return await _context.Learners.
+            FirstOrDefaultAsync(l => l.Id == learnerId && l.IsDeleted == false);
         }
     }
 }
