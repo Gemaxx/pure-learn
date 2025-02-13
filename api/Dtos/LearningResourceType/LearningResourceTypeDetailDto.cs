@@ -22,5 +22,7 @@ namespace api.Dtos.LearningResourceType
         [Required]
         [StringLength(100, MinimumLength = 1, ErrorMessage = "UnitType must be between 1 and 100 characters.")]
         public string UnitType { get; set; } = null!;
+
+        public DateTime MyProperty { get; set; }
     }
 }

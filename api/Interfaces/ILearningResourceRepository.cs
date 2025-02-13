@@ -30,8 +30,5 @@ namespace api.Interfaces
 
         // Restore a soft-deleted LearningResource
         Task<bool> RestoreLearningResourceAsync(long learnerId, long LearningResourceId);
-
-        // find soft deleted LearningResources
-        Task<LearningResource?> FindDeletedLearningResourceAsync(long learnerId, long LearningResourceId);
     }
 }

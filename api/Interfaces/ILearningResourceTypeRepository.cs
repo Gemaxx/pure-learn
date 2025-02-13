@@ -8,9 +8,7 @@ using api.Models;
 namespace api.Interfaces
 {
     public interface ILearningResourceTypeRepository
-    {
-        Task<bool> LearningResourceTypeExistsAsync(long learnerId, long LearningResourceTypeId);
-        
+    {        
         // Get all LearningResourceTypes for a specific learner with optional query parameters (e.g., Goal, status, term, etc.)
         Task<List<LearningResourceType>> GetLearningResourceTypesAsync(long learnerId, LearningResourceTypeQueryObject query);
 
@@ -31,8 +29,5 @@ namespace api.Interfaces
 
         // Restore a soft-deleted LearningResourceType
         Task<bool> RestoreLearningResourceTypeAsync(long learnerId, long LearningResourceTypeId);
-
-        // find soft deleted LearningResourceTypes
-        Task<LearningResourceType?> FindDeletedLearningResourceTypeAsync(long learnerId, long LearningResourceTypeId);
     }
 }

@@ -6,6 +6,7 @@ using api.Data;
 using api.Helpers;
 using api.Interfaces;
 using api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Repos
 {
@@ -17,49 +18,96 @@ namespace api.Repos
         {
             _context = context;
         }
-        public Task<LearningResourceType> CreateLearningResourceTypeAsync(long learnerId, LearningResourceType LearningResourceType)
+        public async Task<LearningResourceType> CreateLearningResourceTypeAsync(long learnerId, LearningResourceType learningResourceType)
         {
-            throw new NotImplementedException();
+            learningResourceType.LearnerId = learnerId;
+            await _context.LearningResourceTypes.AddAsync(learningResourceType);
+            await _context.SaveChangesAsync();
+            return learningResourceType; 
         }
 
-        public Task<bool> DeleteLearningResourceTypeAsync(long learnerId, long LearningResourceTypeId)
+        public async Task<bool> DeleteLearningResourceTypeAsync(long learnerId, long learningResourceTypeId)
         {
-            throw new NotImplementedException();
+            var learningResourceType = await _context.LearningResourceTypes
+            .FirstOrDefaultAsync(lrt => lrt.LearnerId == learnerId && lrt.Id == learningResourceTypeId);
+            if (learningResourceType == null) { return false;}
+
+            _context.LearningResourceTypes.Remove(learningResourceType);
+            await _context.SaveChangesAsync();
+            return true;
+
         }
 
-        public Task<LearningResourceType?> FindDeletedLearningResourceTypeAsync(long learnerId, long LearningResourceTypeId)
+        public async Task<LearningResourceType?> GetLearningResourceTypeAsync(long learnerId, long learningResourceTypeId)
         {
-            throw new NotImplementedException();
+            return await _context.LearningResourceTypes
+            .FirstOrDefaultAsync(lrt => lrt.LearnerId == learnerId && lrt.Id == learningResourceTypeId && lrt.IsDeleted == false);
         }
 
-        public Task<LearningResourceType?> GetLearningResourceTypeAsync(long learnerId, long LearningResourceTypeId)
+        public async Task<List<LearningResourceType>> GetLearningResourceTypesAsync(long learnerId, LearningResourceTypeQueryObject query)
         {
-            throw new NotImplementedException();
+            var learningResourceTypes = _context.LearningResourceTypes
+            .Where(lrt => lrt.LearnerId == learnerId && lrt.IsDeleted == query.IsDeleted)
+            .AsQueryable();
+
+            return await learningResourceTypes.ToListAsync();           
         }
 
-        public Task<List<LearningResourceType>> GetLearningResourceTypesAsync(long learnerId, LearningResourceTypeQueryObject query)
+        public async Task<bool> RestoreLearningResourceTypeAsync(long learnerId, long learningResourceTypeId)
         {
-            throw new NotImplementedException();
+            var learningResourceType = await _context.LearningResourceTypes
+            .FirstOrDefaultAsync(lrt=> lrt.LearnerId == learnerId && lrt.Id == learningResourceTypeId && lrt.IsDeleted == true);
+
+            if (learningResourceType == null) {return false;}
+
+            learningResourceType.IsDeleted = false;
+
+            _context.LearningResourceTypes.Update(learningResourceType);
+            await _context.SaveChangesAsync();
+
+            return true; 
         }
 
-        public Task<bool> LearningResourceTypeExistsAsync(long learnerId, long LearningResourceTypeId)
+        public async Task<bool> SoftDeleteLearningResourceTypeAsync(long learnerId, long learningResourceTypeId)
         {
-            throw new NotImplementedException();
+            var learningResourceType = await _context.LearningResourceTypes
+            .FirstOrDefaultAsync(lrt=> lrt.LearnerId == learnerId && lrt.Id == learningResourceTypeId && lrt.IsDeleted == true);
+
+            if (learningResourceType == null) {return false;}
+
+            learningResourceType.IsDeleted = false;
+
+            _context.LearningResourceTypes.Update(learningResourceType);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
-        public Task<bool> RestoreLearningResourceTypeAsync(long learnerId, long LearningResourceTypeId)
+        public async Task<LearningResourceType?> UpdateLearningResourceTypeAsync(long learnerId, long learningResourceTypeId, LearningResourceType LearningResourceType)
         {
-            throw new NotImplementedException();
-        }
+            var existingLearningResourceType = await _context.LearningResourceTypes
+            .FirstOrDefaultAsync(lrt => lrt.LearnerId == learnerId && lrt.Id == learnerId && lrt.IsDeleted == false);
+            
+            if (existingLearningResourceType == null)
+            {
+                return null;
+            }
 
-        public Task<bool> SoftDeleteLearningResourceTypeAsync(long learnerId, long LearningResourceTypeId)
-        {
-            throw new NotImplementedException();
-        }
+            if (!string.IsNullOrWhiteSpace(existingLearningResourceType.Name))
+            {
+                existingLearningResourceType.Name = LearningResourceType.Name;
+            }
 
-        public Task<LearningResourceType?> UpdateLearningResourceTypeAsync(long learnerId, long LearningResourceTypeId, LearningResourceType LearningResourceType)
-        {
-            throw new NotImplementedException();
+            if (!string.IsNullOrWhiteSpace(existingLearningResourceType.UnitType))
+            {
+                existingLearningResourceType.UnitType = LearningResourceType.UnitType;
+            }
+
+            _context.LearningResourceTypes.Update(existingLearningResourceType);
+            await _context.SaveChangesAsync();
+
+            return existingLearningResourceType;
+
         }
     }
 }

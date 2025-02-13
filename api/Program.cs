@@ -37,6 +37,8 @@ builder.Services.AddControllers()
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ILearnerRepository, LearnerRepository>();
 builder.Services.AddScoped<IGoalRepository, GoalRepository>();
+builder.Services.AddScoped<ILearningResourceRepository, LearningResourceRepository>();
+builder.Services.AddScoped<ILearningResourceTypeRepository, LearningResourceTypeRepository>();
 
 
 

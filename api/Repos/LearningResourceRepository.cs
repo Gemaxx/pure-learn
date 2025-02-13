@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using api.Data;
 using api.Helpers;
 using api.Interfaces;
 using api.Models;
-using System.Runtime.CompilerServices;
 
 namespace api.Repos
 {
@@ -20,18 +15,18 @@ namespace api.Repos
             _context = context;
         }
 
-        public async Task<LearningResource> CreateLearningResourceAsync(long learnerId, LearningResource LearningResource)
+        public async Task<LearningResource> CreateLearningResourceAsync(long learnerId, LearningResource learningResource)
         {
-            LearningResource.LearnerId = learnerId;
-            await _context.LearningResources.AddAsync(LearningResource);
+            learningResource.LearnerId = learnerId;
+            await _context.LearningResources.AddAsync(learningResource);
             await _context.SaveChangesAsync();
-            return LearningResource;
+            return learningResource;
         }
 
-        public async Task<bool> DeleteLearningResourceAsync(long learnerId, long LearningResourceId)
+        public async Task<bool> DeleteLearningResourceAsync(long learnerId, long learningResourceId)
         {
             var learningResource = await _context.LearningResources
-            .FirstOrDefaultAsync(lr => lr.LearnerId == learnerId && lr.Id == learnerId && lr.IsDeleted == false);
+            .FirstOrDefaultAsync(lr => lr.LearnerId == learnerId && lr.Id == learningResourceId && lr.IsDeleted == false);
 
             if (learningResource == null) {return false;}
             
@@ -40,13 +35,7 @@ namespace api.Repos
             return true;
         }
 
-        public async Task<LearningResource?> FindDeletedLearningResourceAsync(long learnerId, long LearningResourceId)
-        {
-            return await _context.LearningResources
-                        .FirstOrDefaultAsync(lr => lr.LearnerId == learnerId && lr.Id == learnerId);
-        }
-
-        public async Task<LearningResource?> GetLearningResourceAsync(long learnerId, long LearningResourceId)
+        public async Task<LearningResource?> GetLearningResourceAsync(long learnerId, long learningResourceId)
         {
             return await _context.LearningResources
                         .FirstOrDefaultAsync(lr => lr.LearnerId == learnerId && lr.Id == learnerId && lr.IsDeleted == false);
@@ -55,7 +44,9 @@ namespace api.Repos
         public async Task<List<LearningResource>> GetLearningResourcesAsync(long learnerId, LearningResourceQueryObject query)
         {
             // Get list of Learning Resources
-            var learningResources = _context.LearningResources.Where(lr => lr.LearnerId == learnerId && lr.IsDeleted == query.IsDeleted).AsQueryable();
+            var learningResources = _context.LearningResources
+            .Where(lr => lr.LearnerId == learnerId && lr.IsDeleted == query.IsDeleted)
+            .AsQueryable();
 
             // Filter Learning Resources by goal
             if (query.GoalId.HasValue){
@@ -66,11 +57,10 @@ namespace api.Repos
 
         }
 
-
-        public async Task<bool> RestoreLearningResourceAsync(long learnerId, long LearningResourceId)
+        public async Task<bool> RestoreLearningResourceAsync(long learnerId, long learningResourceId)
         {
             var learningResource = await _context.LearningResources
-            .FirstOrDefaultAsync(lr=> lr.LearnerId == learnerId && lr.Id == LearningResourceId && lr.IsDeleted == true);
+            .FirstOrDefaultAsync(lr=> lr.LearnerId == learnerId && lr.Id == learningResourceId && lr.IsDeleted == true);
 
             if (learningResource == null) {return false;}
 
@@ -82,10 +72,10 @@ namespace api.Repos
             return true;
         }
 
-        public async Task<bool> SoftDeleteLearningResourceAsync(long learnerId, long LearningResourceId)
+        public async Task<bool> SoftDeleteLearningResourceAsync(long learnerId, long learningResourceId)
         {
             var learningResource = await _context.LearningResources
-            .FirstOrDefaultAsync(lr => lr.LearnerId == learnerId && lr.Id == LearningResourceId && lr.IsDeleted == false);
+            .FirstOrDefaultAsync(lr => lr.LearnerId == learnerId && lr.Id == learningResourceId && lr.IsDeleted == false);
 
             if(learningResource == null) {return false;}
             
@@ -96,10 +86,10 @@ namespace api.Repos
             return true;
         }
 
-        public async Task<LearningResource?> UpdateLearningResourceAsync(long learnerId, long LearningResourceId, LearningResource learningResource)
+        public async Task<LearningResource?> UpdateLearningResourceAsync(long learnerId, long learningResourceId, LearningResource learningResource)
         {
             var existingLearningResource = await _context.LearningResources
-            .FirstOrDefaultAsync(lr => lr.LearnerId == learnerId && lr.Id == LearningResourceId && lr.IsDeleted == false);
+            .FirstOrDefaultAsync(lr => lr.LearnerId == learnerId && lr.Id == learningResourceId && lr.IsDeleted == false);
 
             if (existingLearningResource == null)
             {

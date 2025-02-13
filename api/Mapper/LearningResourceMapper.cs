@@ -19,7 +19,7 @@ namespace api.Mapper
                 Progress = learningResource.Progress
             };
         }
-
+/*
         public static LearningResourceDetailDto ToLearningResourceDetailDto(this LearningResource learningResource)
         {
             return new LearningResourceDetailDto
@@ -28,6 +28,7 @@ namespace api.Mapper
                 GoalId = learningResource.GoalId,
                 Title = learningResource.Title,
                 TypeId = learningResource.TypeId,
+                LearningResourceType = learningResource.LearningResourceType,
                 TotalUnits = learningResource.TotalUnits,
                 Progress = learningResource.Progress,
                 Link = learningResource.Link,
@@ -37,7 +38,7 @@ namespace api.Mapper
                 IsDeleted = learningResource.IsDeleted
             };
         }
-
+*/
         public static LearningResource ToLearningResource(this CreateLearningResourceRequestDto dto, long typeId)
         {
             return new LearningResource

@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+using api.Dtos.LearningResourceType;
 
 namespace api.Dtos.LearningResource
 {
@@ -18,10 +15,16 @@ namespace api.Dtos.LearningResource
         [StringLength(100, ErrorMessage = "Title length can't be more than 100 characters.")]
         public string Title { get; set; } = null!;
 
+        
         [Required(ErrorMessage = "TypeId is required.")]
         [ForeignKey("LearningResourceType")]
         public long TypeId { get; set; }
+        public required  LearningResourceTypeDto LearningResourceType { get; set; }
 
+        public string LearningResourceTypeName => LearningResourceType.Name; 
+        public string LearningResourceTypeUnitType => LearningResourceType.UnitType; 
+    
+        
         [Range(1, int.MaxValue, ErrorMessage = "TotalUnits must be greater than 0.")]
         public int? TotalUnits { get; set; }
 

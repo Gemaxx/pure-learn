@@ -200,6 +200,7 @@ public partial class PureLearnDbContext : DbContext
                 .HasColumnName("updated_at");
         });
 
+
         modelBuilder.Entity<LearningResource>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Learning__3213E83F012A92B3");
@@ -290,6 +291,7 @@ public partial class PureLearnDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__LearningR__learn__75A278F5");
         });
+
 
         modelBuilder.Entity<Note>(entity =>
         {
