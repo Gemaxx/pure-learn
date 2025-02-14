@@ -9,13 +9,11 @@ namespace api.Dtos.LearningResourceType
 {
     public class PatchLearningResourceTypeRequestDto
     {
-        [ForeignKey("Learner")]
-        public long? LearnerId { get; set; }
-
         [StringLength(100, MinimumLength = 1, ErrorMessage = "Name must be between 1 and 100 characters.")]
         public string? Name { get; set; } = null!;
 
         [StringLength(100, MinimumLength = 1, ErrorMessage = "UnitType must be between 1 and 100 characters.")]
         public string? UnitType { get; set; } = null!;
     }
+
 }

@@ -23,12 +23,14 @@ namespace api.Dtos.LearningResource
 
         // Option 2: Provide data to create a new LearningResourceType
         public CreateLearningResourceTypeRequestDto? NewLearningResourceType { get; set; }
+    
 
         [Range(1, int.MaxValue, ErrorMessage = "TotalUnits must be greater than 0.")]
         public int? TotalUnits { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "Progress cannot be negative.")]
         public int? Progress { get; set; }
+
 
         [Url(ErrorMessage = "Link must be a valid URL.")]
         public string? Link { get; set; }        

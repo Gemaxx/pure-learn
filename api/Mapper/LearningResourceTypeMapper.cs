@@ -31,7 +31,6 @@ namespace api.Mapper
         {
             return new LearningResourceType
             {
-                LearnerId = request.LearnerId,
                 Name = request.Name,
                 UnitType = request.UnitType
             };
@@ -39,11 +38,6 @@ namespace api.Mapper
 
         public static void UpdateLearningResourceType(this LearningResourceType learningResourceType, PatchLearningResourceTypeRequestDto request)
         {
-            if (request.LearnerId.HasValue)
-            {
-                learningResourceType.LearnerId = request.LearnerId.Value;
-            }
-
             if (!string.IsNullOrEmpty(request.Name))
             {
                 learningResourceType.Name = request.Name;

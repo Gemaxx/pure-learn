@@ -71,11 +71,11 @@ namespace api.Repos
         public async Task<bool> SoftDeleteLearningResourceTypeAsync(long learnerId, long learningResourceTypeId)
         {
             var learningResourceType = await _context.LearningResourceTypes
-            .FirstOrDefaultAsync(lrt=> lrt.LearnerId == learnerId && lrt.Id == learningResourceTypeId && lrt.IsDeleted == true);
+            .FirstOrDefaultAsync(lrt=> lrt.LearnerId == learnerId && lrt.Id == learningResourceTypeId && lrt.IsDeleted == false);
 
             if (learningResourceType == null) {return false;}
 
-            learningResourceType.IsDeleted = false;
+            learningResourceType.IsDeleted = true;
 
             _context.LearningResourceTypes.Update(learningResourceType);
             await _context.SaveChangesAsync();

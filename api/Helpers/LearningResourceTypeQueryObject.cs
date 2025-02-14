@@ -8,6 +8,5 @@ namespace api.Helpers
     public class LearningResourceTypeQueryObject
     {
         public bool IsDeleted { get; set; } = false;   
-        public long? GoalId { get; set; }
     }
 }

@@ -34,3 +34,8 @@ namespace api.Controllers
 
     }
 }
+
+/*
+            var existedgoal = await _goalRepo.GetGoalAsync(learnerId, createLearningResourceTypeRequestDto.goalId);
+            if (existedgoal == null) return NotFound(new { Message = "goal not found." });
+*/
