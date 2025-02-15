@@ -38,7 +38,8 @@ namespace api.Repos
         public async Task<LearningResource?> GetLearningResourceAsync(long learnerId, long learningResourceId)
         {
             return await _context.LearningResources
-                        .FirstOrDefaultAsync(lr => lr.LearnerId == learnerId && lr.Id == learnerId && lr.IsDeleted == false);
+                        .Include(lr => lr.Type)
+                        .FirstOrDefaultAsync(lr => lr.LearnerId == learnerId && lr.Id == learningResourceId && lr.IsDeleted == false);
         }
 
         public async Task<List<LearningResource>> GetLearningResourcesAsync(long learnerId, LearningResourceQueryObject query)
@@ -107,17 +108,17 @@ namespace api.Repos
 
             }
 
-            if (learningResource.TypeId != null)
+            if (learningResource.TypeId != default)
             {
                 existingLearningResource.TypeId = learningResource.TypeId;
             }
 
-            if (learningResource.TotalUnits != null)
+            if (learningResource.TotalUnits != default)
             {
                 existingLearningResource.TotalUnits = learningResource.TotalUnits;
             }
 
-            if (learningResource.Progress != null)
+            if (learningResource.Progress != default)
             {
                 existingLearningResource.Progress = learningResource.Progress;
             }

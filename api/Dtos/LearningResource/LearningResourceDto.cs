@@ -27,6 +27,8 @@ namespace api.Dtos.LearningResource
 
         [Range(0, int.MaxValue, ErrorMessage = "Progress cannot be negative.")]
         public int? Progress { get; set; }
+
+        public double ProgressPercentage {get; set;}
     }
 
 }
