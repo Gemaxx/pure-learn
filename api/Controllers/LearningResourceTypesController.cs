@@ -45,9 +45,11 @@ namespace api.Controllers
 
         // Get detailed
         [HttpGet("{learningResourceTypeId}")]
-        public async Task<ActionResult<LearningResourceTypeDetailDto>> GetLearningResourceType(
+        public async Task<ActionResult<LearningResourceTypeDetailDto>> GetLearningResourceType
+        (
             long learnerId, 
-            long learningResourceTypeId)
+            long learningResourceTypeId
+        )
         {
             var existingLearningResourceType = await _learningResourceTypeRepo
                 .GetLearningResourceTypeAsync(learnerId, learningResourceTypeId);
