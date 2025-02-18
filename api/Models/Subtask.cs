@@ -19,5 +19,7 @@ public partial class Subtask
 
     public DateTime? DeletedAt { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     public virtual Task Task { get; set; } = null!;
 }

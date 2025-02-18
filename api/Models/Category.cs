@@ -23,6 +23,8 @@ public partial class Category
 
     public DateTime? DeletedAt { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     public virtual ICollection<Goal> Goals { get; set; } = new List<Goal>();
 
     public virtual ICollection<Category> InverseParentCategory { get; set; } = new List<Category>();

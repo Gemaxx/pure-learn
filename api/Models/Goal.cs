@@ -23,11 +23,13 @@ public partial class Goal
 
     public DateTime? UpdatedAt { get; set; }
 
-    public long? CategoryId { get; set; }
+    public long? CategoryId { get; set; } 
 
     public long LearnerId { get; set; }
 
     public DateTime? DeletedAt { get; set; }
+
+    public bool IsDeleted { get; set; }
 
     public virtual Category? Category { get; set; }
 
