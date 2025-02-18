@@ -87,6 +87,7 @@ namespace api.Controllers
         {
             var existingLearningResourceType = await _learningResourceTypeRepo
                 .GetLearningResourceTypeAsync(learnerId, learningResourceTypeId);
+        
             
             if (existingLearningResourceType == null)
             {
@@ -95,8 +96,9 @@ namespace api.Controllers
 
             LearningResourceTypeMapper.UpdateLearningResourceType(existingLearningResourceType, dto);
             await _learningResourceTypeRepo.UpdateLearningResourceTypeAsync(learnerId, learningResourceTypeId, existingLearningResourceType);
+            var UpdatedDto = existingLearningResourceType.ToLearningResourceTypeDto();
 
-            return Ok(existingLearningResourceType.ToLearningResourceTypeDto());
+            return Ok(UpdatedDto);
         }
 
         // Hard Delete
