@@ -15,21 +15,22 @@ namespace api.Dtos.LearningResource
         [StringLength(100, ErrorMessage = "Title length can't be more than 100 characters.")]
         public string Title { get; set; } = null!;
 
-        
+        // Learning Resource Type {   
         [Required(ErrorMessage = "TypeId is required.")]
         [ForeignKey("LearningResourceType")]
         public long TypeId { get; set; }
-        public required  LearningResourceTypeDto LearningResourceType { get; set; }
 
-        public string LearningResourceTypeName => LearningResourceType.Name; 
-        public string LearningResourceTypeUnitType => LearningResourceType.UnitType; 
-    
+        public string TypeName { get; set; } = null!; // Store name directly
+        public string TypeUnitType { get; set; } = null!; // Store unit type directly
+
         
         [Range(1, int.MaxValue, ErrorMessage = "TotalUnits must be greater than 0.")]
         public int? TotalUnits { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "Progress cannot be negative.")]
         public int? Progress { get; set; }
+
+        public double ProgressPercentage {get; set;}
 
         [Url(ErrorMessage = "Link must be a valid URL.")]
         public string? Link { get; set; } 

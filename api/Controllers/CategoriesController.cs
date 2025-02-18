@@ -54,7 +54,7 @@ namespace api.Controllers
 
         // PATCH: api/learners/{learnerId}/categories/{categoryId:long}
         [HttpPatch("{categoryId:long}")]
-        public async Task<IActionResult> PatchCategory(long learnerId, long categoryId, [FromBody] UpdateCategoryRequestDto updateCategoryRequestDto)
+        public async Task<IActionResult> PatchCategory(long learnerId, long categoryId, [FromBody] PatchCategoryRequestDto patchCategoryRequestDto)
         {
             var category = await _categoryRepo.GetCategoryAsync(learnerId, categoryId);
 
@@ -63,17 +63,17 @@ namespace api.Controllers
             return NotFound(new { Message = "Category not found or does not belong to the learner." });
             }
 
-            if (updateCategoryRequestDto.Title != null)
+            if (patchCategoryRequestDto.Title != null)
             {
-            category.Title = updateCategoryRequestDto.Title;
+            category.Title = patchCategoryRequestDto.Title;
             }
-            if (updateCategoryRequestDto.Description != null)
+            if (patchCategoryRequestDto.Description != null)
             {
-            category.Description = updateCategoryRequestDto.Description;
+            category.Description = patchCategoryRequestDto.Description;
             }
-            if (updateCategoryRequestDto.Color != null)
+            if (patchCategoryRequestDto.Color != null)
             {
-            category.Color = updateCategoryRequestDto.Color;
+            category.Color = patchCategoryRequestDto.Color;
             }
 
             await _categoryRepo.UpdateCategoryAsync(learnerId, categoryId, category);
@@ -123,7 +123,7 @@ namespace api.Controllers
             }
             
             return Ok(new {message = "Category is Soft-Deleted"});
-        }
+        } 
 
         // Restore: api/learners/{learnerId}/categories/restore/{categoryId:long}
         [HttpPatch("restore/{categoryId:long}")]

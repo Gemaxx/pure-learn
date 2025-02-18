@@ -31,6 +31,5 @@ namespace api.Dtos.Goal
         [Required]
         [RegularExpression("Not-Started|In-Progress|On-Hold|Done|Canceled", ErrorMessage = "Status must be Not-Started, In-Progress, On-Hold, Done, or Canceled.")]
         public required string Status { get; set; } = "Not-Started";
-        
     }
 }

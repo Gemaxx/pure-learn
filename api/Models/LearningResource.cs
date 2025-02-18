@@ -9,15 +9,17 @@ public partial class LearningResource
 
     public string Title { get; set; } = null!;
 
-    public long TypeId { get; set; }
+    public long TypeId { get; set; }    
 
     public int TotalUnits { get; set; }
 
     public int Progress { get; set; }
 
+    public double ProgressPercentage => TotalUnits > 0 ? ((double) Progress / TotalUnits) * 100 : 0;
+
     public string? Link { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
+    public DateTime? CreatedAt { get; set; } 
 
     public DateTime? UpdatedAt { get; set; }
 
@@ -44,4 +46,8 @@ public partial class LearningResource
     public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
 
     public virtual LearningResourceType Type { get; set; } = null!;
+
+    public string TypeName => Type.Name;
+
+    public string TypeUnitType => Type.UnitType;
 }

@@ -16,10 +16,11 @@ namespace api.Mapper
                 Title = learningResource.Title,
                 TypeId = learningResource.TypeId,
                 TotalUnits = learningResource.TotalUnits,
-                Progress = learningResource.Progress
+                Progress = learningResource.Progress,
+                ProgressPercentage = learningResource.ProgressPercentage
             };
         }
-/*
+
         public static LearningResourceDetailDto ToLearningResourceDetailDto(this LearningResource learningResource)
         {
             return new LearningResourceDetailDto
@@ -28,27 +29,29 @@ namespace api.Mapper
                 GoalId = learningResource.GoalId,
                 Title = learningResource.Title,
                 TypeId = learningResource.TypeId,
-                LearningResourceType = learningResource.LearningResourceType,
+                TypeName = learningResource.Type.Name,
+                TypeUnitType = learningResource.Type.UnitType,
                 TotalUnits = learningResource.TotalUnits,
                 Progress = learningResource.Progress,
+                ProgressPercentage = learningResource.ProgressPercentage,
                 Link = learningResource.Link,
                 CreatedAt = learningResource.CreatedAt,
                 UpdatedAt = learningResource.UpdatedAt,
                 DeletedAt = learningResource.DeletedAt,
-                IsDeleted = learningResource.IsDeleted
+                IsDeleted = learningResource.IsDeleted,
             };
         }
-*/
-        public static LearningResource ToLearningResource(this CreateLearningResourceRequestDto dto, long typeId)
+
+        public static LearningResource FromCreateDtoToLearningResource(this CreateLearningResourceRequestDto dto)
         {
             return new LearningResource
             {
                 GoalId = dto.GoalId,
                 Title = dto.Title,
-                TypeId = typeId,
+                TypeId = dto.TypeId,
                 TotalUnits = dto.TotalUnits ?? 1,
                 Progress = dto.Progress ?? 0,
-                Link = dto.Link,
+                Link = dto.Link ?? null,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
                 IsDeleted = false
