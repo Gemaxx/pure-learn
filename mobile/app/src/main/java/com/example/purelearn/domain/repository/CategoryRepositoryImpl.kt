@@ -19,18 +19,35 @@ class CategoryRepositoryImpl @Inject constructor(
 
 
     override suspend fun addCategory(category: Category): Flow<CategoryResponse> = flow {
-        emit(retrofitService.addCategory(category))
+        emit(retrofitService.addCategory(
+            category = category,
+            learnerId = 1
+        ))
     }.flowOn(Dispatchers.IO)
 
     override suspend fun getCategory(): Flow<List<CategoryResponse>> = flow {
-        emit(retrofitService.getCategory())
+        emit(retrofitService.getCategory(
+            learnerId = 1,
+            isDeleted = false
+        ))
     }.flowOn(Dispatchers.IO)
+
+
 
     override suspend fun deleteCategory(id: Int): Flow<CategoryResponse> = flow {
-        emit(retrofitService.deleteCategory(id))
+        emit(retrofitService.deleteCategory(
+            learnerId = 1,
+            categoryId = id
+        ))
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun updateCategory(id: Int, category: Category): Flow<CategoryResponse> = flow {
-        emit(retrofitService.updateCategory(id, category))
-    }.flowOn(Dispatchers.IO)
+
+     override suspend fun updateCategory(id: Int, category: Category): Flow<CategoryResponse> = flow {
+           emit(retrofitService.updateCategory(
+               learnerId =1,
+               categoryId = id,
+               isDeleted = false,
+               category = category
+           ))
+        }.flowOn(Dispatchers.IO)
 }

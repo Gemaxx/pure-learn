@@ -2,12 +2,10 @@ package com.example.purelearn.ui.theme.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.purelearn.MainScreen
-import com.example.purelearn.ui.theme.Task.AddGoalScreen
+import com.example.purelearn.ui.theme.Goal.AddGoalScreen
 import com.example.purelearn.ui.theme.Task.AddTaskScreen
 import com.example.purelearn.ui.theme.calendar.CalendarScreen
 import com.example.purelearn.ui.theme.chatpot.ChatBotScreen
@@ -22,10 +20,10 @@ fun MyAppNavigation(modifier: Modifier = Modifier) {
 
     NavHost(navController=navController, startDestination = Routes.HomeScreen, builder = {
 
-        composable(Routes.MainScreen,)
-        {
-            MainScreen(navController)
-        }
+//        composable(Routes.MainScreen,)
+//        {
+//            MainScreen(navController)
+//        }
             composable(Routes.HomeScreen,)
             {
                 HomeScreen(
@@ -33,10 +31,10 @@ fun MyAppNavigation(modifier: Modifier = Modifier) {
                     //navController = navController
                 )
             }
-        composable(Routes.GoalScreen,)
-        {
-            AddGoalScreen(navController)
-        }
+//        composable(Routes.GoalScreen,)
+//        {
+//           // AddGoalScreen(navController)
+//        }
         composable(Routes.AddTaskScreen,)
         {
             AddTaskScreen(navController)

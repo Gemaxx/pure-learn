@@ -18,7 +18,7 @@ import okhttp3.Route
 
 
 fun LazyListScope.GoalToDoList(
-    navController: NavController,
+   // navController: NavController,
     emptyListText:String,
     goals:List<Goal>,
     onDeleteIconClick: (Goal) -> Unit
@@ -44,7 +44,7 @@ fun LazyListScope.GoalToDoList(
         GoalCard(
             goal =goal,
             onClick = {
-                navController.navigate(Routes.AddTaskScreen)
+              //  navController.navigate(Routes.AddTaskScreen)
             },
             onDeleteIconClick = { }
         )

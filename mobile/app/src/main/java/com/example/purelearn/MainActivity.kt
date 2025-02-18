@@ -4,14 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import com.example.anew.ui.theme.PureLearnTheme
 import com.example.purelearn.domain.model.Goal
 import com.example.purelearn.domain.model.Task
-import com.example.purelearn.ui.theme.PureLearnTheme
+import com.example.purelearn.ui.theme.Goal.AddGoalScreen
 import com.example.purelearn.ui.theme.home.HomeScreen
-
-import com.example.purelearn.ui.theme.navigation.MyAppNavigation
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -21,8 +22,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            PureLearnTheme {
-                HomeScreen()
+              PureLearnTheme {
+                 // AddGoalScreen()
+               HomeScreen()
           //  MyAppNavigation()
             }
         }

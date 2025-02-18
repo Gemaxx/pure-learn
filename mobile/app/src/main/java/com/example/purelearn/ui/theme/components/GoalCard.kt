@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
@@ -42,9 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.purelearn.R
 import com.example.purelearn.domain.model.Goal
-import com.example.purelearn.goals
-import com.example.purelearn.ui.theme.Blue
-import com.example.purelearn.ui.theme.Orange
+
 import java.time.format.DateTimeFormatter
 
 @Preview(showSystemUi = true)
@@ -181,7 +180,7 @@ private fun GoalProgress(
                 progress = progress,
                 strokeWidth = 4.dp,
                 strokeCap = StrokeCap.Round,
-                color = Orange
+                color = Color.Red
 
             )
             Text(text = "$percentageProgress%")

@@ -14,6 +14,6 @@ interface CategoryRepository{
 
     suspend fun deleteCategory(id: Int): Flow<CategoryResponse>
 
-    suspend fun updateCategory(id: Int, category: Category): Flow<CategoryResponse>
+    suspend fun updateCategory(id: Int, category:Category): Flow<CategoryResponse>
 
 }

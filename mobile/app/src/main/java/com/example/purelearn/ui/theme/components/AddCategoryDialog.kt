@@ -1,27 +1,16 @@
 package com.example.purelearn.ui.theme.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -33,46 +22,29 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.purelearn.R
-import com.example.purelearn.domain.model.Category
-import com.example.purelearn.ui.theme.Red
 
 
 @Composable
 fun AddCategoryDialog(
     isOpen:Boolean,
-//   // title:String="Add Category",
-//    title:String,
-      selectedColors:List<Color>,
-//    categoryName:String,
-//    description: String,
-    onColorChange:(List<Color>)->Unit,
-//    onTileChange:(String)->Unit,
-//    onDescriptionChange:(String)->Unit,
-//    onDismissRequest:()->Unit,
-//    onConfirmButtonClick:()->Unit
-
     title: String,
     description: String,
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
-    onShowValue: (Boolean) -> Unit,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    onDismiss: () -> Unit,
+    onSave:()->Unit
 ) {
 
-//    var title by remember { mutableStateOf("") }
-//    var description by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
 
     var categoryNameError by rememberSaveable { mutableStateOf<String?>(null) }
@@ -93,42 +65,25 @@ fun AddCategoryDialog(
 
     if(isOpen){
         AlertDialog(
-            onDismissRequest = {  },
+            onDismissRequest = {},
+            containerColor = MaterialTheme.colorScheme.surface,
+            shape = RoundedCornerShape(16.dp),
             title = {
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
-                    IconButton(onClick = {
-                        onShowValue(false)
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Close, contentDescription = "", tint = Red
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Add Category",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+
                         )
-                    }
                 }
             },
             text = {
-                Column {
-                    Row (
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 16.dp),
-                        horizontalArrangement = Arrangement.SpaceAround
-                    ){
-                        Category.CategoryCardColors.forEach{colors->
-                            Box(
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .clip(CircleShape)
-                                    .border(
-                                        width = 1.dp,
-                                        color = if (colors == selectedColors) Color.Black
-                                        else Color.Transparent,
-                                        shape = CircleShape
-                                    )
-                                    .background(brush = Brush.verticalGradient(colors))
-                                    .clickable { onColorChange(colors) }
-                            )
-                        }
-                    }
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(text = "Title", color = MaterialTheme.colorScheme.onSurface)
                     AppTextField(
                         text = title,
                         placeholder = stringResource(R.string.enter_title),
@@ -140,13 +95,12 @@ fun AddCategoryDialog(
                         }),
                         onNext = {
                             focusManager.moveFocus(FocusDirection.Down)
-                        }
-                    ) {
-                        onTitleChange(it)
-                    }
+                        },
+                        onValueChange = { onTitleChange(it) }
+                    )
 
-                    Spacer(modifier = Modifier.height(15.dp))
-
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "Description", color = MaterialTheme.colorScheme.onSurface)
                     AppTextField(
                         text = description,
                         placeholder = "Enter description",
@@ -157,28 +111,27 @@ fun AddCategoryDialog(
                         }),
                         onDone = {
                             controller?.hide()
-                        }
-                    ) {
-                        onDescriptionChange(it)
-                    }
+                        },
+                        onValueChange = { onDescriptionChange(it)}
+                    )
                 }
             },
             dismissButton = {
-                TextButton(onClick = {  }) {
+                TextButton(onClick = { onDismiss() }) {
                     Text(text="Cancel")
                 }
             },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        onClick()
+                        onSave()
                     },
                     enabled = title.isNotEmpty()
                 ) {
                     if (isLoading) {
                         CircularProgressIndicator(modifier = Modifier.size(20.dp), color = MaterialTheme.colorScheme.onPrimary)
                     } else {
-                        Text("Add")
+                        Text("Save")
                     }
 
 

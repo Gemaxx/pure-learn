@@ -2,20 +2,17 @@ package com.example.purelearn.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
-val Red = Color(0xFFD53A2F)
-val Blue = Color(0xFFA6C4F6)
-val Green = Color(0xFF1E9651)
-val Orange = Color(0xFFFF3300)
+// Dark Mode Colors
+val DarkBackground = Color(0xFF1C1C1C)  // Dark background
+val DarkSurface = Color(0xFF2A2A2A)  // Slightly lighter for cards
+val DarkPrimary = Color(0xFFFFFFFF)  // White text
+val DarkSecondary = Color(0xFFAAAAAA)  // Gray text
+val DarkFAB = Color(0xFF00A6FF)  // Blue FAB
 
-val gradient1 = listOf(Color(0xFFad5389), Color(0xFF3c1053))
-val gradient2 = listOf(Color(0xFF3A6073), Color(0xFF16222A))
-val gradient3 = listOf(Color(0xFFF857A6), Color(0xFFFF5858))
-val gradient4 = listOf(Color(0xFF00d2ff), Color(0xFF3a7bd5))
-val gradient5 = listOf(Color(0xFF99f2c8), Color(0xFF1f4037))
+// Light Mode Colors
+val LightBackground = Color(0xFFFFFFFF)  // White background
+val LightSurface = Color(0xFFF5F5F5)  // Light gray for cards
+val LightPrimary = Color(0xFF000000)  // Black text
+val LightSecondary = Color(0xFF666666)  // Dark gray text
+val LightFAB = Color(0xFF007AFF)  // Blue FAB

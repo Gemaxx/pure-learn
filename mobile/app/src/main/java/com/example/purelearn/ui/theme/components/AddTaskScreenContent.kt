@@ -275,7 +275,7 @@ fun AddTaskScreenContent(
         )
 
 
-        StatusDropDownList()
+        //StatusDropDownList()
     }
 }
 
@@ -303,7 +303,7 @@ fun CustomTextField(
         Text(
             text = label,
             fontSize = 14.sp,
-            color =  Black,
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Normal,
             modifier = Modifier.alpha(0.7f)
         )

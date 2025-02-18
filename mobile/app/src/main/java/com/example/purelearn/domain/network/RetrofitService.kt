@@ -6,33 +6,48 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
+import retrofit2.http.PATCH
 
 interface RetrofitService {
 
     //physical device  "http://192.168.1.6:5115/api/"
     //emulator  "http://10.0.2.2:5115/api/"
     companion object {
-        const val baseUrl = "http://192.168.1.6:5115/api/"
+        const val baseUrl = "http://192.168.1.12:5115/api/"
     }
 
-    @GET("Categories")
-    suspend fun getCategory(): List<CategoryResponse>
+    @GET("learners/{learnerId}/categories")
+    suspend fun getCategory(
+        @Path("learnerId") learnerId: Int,
+        @Query("IsDeleted") isDeleted: Boolean = false
+    ): List<CategoryResponse>
 
-    @POST("Categories")
+    @POST("learners/{learnerId}/categories")
     suspend fun addCategory(
+        @Path("learnerId") learnerId: Int,
         @Body category:Category
     ): CategoryResponse
 
-    @PUT("Categories/{id}/")
+//    @PUT("Categories/{id}/")
+//    suspend fun updateCategory(
+//        @Path("id") id: Int,
+//        @Body category:Category
+//    ): CategoryResponse
+//
+
+    @PATCH("learners/{learnerId}/categories/{categoryId}")
     suspend fun updateCategory(
-        @Path("id") id: Int,
-        @Body category:Category
+        @Path("learnerId") learnerId: Int,
+        @Path("categoryId") categoryId: Int,
+        @Query("IsDeleted") isDeleted: Boolean = false,
+        @Body category: Category
     ): CategoryResponse
 
-    @DELETE("Categories/{id}/")
+    @DELETE("learners/{learnerId}/categories/{categoryId}")
     suspend fun deleteCategory(
-        @Path("id") id: Int
+    @Path("learnerId") learnerId: Int,
+    @Path("categoryId") categoryId: Int
     ): CategoryResponse
 }
