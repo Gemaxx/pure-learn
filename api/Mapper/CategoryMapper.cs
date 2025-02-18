@@ -46,7 +46,7 @@ namespace api.Mapper
         }
 
         // Mapping from UpdateCategoryRequestDto to Category model (added this method)
-        public static void UpdateCategoryFromUpdateDto(this Category category, UpdateCategoryRequestDto updateCategoryRequestDto)
+        public static void UpdateCategoryFromUpdateDto(this Category category, PatchCategoryRequestDto updateCategoryRequestDto)
         {
             if (updateCategoryRequestDto.Title != null)
             {
