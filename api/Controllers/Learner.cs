@@ -25,11 +25,7 @@ namespace api.Controllers
         public async Task<ActionResult<IEnumerable<Learner>>> GetLearners()
         {
             return await _context.Learners
-                                 .Include(l => l.Categories)
-                                 .Include(l => l.Goals)
-                                 .Include(l => l.LearningResources)
-                                 .Include(l => l.Notes)
-                                 .Include(l => l.Tasks)
+                                
                                  .ToListAsync();
         }
 
