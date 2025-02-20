@@ -8,6 +8,7 @@ namespace api.Helpers
     public class GoalQueryObject
     {
         
+        public string? Title { get; set; }
         public bool IsDeleted { get; set; } = false;
         public long? CategoryId { get; set; }
         public string? Status { get; set; }

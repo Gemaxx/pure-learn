@@ -10,6 +10,8 @@ namespace api.Dtos.Note
     {
         public long Id { get; set; }
 
+        public long? GoalId { get; set; }
+
         [Required(ErrorMessage = "Title is required.")]
         [StringLength(255, MinimumLength = 3, ErrorMessage = "Title must be between 3 and 255 characters.")]
         public string Title { get; set; } = null!;

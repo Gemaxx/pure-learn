@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/learners/{learnerId}/[controller]")]
     public class NotesController : ControllerBase
     {
          private readonly INoteRepository _noteRepo;

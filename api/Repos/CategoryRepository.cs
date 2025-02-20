@@ -46,7 +46,14 @@ public class CategoryRepository : ICategoryRepository
 
     public async Task<List<Category>> GetCategoriesAsync(long learnerId, CategoryQueryObject query)
     {
-        return await _context.Categories.Where(c => c.LearnerId == learnerId && c.IsDeleted == query.IsDeleted).ToListAsync();
+        var categoriesQuery = _context.Categories.Where(c => c.LearnerId == learnerId && c.IsDeleted == query.IsDeleted);
+
+        if (!string.IsNullOrEmpty(query.Title))
+        {
+            categoriesQuery = categoriesQuery.Where(c => c.Title.Contains(query.Title));
+        }
+
+        return await categoriesQuery.ToListAsync();
     }
 
     public async Task<Category?> GetCategoryAsync(long learnerId, long categoryId)

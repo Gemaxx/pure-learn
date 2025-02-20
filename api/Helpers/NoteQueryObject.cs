@@ -11,10 +11,10 @@ namespace api.Helpers
         public string? Title { get; set; }
 
         // Search by associated Category, Goal, Subgoal, or Task
-        public long? CategoryId { get; set; }
+        // public long? CategoryId { get; set; }
         public long? GoalId { get; set; }
-        public long? SubgoalId { get; set; }
-        public long? TaskId { get; set; }
+        // public long? SubgoalId { get; set; }
+        // public long? TaskId { get; set; }
 
         // Sorting (e.g., "title", "createdAt", "updatedAt")
         public string? SortBy { get; set; } = "createdAt";

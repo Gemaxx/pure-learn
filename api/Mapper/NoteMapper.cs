@@ -15,6 +15,7 @@ namespace api.Mapper
             return new NoteDto
             {
                 Id = note.Id,
+                GoalId = note.GoalId,
                 Title = note.Title,
                 Body = note.Body
             };
@@ -32,10 +33,12 @@ namespace api.Mapper
                 UpdatedAt = note.UpdatedAt,
                 DeletedAt = note.DeletedAt,
                 LearnerId = note.LearnerId,
-                CategoryId = note.CategoryId,
                 GoalId = note.GoalId,
+                /*
+                CategoryId = note.CategoryId,
                 SubgoalId = note.SubgoalId,
                 TaskId = note.TaskId,
+                */
                 IsDeleted = note.IsDeleted
             };
         }
@@ -47,11 +50,10 @@ namespace api.Mapper
             {
                 Title = noteDto.Title,
                 Body = noteDto.Body,
-                LearnerId = noteDto.LearnerId,
-                CategoryId = noteDto.CategoryId,
+                // CategoryId = noteDto.CategoryId,
                 GoalId = noteDto.GoalId,
-                SubgoalId = noteDto.SubgoalId,
-                TaskId = noteDto.TaskId,
+                // SubgoalId = noteDto.SubgoalId,
+                // TaskId = noteDto.TaskId,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
                 IsDeleted = false
@@ -71,15 +73,17 @@ namespace api.Mapper
                 note.Body = patchNoteDto.Body;
             }
 
+            if (patchNoteDto.GoalId.HasValue)
+            {
+                note.GoalId = patchNoteDto.GoalId;
+            }
+            
+            /*
             if (patchNoteDto.CategoryId.HasValue)
             {
                 note.CategoryId = patchNoteDto.CategoryId;
             }
 
-            if (patchNoteDto.GoalId.HasValue)
-            {
-                note.GoalId = patchNoteDto.GoalId;
-            }
 
             if (patchNoteDto.SubgoalId.HasValue)
             {
@@ -90,7 +94,7 @@ namespace api.Mapper
             {
                 note.TaskId = patchNoteDto.TaskId;
             }
-
+            */
             note.UpdatedAt = DateTime.UtcNow;
         }
     }

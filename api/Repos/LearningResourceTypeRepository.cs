@@ -49,6 +49,10 @@ namespace api.Repos
             var learningResourceTypes = _context.LearningResourceTypes
             .Where(lrt => lrt.LearnerId == learnerId && lrt.IsDeleted == query.IsDeleted)
             .AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Name))
+            {
+                learningResourceTypes = learningResourceTypes.Where(lrt => lrt.Name.Contains(query.Name));
+            }
 
             return await learningResourceTypes.ToListAsync();           
         }

@@ -13,10 +13,12 @@ namespace api.Dtos.Note
 
         [MaxLength(5000, ErrorMessage = "Body cannot exceed 5000 characters.")]
         public string? Body { get; set; }
-
-        public long? CategoryId { get; set; }
         public long? GoalId { get; set; }
+
+       /*
+        public long? CategoryId { get; set; }
         public long? SubgoalId { get; set; }
         public long? TaskId { get; set; }
+        */  
     }
 }

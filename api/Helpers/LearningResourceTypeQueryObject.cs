@@ -7,6 +7,7 @@ namespace api.Helpers
 {
     public class LearningResourceTypeQueryObject
     {
+        public string? Name { get; set; }
         public bool IsDeleted { get; set; } = false;   
     }
 }

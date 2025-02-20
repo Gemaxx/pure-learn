@@ -12,10 +12,9 @@ namespace api.Dtos.Note
         public DateTime? DeletedAt { get; set; }
         
         public long LearnerId { get; set; }
-        public long? CategoryId { get; set; }
-        public long? GoalId { get; set; }
-        public long? SubgoalId { get; set; }
-        public long? TaskId { get; set; }
+        // public long? CategoryId { get; set; }
+        // public long? SubgoalId { get; set; }
+        // public long? TaskId { get; set; }
 
         public bool IsDeleted { get; set; } = false;  }
 }

@@ -31,22 +31,28 @@ namespace api.Repos
             {
                 notesQuery = notesQuery.Where(n => n.Title.Contains(query.Title));
             }
-            if (query.CategoryId.HasValue)
-            {
-                notesQuery = notesQuery.Where(n => n.CategoryId == query.CategoryId);
-            }
+      
             if (query.GoalId.HasValue)
             {
                 notesQuery = notesQuery.Where(n => n.GoalId == query.GoalId);
             }
+
+            /*
+            if (query.CategoryId.HasValue)
+            {
+                notesQuery = notesQuery.Where(n => n.CategoryId == query.CategoryId);
+            }
+            
             if (query.SubgoalId.HasValue)
             {
                 notesQuery = notesQuery.Where(n => n.SubgoalId == query.SubgoalId);
             }
+            
             if (query.TaskId.HasValue)
             {
                 notesQuery = notesQuery.Where(n => n.TaskId == query.TaskId);
             }
+            */
 
             // Sorting
             if (query.SortBy == "title")
