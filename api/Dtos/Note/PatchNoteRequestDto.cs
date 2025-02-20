@@ -6,15 +6,17 @@ using System.Threading.Tasks;
 
 namespace api.Dtos.Note
 {
-    public class NoteDto
+    public class PatchNoteRequestDto
     {
-        public long Id { get; set; }
-
-        [Required(ErrorMessage = "Title is required.")]
         [StringLength(255, MinimumLength = 3, ErrorMessage = "Title must be between 3 and 255 characters.")]
-        public string Title { get; set; } = null!;
+        public string? Title { get; set; }
 
-        [Required(ErrorMessage = "Body is required.")]
         [MaxLength(5000, ErrorMessage = "Body cannot exceed 5000 characters.")]
-        public string Body { get; set; } = null!;        }
+        public string? Body { get; set; }
+
+        public long? CategoryId { get; set; }
+        public long? GoalId { get; set; }
+        public long? SubgoalId { get; set; }
+        public long? TaskId { get; set; }
+    }
 }
