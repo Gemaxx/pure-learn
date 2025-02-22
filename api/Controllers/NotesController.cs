@@ -16,7 +16,7 @@ namespace api.Controllers
     {
          private readonly INoteRepository _noteRepo;
         private readonly ILearnerRepository _learnerRepo;
-
+             
         public NotesController(INoteRepository noteRepo, ILearnerRepository learnerRepo)
         {
             _noteRepo = noteRepo;
