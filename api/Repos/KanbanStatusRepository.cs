@@ -60,5 +60,29 @@ namespace api.Repos
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<bool> SoftDeleteKanbanStatusAsync(long learnerId, long statusId)
+        {
+            var status = await GetKanbanStatusAsync(learnerId, statusId);
+            if (status == null)
+            return false;
+
+            status.IsDeleted = true;
+            _context.KanbanStatuses.Update(status);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> RestoreKanbanStatusAsync(long learnerId, long statusId)
+        {
+            var status = await GetKanbanStatusAsync(learnerId, statusId);
+            if (status == null)
+            return false;
+
+            status.IsDeleted = false;
+            _context.KanbanStatuses.Update(status);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

@@ -24,6 +24,10 @@ namespace api.Interfaces
         // Delete a TaskType (permanently).
         Task<bool> DeleteTaskTypeAsync(long learnerId, long taskTypeId);
 
-        // Optionally, soft delete and restore methods can be added.
+        //soft delete and restore methods can be added.
+        Task<bool> SoftDeleteTaskTypeAsync(long learnerId, long taskTypeId);
+        Task<bool> RestoreTaskTypeAsync(long learnerId, long taskTypeId);
+
+
     }
 }

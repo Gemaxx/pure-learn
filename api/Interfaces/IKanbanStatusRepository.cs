@@ -23,6 +23,8 @@ namespace api.Interfaces
         // Delete a Kanban status permanently.
         Task<bool> DeleteKanbanStatusAsync(long learnerId, long statusId);
 
-        // Optional: Soft delete and restore methods if needed.   
+        // Optional: Soft delete and restore methods if needed.
+         Task<bool> SoftDeleteKanbanStatusAsync(long learnerId, long statusId);
+         Task<bool> RestoreKanbanStatusAsync(long learnerId, long statusId);
     }
 }

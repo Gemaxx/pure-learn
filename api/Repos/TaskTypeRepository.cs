@@ -66,5 +66,30 @@ namespace api.Repos
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<bool> SoftDeleteTaskTypeAsync(long learnerId, long taskTypeId)
+        {
+            var taskType = await GetTaskTypeAsync(learnerId, taskTypeId);
+            if (taskType == null)
+            return false;
+
+            taskType.IsDeleted = true;
+            _context.TaskTypes.Update(taskType);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> RestoreTaskTypeAsync(long learnerId, long taskTypeId)
+        {
+            var taskType = await _context.TaskTypes
+            .FirstOrDefaultAsync(tt => tt.LearnerId == learnerId && tt.Id == taskTypeId && tt.IsDeleted);
+            if (taskType == null)
+            return false;
+
+            taskType.IsDeleted = false;
+            _context.TaskTypes.Update(taskType);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

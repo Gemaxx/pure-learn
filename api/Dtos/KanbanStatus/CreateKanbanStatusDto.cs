@@ -12,8 +12,7 @@ namespace api.Dtos.KanbanStatus
         [StringLength(255, ErrorMessage = "Name must be provided and cannot exceed 255 characters.")]
         public string Name { get; set; } = "Default Status";
 
-        [Required]
         [Range(1, int.MaxValue, ErrorMessage = "MaxTasks must be a positive number.")]
-        public int MaxTasks { get; set; }
+        public int? MaxTasks { get; set; }
     }
 }
