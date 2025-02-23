@@ -35,8 +35,8 @@
   - Develop high-fidelity prototypes
   - Define design system (Typography, Color Palette, Components)
   - **UI Design Reference**: 
-    - [Mobil UI Design Prototype](https://www.figma.com/proto/zSX1hrAACeHMjNBHVj7E5Q/Pure-Learn-Mobile-UI?node-id=34-22&t=7utWEtpwKHrcuHhh-1&starting-point-node-id=34%3A22)
-    - [Web UI Design](https://www.figma.com/proto/zSX1hrAACeHMjNBHVj7E5Q/Pure-Learn-Mobile-UI?node-id=34-22&t=7utWEtpwKHrcuHhh-1&starting-point-node-id=34%3A22)
+    - [Mobil UI Design Prototype](https://www.figma.com/proto/zSX1hrAACeHMjNBHVj7E5Q/Pure-Learn-Mobile-UI?page-id=0%3A1&node-id=31-17&p=f&viewport=189%2C43%2C0.34&t=PgKHtGcTvfo4QMB4-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=31%3A17)
+    - [Web UI Design (Not-Started)](https://www.figma.com/proto/zSX1hrAACeHMjNBHVj7E5Q/Pure-Learn-Mobile-UI?node-id=34-22&t=7utWEtpwKHrcuHhh-1&starting-point-node-id=34%3A22)
   
 - **Frontend Development (Next.js, TailwindCSS, ShadCN UI)**
 
