@@ -2,6 +2,8 @@ package com.example.purelearn.domain.network
 
 import com.example.purelearn.domain.model.Category
 import com.example.purelearn.domain.model.CategoryResponse
+import com.example.purelearn.domain.model.Goal
+import com.example.purelearn.domain.model.GoalResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -30,12 +32,6 @@ interface RetrofitService {
         @Body category:Category
     ): CategoryResponse
 
-//    @PUT("Categories/{id}/")
-//    suspend fun updateCategory(
-//        @Path("id") id: Int,
-//        @Body category:Category
-//    ): CategoryResponse
-//
 
     @PATCH("learners/{learnerId}/categories/{categoryId}")
     suspend fun updateCategory(
@@ -50,4 +46,42 @@ interface RetrofitService {
     @Path("learnerId") learnerId: Int,
     @Path("categoryId") categoryId: Int
     ): CategoryResponse
+
+
+
+
+
+    @GET("learners/{learnerId}/goals")
+    suspend fun getGoal(
+        @Path("learnerId") learnerId: Int,
+        @Query("IsDeleted") isDeleted: Boolean? = null,
+        @Query("CategoryId") categoryId: Int? = null,
+        @Query("Status") status: String? = null,
+        @Query("Term") term: String? = null,
+        @Query("SortBy") sortBy: String? = null,
+        @Query("IsSortAscending") isSortAscending: Boolean? = null
+    ): List<GoalResponse>
+
+    @POST("learners/{learnerId}/goals")
+    suspend fun addGoal(
+        @Path("learnerId") learnerId: Int,
+        @Body goal: Goal
+    ): GoalResponse
+
+
+    @PATCH("learners/{learnerId}/goals/{goalId}")
+    suspend fun updateGoal(
+        @Path("learnerId") learnerId: Int,
+        @Path("goalId") goalId: Int,
+        @Body goal: Goal
+    ): GoalResponse
+
+
+    @DELETE("learners/{learnerId}/goals/{goalId}/hard-delete")
+    suspend fun deleteGoal(
+        @Path("learnerId") learnerId: Int,
+        @Path("goalId") goalId: Int
+    ): GoalResponse
+
+
 }

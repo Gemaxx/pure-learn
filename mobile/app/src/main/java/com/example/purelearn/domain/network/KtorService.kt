@@ -2,6 +2,8 @@ package com.example.purelearn.domain.network
 
 import com.example.purelearn.domain.model.Category
 import com.example.purelearn.domain.model.CategoryResponse
+import com.example.purelearn.domain.model.Goal
+import com.example.purelearn.domain.model.GoalResponse
 
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -46,11 +48,51 @@ class KtorService @Inject constructor(
     }
 
     @OptIn(InternalAPI::class)
-    suspend fun updateCategory(id: Int, category:Category): CategoryResponse {
-        return httpClient.put {
-            url("$baseUrl/$id/")
+    suspend fun updateCategory(learnerId: Int, categoryId: Int, category: Category): CategoryResponse {
+        return httpClient.patch {
+            url("$baseUrl/api/learners/$learnerId/categories/$categoryId")
             contentType(ContentType.Application.Json)
             setBody(category)
         }.body()
     }
+
+
+
+
+
+
+
+    suspend fun getGoal(): List<GoalResponse> {
+        return httpClient.get {
+            url(baseUrl){
+                timeout { requestTimeoutMillis=60000 }
+            }
+        }.body()
+    }
+
+    @OptIn(InternalAPI::class)
+    suspend fun addGoal(goal: Goal): GoalResponse {
+        return httpClient.post {
+            contentType(ContentType.Application.Json)
+            url(baseUrl)
+            setBody(goal)
+
+        }.body()
+    }
+
+    suspend fun deleteGoal(id: Int): HttpResponse {
+        return httpClient.delete("$baseUrl/$id")
+    }
+
+    @OptIn(InternalAPI::class)
+    suspend fun updateGoal(learnerId: Int, goalId: Int, goal: Goal): GoalResponse {
+        return httpClient.patch {
+            url("$baseUrl/api/learners/$learnerId/goals/$goalId")
+            contentType(ContentType.Application.Json)
+            setBody(goal)
+        }.body()
+    }
+
+
+
 }
