@@ -24,7 +24,10 @@ import androidx.compose.ui.unit.dp
 import com.example.purelearn.R
 
 @Composable
-fun TermDropDownList() {
+fun TermDropDownList(
+    selectedTerm: String,
+    onTermChange: (String) -> Unit
+) {
 
     val isDropDownExpanded = remember {
         mutableStateOf(false)
@@ -61,18 +64,18 @@ fun TermDropDownList() {
                 )
             }
             DropdownMenu(
-
                 expanded = isDropDownExpanded.value,
                 onDismissRequest = {
                     isDropDownExpanded.value = false
                 }) {
-                usernames.forEachIndexed { index, username ->
+                usernames.forEachIndexed { index, term ->
                     DropdownMenuItem(text = {
-                        Text(text = username)
+                        Text(text = term)
                     },
                         onClick = {
                             isDropDownExpanded.value = false
                             itemPosition.value = index
+                            onTermChange(term)
                         })
                 }
             }

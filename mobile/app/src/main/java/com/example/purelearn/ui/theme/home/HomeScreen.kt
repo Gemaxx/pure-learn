@@ -5,9 +5,6 @@ import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -20,12 +17,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.purelearn.domain.model.Category
 import com.example.purelearn.domain.model.CategoryResponse
 import com.example.purelearn.ui.theme.components.AddCategoryDialog
 import com.example.purelearn.ui.theme.components.CategoryCard
 import com.example.purelearn.ui.theme.components.HomeTopAppBar
 import com.example.purelearn.ui.theme.components.LoadingBar
+import com.example.purelearn.ui.theme.components.SwipeToDeleteContainer
 import com.example.purelearn.ui.theme.components.showToast
 import com.example.purelearn.ui.theme.home.homeviewmodel.CategoryViewModel
 import com.example.purelearn.ui.theme.home.homeviewmodel.events.CategoryEvents
@@ -35,8 +34,8 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun HomeScreen(
-    viewModel: CategoryViewModel = hiltViewModel(),
-   // navController: NavController
+    navController: NavController,
+    viewModel: CategoryViewModel = hiltViewModel()
 ) {
 
 
@@ -66,7 +65,7 @@ fun HomeScreen(
         viewModel.updateCategoryEvent.collectLatest {
             isLoading = when (it) {
                 is CategoryUiEvents.Success -> {
-                    context.showToast("Note Updated!")
+                    context.showToast("Category Updated!")
                     viewModel.onEvent(CategoryEvents.ShowCategories)
                     isAddCategoryDialogOpen = false
                     false
@@ -87,13 +86,13 @@ fun HomeScreen(
         viewModel.deleteCategoryEvent.collectLatest {
             isLoading = when (it) {
                 is CategoryUiEvents.Success -> {
-                    context.showToast("Note Deleted")
+                    context.showToast("Category Deleted")
                     viewModel.onEvent(CategoryEvents.ShowCategories)
                     false
                 }
 
                 is CategoryUiEvents.Failure -> {
-                    context.showToast("Note Deleted")
+                    context.showToast("Category Deleted")
                     viewModel.onEvent(CategoryEvents.ShowCategories)
                     false
                 }
@@ -162,18 +161,18 @@ fun HomeScreen(
 
 
             Column(modifier = Modifier
-               .fillMaxSize()
-               .background(
-                   color = MaterialTheme.colorScheme.background
-               )){
+                .fillMaxSize()
+                .background(
+                    color = MaterialTheme.colorScheme.background
+                )){
 
                 Text(
-                    text = "Your Categories", // Change this to your desired title
-                    style = MaterialTheme.typography.titleMedium, // Use title style
+                    text = "Your Categories",
+                    style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 10.dp) // Padding for spacing
+                        .padding(horizontal = 20.dp, vertical = 10.dp)
                 )
 
                if (response.data.isNotEmpty()) LazyColumn(
@@ -185,44 +184,48 @@ fun HomeScreen(
 
 
                    items(categories, key = { it.id })
-                   {
-                       CategoryCard(
-                           category = it,
-                           {
-                        title = it.title
-                      //  description = it.description
-                        isUpdateCategoryDialogOpen = true
-                        categoryId = it.id
-                           },
-                           onUpdateCategory ={ isUpdateCategoryDialogOpen=true}
+                   { category ->
+                   SwipeToDeleteContainer(
+                           item = category,
+                           onDelete = {
+                                   viewModel.onEvent(CategoryEvents.DeleteCategoryEvent(category.id))
+                               },
+                           animationDuration = 300,
+                           content = { item->
+                               CategoryCard(
+                               category = item,
+//                               {
+//                                   title = item.title
+//                                   //  description = it.description
+//                                   isUpdateCategoryDialogOpen = true
+//                                   categoryId = item.id
+//                               },
+                                   onClick = {
+                                       // Navigate to GoalScreen with categoryId
+                                      // navController.navigate("goal/${item.id}")
+                                       navController.navigate("GoalScreen/${item.id}")
+
+
+                                   },
+                               onUpdateCategory = {
+                                   isUpdateCategoryDialogOpen = true
+                                   title = item.title
+                                   categoryId = item.id
+                                   isUpdateCategoryDialogOpen = true
+                               }
+                           )
+                           }
                        )
-
-
-
-
 
                    }
                }
 
-
-//                    categoryList(
-//                        viewModel = viewModel,
-//                        categoryTitle = "My Categories",
-//                        emptyListText = "You do not have any category. Click the + button to add one.",
-//                        categories = response.data,
-//                        //navController = navController,
-//                        onDeleteIconClick = {
-//                        },
-//                        onUpdateCategory ={
-//
-//                        }
-//                    )
-
-
-
+                
             }
         }
     }
+
+    Log.d("UpdateCategory", "Updating categoryId: $categoryId with title: $title")
 
     if(isUpdateCategoryDialogOpen)
     {
@@ -234,12 +237,13 @@ fun HomeScreen(
             description = description,
             onClick = { },
             onDismiss =  { isUpdateCategoryDialogOpen = false },
+
             onSave={
                 if (title.isNotEmpty() && description.isNotEmpty()) {
                     viewModel.onEvent(
                         CategoryEvents.UpdateCategoryEvent(
                             category = Category(
-                                id = 2,
+                                id = categoryId,
                                 title = title,
                                 color = "#FF33A1",
                               //  description = description
@@ -288,7 +292,7 @@ fun HomeScreen(
 @Preview
 @Composable
 fun HomeScreenPreview(modifier: Modifier = Modifier) {
-    HomeScreen()
+    //HomeScreen()
 }
 
 

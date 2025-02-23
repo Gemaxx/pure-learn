@@ -4,15 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.navigation.compose.rememberNavController
 import com.example.anew.ui.theme.PureLearnTheme
 import com.example.purelearn.domain.model.Goal
 import com.example.purelearn.domain.model.Task
-import com.example.purelearn.ui.theme.Goal.AddGoalScreen
+import com.example.purelearn.ui.theme.Goal.GoalScreen
 import com.example.purelearn.ui.theme.home.HomeScreen
+import com.example.purelearn.ui.theme.navigation.MyAppNavigation
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -22,10 +20,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-              PureLearnTheme {
-                 // AddGoalScreen()
-               HomeScreen()
-          //  MyAppNavigation()
+            val navController = rememberNavController()
+            PureLearnTheme {
+           //   GoalScreen()
+            //  HomeScreen()
+              MyAppNavigation(
+                  navController = navController
+              )
             }
         }
     }
@@ -64,35 +65,29 @@ val tasks= listOf(
 )
 val goals= listOf(
     Goal(
-        goalId = 1,
-        title = "Achieve some thing",
+        categoryId = 1,
+        title = "achieve some thing",
         description = "",
         motivation = "",
-        status = "",
-        isComplete = false,
-        kanbanStatus = "",
-   //     startDate = "",
-//        dueDate = ,
-//        timeSpent = TODO(),
-//        tasks = TODO(),
-//        notes = TODO(),
-//        resources = TODO()
+        term = "",
+        status = ""
     ),
     Goal(
-        goalId = 1,
-        title = "Achieve some thing",
+        categoryId = 1,
+        title = "achieve some thing",
         description = "",
         motivation = "",
-        status = "",
-        isComplete = false,
-        kanbanStatus = "",
- //       startDate = "",
-//        dueDate = ,
-//        timeSpent = TODO(),
-//        tasks = TODO(),
-//        notes = TODO(),
-//        resources = TODO()
-    )
+        term = "",
+        status = ""
+    ),
+    Goal(
+        categoryId = 1,
+        title = "achieve some thing",
+        description = "",
+        motivation = "",
+        term = "",
+        status = ""
+    ),
 )
 
 //val categories= listOf(

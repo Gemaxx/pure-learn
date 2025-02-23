@@ -2,39 +2,39 @@ package com.example.purelearn.ui.theme.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.purelearn.ui.theme.Goal.AddGoalScreen
+import androidx.navigation.navArgument
+import com.example.purelearn.ui.theme.Goal.GoalScreen
 import com.example.purelearn.ui.theme.Task.AddTaskScreen
 import com.example.purelearn.ui.theme.calendar.CalendarScreen
 import com.example.purelearn.ui.theme.chatpot.ChatBotScreen
 import com.example.purelearn.ui.theme.home.HomeScreen
+import com.example.purelearn.ui.theme.navigation.Routes.GoalScreen
 import com.example.purelearn.ui.theme.timer.TimerScreen
 
 @Composable
-fun MyAppNavigation(modifier: Modifier = Modifier) {
+fun MyAppNavigation(navController: NavHostController) {
 
-    val navController= rememberNavController()
-    //val dashboardViewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 
     NavHost(navController=navController, startDestination = Routes.HomeScreen, builder = {
 
-//        composable(Routes.MainScreen,)
-//        {
-//            MainScreen(navController)
-//        }
-            composable(Routes.HomeScreen,)
-            {
-                HomeScreen(
-                   // viewModel = hiltViewModel(),
-                    //navController = navController
-                )
-            }
-//        composable(Routes.GoalScreen,)
-//        {
-//           // AddGoalScreen(navController)
-//        }
+        composable(Routes.HomeScreen) {
+            HomeScreen(navController)
+        }
+        composable("GoalScreen/{categoryId}") { backStackEntry ->
+            val categoryId = backStackEntry.arguments?.getString("categoryId")?.toIntOrNull()
+            GoalScreen(
+                navController = navController,
+                categoryId = categoryId,
+                viewModel = hiltViewModel()
+            )
+        }
+
         composable(Routes.AddTaskScreen,)
         {
             AddTaskScreen(navController)
