@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material3.*
+import androidx.compose.ui.graphics.Color
 import com.example.purelearn.ui.theme.DarkBackground
 import com.example.purelearn.ui.theme.DarkFAB
 import com.example.purelearn.ui.theme.DarkPrimary
@@ -41,16 +42,19 @@ private val LightColorScheme = lightColorScheme(
     surface = LightSurface,
     primary = LightPrimary,
     secondary = LightSecondary,
-    primaryContainer = LightFAB
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    primaryContainer = LightFAB,
+
+
+
+/* Other default colors to override
+background = Color(0xFFFFFBFE),
+surface = Color(0xFFFFFBFE),
+onPrimary = Color.White,
+onSecondary = Color.White,
+onTertiary = Color.White,
+onBackground = Color(0xFF1C1B1F),
+onSurface = Color(0xFF1C1B1F),
+*/
 )
 
 @Composable

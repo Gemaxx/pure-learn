@@ -133,10 +133,7 @@ fun AddCategoryDialog(
                     } else {
                         Text("Save")
                     }
-
-
                 }
-
             }
 
         )

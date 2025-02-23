@@ -16,3 +16,10 @@ val LightSurface = Color(0xFFF5F5F5)  // Light gray for cards
 val LightPrimary = Color(0xFF000000)  // Black text
 val LightSecondary = Color(0xFF666666)  // Dark gray text
 val LightFAB = Color(0xFF007AFF)  // Blue FAB
+
+
+val Blue = Color(0xFF007BFF)
+val Yellow = Color(0xFFFFA500)
+val Green = Color(0xFF28A745)
+val Red = Color(0xFFDC3545)
+val Gray = Color(0xFFD3D3D3)

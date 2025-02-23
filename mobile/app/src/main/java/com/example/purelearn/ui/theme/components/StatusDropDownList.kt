@@ -28,7 +28,10 @@ import com.example.purelearn.R
 
 
 @Composable
-fun GoalStatusDropDownList() {
+fun GoalStatusDropDownList(
+    selectedStatus: String,
+    onStatusChange: (String) -> Unit
+) {
 
     val isDropDownExpanded = remember {
         mutableStateOf(false)
@@ -70,13 +73,14 @@ fun GoalStatusDropDownList() {
                 onDismissRequest = {
                     isDropDownExpanded.value = false
                 }) {
-                usernames.forEachIndexed { index, username ->
+                usernames.forEachIndexed { index, status ->
                     DropdownMenuItem(text = {
-                        Text(text = username)
+                        Text(text = status)
                     },
                         onClick = {
                             isDropDownExpanded.value = false
                             itemPosition.value = index
+                            onStatusChange(status)
                         })
                 }
             }
@@ -91,11 +95,11 @@ fun GoalStatusDropDownList() {
 @Composable
 fun GoalStatusDropDownListPreview() {
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        GoalStatusDropDownList()
-    }
+//    Surface(
+//        modifier = Modifier.fillMaxSize(),
+//        color = MaterialTheme.colorScheme.background
+//    ) {
+//        GoalStatusDropDownList()
+//    }
 
 }

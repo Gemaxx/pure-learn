@@ -132,4 +132,6 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
 
+    implementation ("androidx.core:core-ktx:1.12.0")
+
 }
