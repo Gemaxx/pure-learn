@@ -41,6 +41,9 @@ builder.Services.AddScoped<ILearningResourceRepository, LearningResourceReposito
 builder.Services.AddScoped<ILearningResourceTypeRepository, LearningResourceTypeRepository>();
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+builder.Services.AddScoped<ISubtaskRepository, SubtaskRepository>();
+builder.Services.AddScoped<ITaskTypeRepository, TaskTypeRepository>();
+builder.Services.AddScoped<IKanbanStatusRepository, KanbanStatusRepository>();
 
 
 

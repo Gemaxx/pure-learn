@@ -4,7 +4,6 @@ using api.Interfaces;
 using api.Mapper;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace api.Controllers
 {
     [Route("api/learners/{learnerId}/tasks")]
@@ -21,6 +20,7 @@ namespace api.Controllers
             _learnerRepo = learnerRepo;
         }
 
+        //هنجيب كل التاسكات
         // GET: api/learners/{learnerId}/tasks
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskDto>>> GetTasks(long learnerId, [FromQuery] TaskQueryObjects query)
@@ -32,9 +32,10 @@ namespace api.Controllers
             return Ok(tasks.Select(t => t.ToTaskDto()));
         }
 
+        //هنجيب تاسك معين   
         // GET: api/learners/{learnerId}/tasks/{taskId:long}
         [HttpGet("{taskId:long}")]
-        public async Task<ActionResult<TaskDetailDto>> GetTask(long learnerId, long taskId)
+        public async Task<ActionResult<TaskDto>> GetTask(long learnerId, long taskId)
         {
             var learner = await _learnerRepo.GetLearnerAsync(learnerId);
             if (learner == null) return NotFound(new { Message = "Learner not found." });
@@ -42,17 +43,18 @@ namespace api.Controllers
             var task = await _taskRepo.GetTaskAsync(learnerId, taskId);
             if (task == null) return NotFound(new { Message = "Task not found." });
 
-            return Ok(task.ToTaskDetailDto());
+            return Ok(task.ToTaskDto());
         }
 
+        //هنعمل تاسك جديد
         // POST: api/learners/{learnerId}/tasks
         [HttpPost]
-        public async Task<IActionResult> CreateTask(long learnerId, [FromBody] CreateTaskDto createTaskDto)
+        public async Task<IActionResult> CreateTask(long learnerId, [FromBody] CreateTaskRequestDto createTaskDto)
         {
             var learner = await _learnerRepo.GetLearnerAsync(learnerId);
             if (learner == null) return NotFound(new { Message = "Learner not found." });
 
-            var task = createTaskDto.ToTaskFromCreateDto();
+            var task = createTaskDto.ToTaskEntity();
             var createdTask = await _taskRepo.CreateTaskAsync(learnerId, task);
 
             return CreatedAtAction(nameof(GetTask),
@@ -60,6 +62,7 @@ namespace api.Controllers
                 createdTask.ToTaskDto());
         }
 
+        //هنعمل تعديل على تاسك معين
         // PATCH: api/learners/{learnerId}/tasks/{taskId:long}
         [HttpPatch("{taskId:long}")]
         public async Task<IActionResult> UpdateTask(long learnerId, long taskId, [FromBody] PatchTaskRequest patchTaskDto)
@@ -68,7 +71,7 @@ namespace api.Controllers
             if (task == null)
                 return NotFound(new { Message = "Task not found or does not belong to the learner." });
 
-            task.UpdateTaskFromPatchDto(patchTaskDto);
+            task.UpdateTaskFromPatch(patchTaskDto);
             var updatedTask = await _taskRepo.UpdateTaskAsync(learnerId, taskId, task);
             if (updatedTask == null)
                 return NotFound(new { Message = "Task not found during update." });
@@ -76,6 +79,7 @@ namespace api.Controllers
             return Ok(updatedTask.ToTaskDto());
         }
 
+        //هنمسح تاسك معين
         // DELETE: api/learners/{learnerId}/tasks/{taskId:long}
         [HttpDelete("{taskId:long}")]
         public async Task<IActionResult> DeleteTask(long learnerId, long taskId)
