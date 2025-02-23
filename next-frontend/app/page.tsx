@@ -12,6 +12,7 @@ import {
 import Layout from "./layout";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { Label } from "@/components/ui/label";
 
 
 export default function Home() {
@@ -19,6 +20,8 @@ export default function Home() {
     <Layout>
       <AppSidebar />
       <ThemeToggle />
+      <Label htmlFor="email">Your name address</Label>
+
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>

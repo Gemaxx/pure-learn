@@ -40,6 +40,8 @@ builder.Services.AddScoped<IGoalRepository, GoalRepository>();
 builder.Services.AddScoped<ILearningResourceRepository, LearningResourceRepository>();
 builder.Services.AddScoped<ILearningResourceTypeRepository, LearningResourceTypeRepository>();
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+
 
 
 
