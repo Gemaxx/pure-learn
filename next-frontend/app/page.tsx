@@ -20,7 +20,8 @@ export default function Home() {
     <Layout>
       <AppSidebar />
       <ThemeToggle />
-      <Label htmlFor="email">Your name address</Label>
+      <Label htmlFor="email">Hi Amal, ✨.</Label>
+    
 
       <NavigationMenu>
         <NavigationMenuList>
