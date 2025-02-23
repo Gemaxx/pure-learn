@@ -49,6 +49,12 @@ namespace api.Repos
             .Where(lr => lr.LearnerId == learnerId && lr.IsDeleted == query.IsDeleted)
             .AsQueryable();
 
+            // Filter Learning Resources by title
+            if (!string.IsNullOrWhiteSpace(query.Title))
+            {
+                learningResources = learningResources.Where(lr => lr.Title.Contains(query.Title));
+            }
+
             // Filter Learning Resources by goal
             if (query.GoalId.HasValue){
                 learningResources = learningResources.Where(lr => lr.GoalId == query.GoalId);

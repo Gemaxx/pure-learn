@@ -42,6 +42,12 @@ namespace api.Repos
                 goals = goals.Where(g => g.Term.Contains(query.Term));
             }
 
+            // Search goals by title
+            if (!string.IsNullOrWhiteSpace(query.Title))
+            {
+                goals = goals.Where(g => g.Title.Contains(query.Title));
+            }
+
             // Sort goals by title
             if (query.SortBy == "title")
             {

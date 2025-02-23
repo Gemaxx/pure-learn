@@ -9,6 +9,7 @@ Table Learner {
     UpdatedAt DATETIME [default: 'GETDATE()']
     LastLogin DATETIME
     DeletedAt DATETIME
+    IsDeleted BIT [default: 0]
 }
 
 Table Category {
@@ -21,6 +22,8 @@ Table Category {
     ParentCategoryID BIGINT [ref: > Category.id]
     LearnerID BIGINT [not null, ref: > Learner.id]
     DeletedAt DATETIME
+    IsDeleted BIT [default: 0]
+
 }
 
 Table Goal {
@@ -36,6 +39,8 @@ Table Goal {
     CategoryID BIGINT [ref: > Category.id]
     LearnerID BIGINT [not null, ref: > Learner.id]
     DeletedAt DATETIME
+    IsDeleted BIT [default: 0]
+
 }
 
 Table Subgoal {
@@ -47,6 +52,7 @@ Table Subgoal {
     UpdatedAt DATETIME [default: 'GETDATE()']
     GoalID BIGINT [not null, ref: > Goal.id]
     DeletedAt DATETIME
+    IsDeleted BIT [default: 0]
 }
 
 Table LearningResourceType {
@@ -55,6 +61,7 @@ Table LearningResourceType {
     UnitType NVARCHAR(255) [not null, unique]
     LearnerID BIGINT [not null, ref: > Learner.id]
     DeletedAt DATETIME
+    IsDeleted BIT [default: 0]
 }
 
 Table LearningResource {
@@ -71,6 +78,7 @@ Table LearningResource {
     GoalID BIGINT [ref: > Goal.id]
     SubgoalID BIGINT [ref: > Subgoal.id]
     DeletedAt DATETIME
+    IsDeleted BIT [default: 0]
 }
 
 Table KanbanStatus {
@@ -79,6 +87,8 @@ Table KanbanStatus {
     MaxTasks INT [note: 'Maximum number of tasks allowed, must be positive']
     LearnerID BIGINT [not null, ref: > Learner.id]
     DeletedAt DATETIME
+    IsDeleted BIT [default: 0]
+
 }
 
 Table TaskType {
@@ -88,6 +98,7 @@ Table TaskType {
     Icon VARBINARY(MAX)
     LearnerID BIGINT [not null, ref: > Learner.id]
     DeletedAt DATETIME
+    IsDeleted BIT [default: 0]
 }
 
 Table Task {
@@ -120,6 +131,7 @@ Table Task {
     SubgoalID BIGINT [ref: > Subgoal.id]
     LearningResourceID BIGINT [ref: > LearningResource.id]
     DeletedAt DATETIME
+    IsDeleted BIT [default: 0]
 }
 
 Table Subtask {
@@ -130,6 +142,7 @@ Table Subtask {
     UpdatedAt DATETIME [default: 'GETDATE()']
     TaskID BIGINT [not null, ref: > Task.id]
     DeletedAt DATETIME
+    IsDeleted BIT [default: 0]
 }
 
 Table Note {
@@ -144,4 +157,5 @@ Table Note {
     TaskID BIGINT [ref: > Task.id]
     LearnerID BIGINT [not null, ref: > Learner.id]
     DeletedAt DATETIME
+    IsDeleted BIT [default: 0]
 }
