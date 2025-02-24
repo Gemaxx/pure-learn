@@ -12,6 +12,8 @@ import {
 import Layout from "./layout";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import LoginPage from "./auth/login";
+import TaskPage from "./tasks/page";
 
 
 export default function Home() {
@@ -29,6 +31,7 @@ export default function Home() {
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
+      {/* <TaskPage/> */}
     </Layout>
   );
 }

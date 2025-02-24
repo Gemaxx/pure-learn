@@ -1,4 +1,5 @@
 import "./App.css";
+import "flowbite";
 import Layout from "./components/Layout/Layout";
 import ResetPassword from "./components/ResetPassword/ResetPassword";
 import Login from "./Pages/Login/Login";
@@ -17,7 +18,7 @@ function App() {
     // (Landing Page)
     {
       path: "/",
-      element: <LandingPage />,
+      element: <Layout/>,
     },
 
     // ProtectedRoute /app
