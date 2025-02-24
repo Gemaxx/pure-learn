@@ -61,55 +61,55 @@ export function AppSidebar() {
           <SidebarGroupLabel>PureLearn</SidebarGroupLabel>
 
           <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">+ Add New Category</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle> Add New Category</DialogTitle>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label  className="text-right">
-              Name
-            </Label>
-            <Input
-              id="name"
-              placeholder="Category Name"
-              className="col-span-3"
-              type="text"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label  className="text-right">
-              color
-            </Label>
-            <Input
-              id="color"
-              value="#000000"
-              className="col-span-3"
-              type="color"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label  className="text-right">
-              Description
-            </Label>
-            <textarea
-              id="description"
-              placeholder="You can write a description here"
-              className="col-span-3 border border-gray-300 rounded-md p-2"
-              rows={4}
-              cols={50}
-              
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline">+ Add New Category</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle> Add New Category</DialogTitle>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label className="text-right">
+                    Name
+                  </Label>
+                  <Input
+                    id="name"
+                    placeholder="Category Name"
+                    className="col-span-3"
+                    type="text"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label className="text-right">
+                    color
+                  </Label>
+                  <Input
+                    id="color"
+                    value="#000000"
+                    className="col-span-3 w-12"
+                    type="color"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label className="text-right">
+                    Description
+                  </Label>
+                  <textarea
+                    id="description"
+                    placeholder="You can write a description here"
+                    className="col-span-3 border border-gray-300 rounded-md p-2"
+                    rows={4}
+                    cols={50}
+
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="submit">Save changes</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
           <SidebarGroupContent>
             <SidebarMenu>
