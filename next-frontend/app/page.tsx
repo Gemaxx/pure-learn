@@ -19,8 +19,7 @@ export default function Home() {
     <Layout>
       <AppSidebar />
       <ThemeToggle />
-      <Label htmlFor="email">Your name address</Label>
-      
+       
 
       <NavigationMenu>
         <NavigationMenuList>
