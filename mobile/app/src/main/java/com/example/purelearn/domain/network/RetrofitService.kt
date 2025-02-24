@@ -4,6 +4,8 @@ import com.example.purelearn.domain.model.Category
 import com.example.purelearn.domain.model.CategoryResponse
 import com.example.purelearn.domain.model.Goal
 import com.example.purelearn.domain.model.GoalResponse
+import com.example.purelearn.domain.model.Resource
+import com.example.purelearn.domain.model.ResourceResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -82,6 +84,38 @@ interface RetrofitService {
         @Path("learnerId") learnerId: Int,
         @Path("goalId") goalId: Int
     ): GoalResponse
+
+
+
+
+
+
+    @GET("learners/{learnerId}/LearningResources")
+    suspend fun getResource(
+         @Path("learnerId") learnerId: Int,
+        @Query("GoalId") goalId: Int? = null
+    ): List<ResourceResponse>
+
+    @POST("learners/{learnerId}/LearningResources")
+    suspend fun addResource(
+        @Path("learnerId") learnerId: Int,
+        @Body resource: Resource
+    ): ResourceResponse
+
+
+    @PATCH("learners/{learnerId}/LearningResources/{learningResourcesId}")
+    suspend fun updateResource(
+        @Path("learnerId") learnerId: Int,
+        @Path("learningResourcesId") learningResourcesId: Int,
+        @Body resource: Resource
+    ): ResourceResponse
+
+
+    @DELETE("learners/{learnerId}/LearningResources/{learningResourceId}/hard-delete")
+    suspend fun deleteResource(
+        @Path("learnerId") learnerId: Int,
+        @Path("learningResourceId") learningResourceId: Int,
+    ): ResourceResponse
 
 
 }

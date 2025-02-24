@@ -1,20 +1,16 @@
 package com.example.purelearn.ui.theme.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.example.purelearn.ui.theme.Goal.GoalScreen
-import com.example.purelearn.ui.theme.Task.AddTaskScreen
+import com.example.purelearn.ui.theme.Resource.ResourceScreen
 import com.example.purelearn.ui.theme.calendar.CalendarScreen
 import com.example.purelearn.ui.theme.chatpot.ChatBotScreen
 import com.example.purelearn.ui.theme.home.HomeScreen
-import com.example.purelearn.ui.theme.navigation.Routes.GoalScreen
 import com.example.purelearn.ui.theme.timer.TimerScreen
 
 @Composable
@@ -35,9 +31,11 @@ fun MyAppNavigation(navController: NavHostController) {
             )
         }
 
-        composable(Routes.AddTaskScreen,)
-        {
-            AddTaskScreen(navController)
+        composable("ResourceScreen/{goalId}") { backStackEntry ->
+            val goalId = backStackEntry.arguments?.getString("goalId")?.toIntOrNull()
+            goalId?.let {
+                ResourceScreen(goalId = it)
+            } ?: Log.e("NAVIGATION", "goalId is null")
         }
         composable(Routes.CalendarScreen,)
         {

@@ -167,7 +167,7 @@ fun HomeScreen(
                 )){
 
                 Text(
-                    text = "Your Categories",
+                    text = "Categories",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier

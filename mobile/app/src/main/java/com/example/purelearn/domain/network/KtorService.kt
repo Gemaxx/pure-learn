@@ -4,6 +4,8 @@ import com.example.purelearn.domain.model.Category
 import com.example.purelearn.domain.model.CategoryResponse
 import com.example.purelearn.domain.model.Goal
 import com.example.purelearn.domain.model.GoalResponse
+import com.example.purelearn.domain.model.Resource
+import com.example.purelearn.domain.model.ResourceResponse
 
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -92,6 +94,42 @@ class KtorService @Inject constructor(
             setBody(goal)
         }.body()
     }
+
+
+
+
+
+    suspend fun getResource(): List<ResourceResponse> {
+        return httpClient.get {
+            url(baseUrl){
+                timeout { requestTimeoutMillis=60000 }
+            }
+        }.body()
+    }
+
+    @OptIn(InternalAPI::class)
+    suspend fun addResource(resource: Resource): ResourceResponse {
+        return httpClient.post {
+            contentType(ContentType.Application.Json)
+            url(baseUrl)
+            setBody(resource)
+
+        }.body()
+    }
+
+    suspend fun deleteResource(id: Int): HttpResponse {
+        return httpClient.delete("$baseUrl/$id")
+    }
+
+    @OptIn(InternalAPI::class)
+    suspend fun updateResource(learnerId: Int, learningResourcesId: Int, resource: Resource): ResourceResponse {
+        return httpClient.patch {
+            url("$baseUrl/api/learners/$learnerId/LearningResources/$learningResourcesId")
+            contentType(ContentType.Application.Json)
+            setBody(resource)
+        }.body()
+    }
+
 
 
 
