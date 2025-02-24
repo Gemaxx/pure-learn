@@ -1,7 +1,10 @@
+---
+marp: true
+theme: default
+class: invert
+paginate: true
 
 ---
-
-marp: true
 
 🎓 Graduation Project Review: PureLearn App
 
