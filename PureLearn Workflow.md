@@ -10,7 +10,7 @@ Unlock Your Learning Potiential
 ### **Sources of Input**
 
 -  [**Product backlog** > **Sprint Backloag** > **User Stories** ](https://shaedu-my.sharepoint.com/:x:/g/personal/322223887_sha_edu_eg/EXpawZtbkkNEnLTxyfj3mygBFqBjSf25JH3_d2dJOZfWcQ?e=3eDieX)
-- **[MindMap](../docs/Mindmap/PURR-LEARN.vmind)**
+- **[MindMap](docs/Mindmap)**
 - **Additional Inputs:**
   - [Team Brainstorming Meetings](https://discord.com/channels/1299649170965135360/1304127482215268453)
   - [Competitor Analysis from [2. prompt sheet] ](https://shaedu-my.sharepoint.com/:x:/g/personal/322223887_sha_edu_eg/EXpawZtbkkNEnLTxyfj3mygBFqBjSf25JH3_d2dJOZfWcQ?e=3eDieX)

@@ -1,6 +1,6 @@
 ---
 
- marp: true
+marp: true
 
 ---
 
