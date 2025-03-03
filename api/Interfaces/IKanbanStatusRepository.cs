@@ -26,5 +26,6 @@ namespace api.Interfaces
         // Optional: Soft delete and restore methods if needed.
          Task<bool> SoftDeleteKanbanStatusAsync(long learnerId, long statusId);
          Task<bool> RestoreKanbanStatusAsync(long learnerId, long statusId);
+         
     }
 }

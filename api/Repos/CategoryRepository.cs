@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.Dtos.Goal;
+using api.Dtos.Search;
 using api.Helpers;
 using api.Interfaces;
 using api.Models;
@@ -117,6 +118,20 @@ public class CategoryRepository : ICategoryRepository
         await _context.SaveChangesAsync();
         return existingCategory;
     }
+    public async Task<List<SearchResultDto>> SearchCategoriesAsync(string term, long learnerId)
+{
+    return await _context.Categories
+        .Where(c => c.LearnerId == learnerId && c.Title.Contains(term) && !c.IsDeleted)
+        .Select(c => new SearchResultDto
+        {
+            EntityType = "Category",
+            Id = c.Id,
+            Title = c.Title,
+            Description = c.Description
+        })
+        .ToListAsync();
+}
+
     }
 
 }

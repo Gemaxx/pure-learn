@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Dtos.Search;
 using api.Helpers;
 using api.Models;
 
@@ -16,5 +17,7 @@ namespace api.Interfaces
         Task<bool> DeleteTaskAsync(long learnerId, long taskId);
         Task<bool> SoftDeleteTaskAsync(long learnerId, long taskId);
         Task<bool> RestoreTaskAsync(long learnerId, long taskId);
+        Task<List<SearchResultDto>> SearchTasksAsync(string term, long learnerId);
+
     }
 }

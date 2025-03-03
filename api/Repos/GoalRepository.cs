@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
+using api.Dtos.Search;
 using api.Helpers;
 using api.Interfaces;
 using api.Models;
@@ -191,5 +192,19 @@ namespace api.Repos
 
             return existingGoal;
         }
+        public async Task<List<SearchResultDto>> SearchGoalsAsync(string term, long learnerId)
+{
+    return await _context.Goals
+        .Where(g => g.LearnerId == learnerId && g.Title.Contains(term) && !g.IsDeleted)
+        .Select(g => new SearchResultDto
+        {
+            EntityType = "Goal",
+            Id = g.Id,
+            Title = g.Title,
+            Description = g.Description
+        })
+        .ToListAsync();
+}
+
     }
 }

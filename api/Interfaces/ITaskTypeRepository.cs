@@ -27,7 +27,7 @@ namespace api.Interfaces
         //soft delete and restore methods can be added.
         Task<bool> SoftDeleteTaskTypeAsync(long learnerId, long taskTypeId);
         Task<bool> RestoreTaskTypeAsync(long learnerId, long taskTypeId);
-
+        
 
     }
 }
