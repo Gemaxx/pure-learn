@@ -77,9 +77,7 @@ export default async function CategoryDetailPage({
   }
 
   return (
-    
     <div className="p-8 space-y-8">
-      
       {/* Category Detail Card */}
 
       <Card className="bg-white/10 backdrop-blur-lg p-6 rounded-lg">
@@ -113,7 +111,7 @@ export default async function CategoryDetailPage({
                 className="bg-white/10 backdrop-blur-lg p-4 rounded-lg hover:shadow-lg transition"
               >
                 <CardHeader>
-                  <CardTitle className="text-lg font-semibold text-white">
+                  <CardTitle className="text-lg font-semibold text-gray-600">
                     {goal.title}
                   </CardTitle>
                 </CardHeader>
