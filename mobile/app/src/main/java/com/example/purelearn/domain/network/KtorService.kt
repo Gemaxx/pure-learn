@@ -25,7 +25,7 @@ class KtorService @Inject constructor(
      //physical device  "http://192.168.1.6:5115/api/"
     //emulator  "http://10.0.2.2:5115/api/"
 
-    private val baseUrl = "http://192.168.1.12:5115/api/"
+    private val baseUrl = "http://192.168.1.8:5115/api/"
 
     suspend fun getCategory(): List<CategoryResponse> {
         return httpClient.get {

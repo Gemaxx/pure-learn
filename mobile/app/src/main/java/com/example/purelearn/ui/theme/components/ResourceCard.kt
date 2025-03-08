@@ -17,32 +17,26 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.purelearn.domain.model.ResourceResponse
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResourceCard(
     resource: ResourceResponse,
-    onClick:()->Unit,
-    onUpdateResource:()->Unit
-
+    onClick: () -> Unit,
+    onUpdateResource: () -> Unit
 ) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
-        onClick = {
-            //onClick()
-             }
+        onClick = onClick
     ) {
-
         Row(
             modifier = Modifier
                 .padding(16.dp)
@@ -51,24 +45,20 @@ fun ResourceCard(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "resource"
-//                text = category.title,
-//                style = MaterialTheme.typography.bodyLarge,
-//                color = MaterialTheme.colorScheme.background
+                text = resource.title,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             IconButton(
-                onClick = {}
-                //onClick = onUpdateCategory
-                ) {
+                onClick = onUpdateResource
+            ) {
                 Icon(
                     imageVector = Icons.Outlined.Edit,
-                    contentDescription = "Edit Category",
-                    tint = MaterialTheme.colorScheme.background
+                    contentDescription = "Edit Resource",
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
     }
 }
-
-

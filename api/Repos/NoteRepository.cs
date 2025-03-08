@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
+using api.Dtos.Search;
 using api.Helpers;
 using api.Interfaces;
 using api.Models;
@@ -155,5 +156,19 @@ namespace api.Repos
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<List<SearchResultDto>> SearchNotesAsync(string term, long learnerId)
+{
+    return await _context.Notes
+        .Where(n => n.LearnerId == learnerId && n.Title.Contains(term) && !n.IsDeleted)
+        .Select(n => new SearchResultDto
+        {
+            EntityType = "Note",
+            Id = n.Id,
+            Title = n.Title,
+            Description = n.Body
+        })
+        .ToListAsync();
+}
+
     }
 }

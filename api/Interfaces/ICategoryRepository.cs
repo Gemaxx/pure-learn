@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using api.Dtos.Search;
 using api.Helpers;
 using api.Models;
 
@@ -29,5 +30,8 @@ namespace api.Interfaces
         // Restore a soft-deleted category
         Task<bool> RestoreCategoryAsync(long learnerId, long categoryId);
         
+        // global search for categories
+        Task<List<SearchResultDto>> SearchCategoriesAsync(string term, long learnerId);
+
     }
 }

@@ -104,8 +104,8 @@ class ResourceViewModel @Inject constructor(
                Log.e("ViewModel", "Fetching resources for goalId: ${events.goalId}") // Debugging
 
                viewModelScope.launch {
-                   val resources = repository.getResource(events.goalId)
-                   Log.d("ViewModel", "Received Resources: $resources")
+                 //  val resources = repository.getResource(events.goalId)
+                 //  Log.d("ViewModel", "Received Resources: $resources")
                     repository.getResource(events.goalId)
                         .onStart {
                             _resourceResponseEvent.value = ResourceState(

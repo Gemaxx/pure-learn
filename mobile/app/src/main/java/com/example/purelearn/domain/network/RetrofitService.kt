@@ -19,7 +19,7 @@ interface RetrofitService {
     //physical device  "http://192.168.1.6:5115/api/"
     //emulator  "http://10.0.2.2:5115/api/"
     companion object {
-        const val baseUrl = "http://192.168.1.12:5115/api/"
+        const val baseUrl = "http://192.168.1.8:5115/api/"
     }
 
     @GET("learners/{learnerId}/categories")

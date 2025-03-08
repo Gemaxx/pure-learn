@@ -26,8 +26,8 @@ import com.example.purelearn.R
 
 @Composable
 fun ResourceTypeDropDownList(
-//    selectedStatus: String,
-//    onStatusChange: (String) -> Unit
+    selectedType: String,
+    onTypeSelected : (String) -> Unit
 ) {
 
     val isDropDownExpanded = remember {

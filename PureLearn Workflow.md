@@ -1,3 +1,8 @@
+
+
+# PureLearn app
+Unlock Your Learning Potiential 
+
 # **PureLearn Development Workflow**
 
 ## **1. INPUT: Requirements & Resources**
@@ -5,7 +10,7 @@
 ### **Sources of Input**
 
 -  [**Product backlog** > **Sprint Backloag** > **User Stories** ](https://shaedu-my.sharepoint.com/:x:/g/personal/322223887_sha_edu_eg/EXpawZtbkkNEnLTxyfj3mygBFqBjSf25JH3_d2dJOZfWcQ?e=3eDieX)
-- **[MindMap](../docs/Mindmap/PURR-LEARN.vmind)**
+- **[MindMap](docs/Mindmap)**
 - **Additional Inputs:**
   - [Team Brainstorming Meetings](https://discord.com/channels/1299649170965135360/1304127482215268453)
   - [Competitor Analysis from [2. prompt sheet] ](https://shaedu-my.sharepoint.com/:x:/g/personal/322223887_sha_edu_eg/EXpawZtbkkNEnLTxyfj3mygBFqBjSf25JH3_d2dJOZfWcQ?e=3eDieX)
@@ -20,12 +25,12 @@
 
 ### **Extract Key Elements**
 
-- **Database (DB)**
+- **Database**
 
   - Define Entities, Relationships, and Attributes using inputs
   - Use [Database Build](https://database.build/db/pg4i6qjrd0fx29fm) for structure analysis & assistant.
 
-- **Backend (ASP.NET Web API 8.0)**
+- **Backend**
 
   - Define API Endpoints & DTOs for each entity 
 
@@ -38,10 +43,10 @@
     - [Mobil UI Design Prototype](https://www.figma.com/proto/zSX1hrAACeHMjNBHVj7E5Q/Pure-Learn-Mobile-UI?page-id=0%3A1&node-id=31-17&p=f&viewport=189%2C43%2C0.34&t=PgKHtGcTvfo4QMB4-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=31%3A17)
     - [Web UI Design (Not-Started)](https://www.figma.com/proto/zSX1hrAACeHMjNBHVj7E5Q/Pure-Learn-Mobile-UI?node-id=34-22&t=7utWEtpwKHrcuHhh-1&starting-point-node-id=34%3A22)
   
-- **Frontend Development (Next.js, TailwindCSS, ShadCN UI)**
-
+- **Frontend Development**
   - Identify Required Components & Pages
   - Develop Components & Pages
+<<<<<<< HEAD
   - Implement Views:
     - **Task List, Kanban Board, Eisenhower Matrix, Time-Task View**
 
@@ -61,35 +66,58 @@
       - **Retrofit** – Manages API requests with Moshi for JSON serialization/deserialization.  
       - **Ktor** – A lightweight HTTP client used for network requests and WebSockets.  
 
+=======
+>>>>>>> 8dd92f9040ade32f005ced27426a1a64003b7200
 
 - **AI Development**
 
   - Implement AI-driven learning recommendations, task automation, and optimization
 
-## **3. OUTPUT: Analysis & Specification**
+## **3. OUTPUT**: 
+## 1 Analysis & Specification**
 
 ### **Database (Relational)**
 
 - **Entities** (Attributes, Relationships)
+
+### **Backend**
+
+- Business logic
+- potiential feature
+- API Endpoints & DTOs
+  
+### **UI/UX**
+
+### **Frontend**
+
+- Component Breakdown & Pages Structure
+
+## 2. Design ✅
+
+### **Database (Relational)**
+
 - **ERD Logical Schema**: [ERD on dbdiagram.io](https://dbdiagram.io/d/Pure-learn-6755b24ee9daa85aca085b40)
 
-### **Backend (ASP.NET Web API 8.0)**
+### **Backend**
 
-- API Endpoints & DTOs
-- **C4 Model - Component Level**: [C4 Model on GitHub](https://github.com/Gemaxx/pure-learn/tree/main/C4%20Model)
+- [**C4 Model - Component Level**:](docs/c4-model-architecture)
 
-### **Frontend Development (Next.js, TailwindCSS, ShadCN UI)**
+### **UI/UX**
+
+### **Frontend**
 
 - **Component Breakdown**: [C4 Model - SPA & Mobile](https://github.com/Gemaxx/pure-learn/tree/main/C4%20Model)
 
-## **4. DEVELOPMENT**
+ 
+## **2. DEVELOPMENT**
+
 
 ### **Database (SQL Server - Azure SQL)**
 
 - **Physical Schema**
 - **Tools**: [Database Build](https://database.build/db/pg4i6qjrd0fx29fm), SSMS
 
-### **Backend (ASP.NET Web API 8.0)**
+### **Backend**
 
 1. Convert tables from the database to [Models](Models) and set up [DbContext](Data/PureLearnDbContext.cs) in the [Data Directory](Data) using scaffolding:
    ```sh
@@ -110,7 +138,7 @@
 8. Register Dependencies in [Program.cs file](Program.cs)
 9. 🎉 🚀 We are Done, Happy Coding!!! ✨
 
-### **Frontend Development (Next.js, TailwindCSS, ShadCN UI)**
+### **Frontend Development**
 
 - Develop Components & Pages
 - Implement Views:
@@ -124,12 +152,12 @@
 - User Testing & Iteration
 - Design System Implementation
 
-## **5. DEPLOYMENT**
+## **3. DEPLOYMENT** 🚀✅
 
-- **Database:** Azure SQL ✅
-- **Backend:** ASP.NET Web API 8.0
-- **Frontend:** Next.js, TailwindCSS, ShadCN UI
-- **AI Integration**
+- **Database:** [Azure SQL Database](https://azure.microsoft.com/en-us/products/azure-sql-database/) (Serverless, pay-as-you-go)
+- **Backend:** [Azure App Service](https://azure.microsoft.com/en-us/products/app-service/) (Pay-as-you-go)
+- **Frontend:** [Vercel Hobby Tier](https://vercel.com/)
+- **AI Integration:** TBD
 
 
 
@@ -166,8 +194,6 @@
 - Attributes: Title, Description, Status, CreatedAt, UpdatedAt
 - Relationships: Goal → Subgoal (1:M, Mandatory)
 
-### **Task Management**
-
 **Task ✅**
 
 - Attributes:
@@ -202,14 +228,3 @@
 
 - Self-Reflection Prompts
 - Time Tracking Features
-
-## **8. AUTOMATION & AI**
-
-- AI-assisted insights & optimizations
-- Task prioritization & learning recommendations
-
-## **CONCLUSION**
-
-🚀 PureLearn’s development is structured for efficiency, scalability, and learning-centric functionality. Let’s build an impactful self-learning platform!
-
-****

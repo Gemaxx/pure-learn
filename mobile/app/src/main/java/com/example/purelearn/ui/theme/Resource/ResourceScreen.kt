@@ -1,6 +1,5 @@
 package com.example.purelearn.ui.theme.Resource
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -43,13 +42,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.example.purelearn.domain.model.Resource
 import com.example.purelearn.domain.model.ResourceResponse
-import com.example.purelearn.ui.theme.Goal.Goalviewmodel.events.GoalEvents
 import com.example.purelearn.ui.theme.Resource.Resourceviewmodel.ResourceViewModel
 import com.example.purelearn.ui.theme.Resource.Resourceviewmodel.events.ResourceEvents
 import com.example.purelearn.ui.theme.Resource.Resourceviewmodel.events.ResourceUiEvents
+import com.example.purelearn.ui.theme.components.AddResourceBottomSheet
 import com.example.purelearn.ui.theme.components.HomeTopAppBar
 import com.example.purelearn.ui.theme.components.ResourceCard
 import com.example.purelearn.ui.theme.components.SwipeToDeleteContainer
@@ -82,31 +80,18 @@ fun ResourceScreen(
     var  totalUnits by remember { mutableStateOf(0) }
     var  progress by remember { mutableStateOf(0) }
     var link by remember { mutableStateOf("") }
-    val response = viewModel.resourceResponseEvent.value
+    val response by viewModel.resourceResponseEvent
     val context = LocalContext.current
     var isLoading by remember { mutableStateOf(false) }
 
-//    LaunchedEffect(goalId) {
-//        if (goalId != null) {
-//            Log.e("Resource Screen", "Fetching resources for goalId: $goalId")
-//            viewModel.onEvent(ResourceEvents.ShowResources(goalId))
-//        } else {
-//            Log.e("Resource Screen", "goalId is null, cannot fetch resources")
-//        }
-//    }
 
 
     LaunchedEffect(Unit) {
-        Log.d("ResourceScreen", "Fetching resource for goalId: $goalId")
-        if (goalId != null) {
-            viewModel.onEvent(ResourceEvents.ShowResources(goalId))
-        } else {
-            Log.e("ResourceScreen", "resourceId is null, cannot fetch resource")
-        }
+            viewModel.onEvent(ResourceEvents.ShowResources(goalId=6))
     }
 
     LaunchedEffect(key1 = true) {
-        viewModel.addResourceEvent.collectLatest {
+        viewModel.addResourceEvent.collect {
             isLoading = when (it) {
                 is ResourceUiEvents.Success -> {
                     title = ""
@@ -116,7 +101,6 @@ fun ResourceScreen(
                     link = ""
                     context.showToast("Learning resource Added")
                     isSheetOpen = false
-                    if(goalId!=null)
                         viewModel.onEvent(ResourceEvents.ShowResources(goalId))
                     false
                 }
@@ -138,14 +122,12 @@ fun ResourceScreen(
             isLoading = when (it) {
                 is ResourceUiEvents.Success -> {
                     context.showToast("Resource Deleted")
-                    if(goalId!=null)
                         viewModel.onEvent(ResourceEvents.ShowResources(goalId))
                     false
                 }
 
                 is ResourceUiEvents.Failure -> {
                     context.showToast(it.msg)
-                    if(goalId!=null)
                         viewModel.onEvent(ResourceEvents.ShowResources(goalId))
                     false
                 }
@@ -161,7 +143,6 @@ fun ResourceScreen(
             isLoading = when (it) {
                 is ResourceUiEvents.Success -> {
                     context.showToast("Resource Updated!")
-                    if(goalId!=null)
                         viewModel.onEvent(ResourceEvents.ShowResources(goalId))
                     isSheetOpen = false
                     false
@@ -288,7 +269,6 @@ fun ResourceScreen(
 
 
         if (response.data.isNotEmpty())
-        {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -319,57 +299,58 @@ fun ResourceScreen(
                             )
                         }
                     )
+
                 }
             }
         }
 
-            }
 
-//    if (isSheetOpen) {
-//        AddResourceBottomSheet(
-//            isOpen = isSheetOpen,
-//            title = title,
-//            onTitleChange = {title=it},
-//            typeId =typeId ,
-//            onTypeIdChange = {typeId=it},
-//            totalUnits = totalUnits,
-//            onTotalUnitsChange = {totalUnits=it},
-//            progress = progress,
-//            onProgressChange = {progress=it},
-//            link = link,
-//            onLinkChange = {link=it},
-//            onDismiss = {isSheetOpen=false},
-//           // onSave = {}
-//
-//            onSave = {
-//                if (title.isNotEmpty() )
-//                {
-//                    viewModel.onEvent(
-//                        ResourceEvents.AddResourceEvent(
-//                            Resource(
-//                                goalId = goalId ?: 0,
-//                                title = title,
-//                                typeId =typeId,
-//                                totalUnits =  totalUnits,
-//                                progress = progress,
-//                                link =  link,
-//                            ),
-//                          //  goalId = goalId ?: 0
-//                        )
-//                    )
-////                    isSheetOpen = false
-////                    title = ""
-////                    typeId =0
-////                    totalUnits = 0
-////                    progress = 0
-////                    link =  ""
-//
-//                } else {
-//                    context.showToast("Please enter all required fields.")
-//                }
-//            }
-//        )
-//    }
+
+    if (isSheetOpen) {
+        AddResourceBottomSheet(
+            isOpen = isSheetOpen,
+            title = title,
+            onTitleChange = {title=it},
+            typeId =typeId ,
+            onTypeIdChange = {typeId=it},
+            totalUnits = totalUnits,
+            onTotalUnitsChange = {totalUnits=it},
+            progress = progress,
+            onProgressChange = {progress=it},
+            link = link,
+            onLinkChange = {link=it},
+            onDismiss = {isSheetOpen=false},
+           // onSave = {}
+
+            onSave = {
+                if (title.isNotEmpty() )
+                {
+                    viewModel.onEvent(
+                        ResourceEvents.AddResourceEvent(
+                            Resource(
+                                goalId = goalId ?: 0,
+                                title = title,
+                                typeId =typeId,
+                                totalUnits =  totalUnits,
+                                progress = progress,
+                                link =  link,
+                            ),
+                          //  goalId = goalId ?: 0
+                        )
+                    )
+//                    isSheetOpen = false
+//                    title = ""
+//                    typeId =0
+//                    totalUnits = 0
+//                    progress = 0
+//                    link =  ""
+
+                } else {
+                    context.showToast("Please enter all required fields.")
+                }
+            }
+        )
+    }
         }
 
 
