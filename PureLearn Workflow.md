@@ -46,6 +46,28 @@ Unlock Your Learning Potiential
 - **Frontend Development**
   - Identify Required Components & Pages
   - Develop Components & Pages
+<<<<<<< HEAD
+  - Implement Views:
+    - **Task List, Kanban Board, Eisenhower Matrix, Time-Task View**
+
+- **Frontend (Android)**  
+
+  - **Jetpack Compose** – A modern UI toolkit for building native Android UI declaratively.  
+  - **Dagger Hilt** – A dependency injection framework for efficient dependency management.  
+  - **Coroutines & Flow**  
+    - **Coroutines** – Handles asynchronous operations efficiently.  
+    - **StateFlow & SharedFlow** – Ensures reactive UI updates and real-time data flow.  
+
+  - **Architecture & Design Patterns**  
+    - **MVVM (Model-View-ViewModel)** – Enhances separation of concerns for better maintainability.  
+
+  - **Networking**  
+    - **Retrofit & Ktor**  
+      - **Retrofit** – Manages API requests with Moshi for JSON serialization/deserialization.  
+      - **Ktor** – A lightweight HTTP client used for network requests and WebSockets.  
+
+=======
+>>>>>>> 8dd92f9040ade32f005ced27426a1a64003b7200
 
 - **AI Development**
 

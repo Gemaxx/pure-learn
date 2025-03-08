@@ -8,8 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.anew.ui.theme.PureLearnTheme
 import com.example.purelearn.domain.model.Goal
 import com.example.purelearn.domain.model.Task
-import com.example.purelearn.ui.theme.Goal.GoalScreen
-import com.example.purelearn.ui.theme.home.HomeScreen
+import com.example.purelearn.ui.theme.Resource.ResourceScreen
 import com.example.purelearn.ui.theme.navigation.MyAppNavigation
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,6 +26,7 @@ class MainActivity : ComponentActivity() {
               MyAppNavigation(
                   navController = navController
               )
+          //  ResourceScreen()
             }
         }
     }
