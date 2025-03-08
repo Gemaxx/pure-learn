@@ -47,7 +47,7 @@ export default async function CategoriesPage() {
                   <Link href={`/categories/${category.id}`}>
                     <Card
                       className="p-3 flex items-center gap-3 hover:bg-gray-800 rounded-lg cursor-pointer transition"
-                      style={{ borderLeft: `4px solid ${category.color}` }}
+                      style={{ borderLeft: `8px solid ${category.color}` }}
                     >
                       <span className="text-sm">{category.title}</span>
                     </Card>
