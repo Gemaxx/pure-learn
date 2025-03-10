@@ -36,7 +36,7 @@ export default async function TaskPage() {
           width={1280}
           height={998}
           alt="Playground"
-          className="block dark:hidden"
+          className="block dark:hidden "
         />
         <Image
           src="/examples/tasks-dark.png"

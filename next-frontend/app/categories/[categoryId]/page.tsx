@@ -102,7 +102,7 @@ export default async function CategoryDetailPage({
 
       {/* Goals List */}
       <section>
-        <h2 className="text-xl font-bold mb-4 text-white">Goals</h2>
+        <h2 className="text-xl font-bold mb-4 t">Goals</h2>
         {goals.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {goals.map((goal) => (

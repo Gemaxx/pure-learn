@@ -16,10 +16,12 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export default function Home() {
   return (
-    <Layout>
-      <AppSidebar />
-      <ThemeToggle />
-      <NavigationMenu>
+    <>
+      <div className=" bg-gray-100 ">
+        hgfkf
+        </div>
+      {/* <ThemeToggle /> */}
+      {/* <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuTrigger>help</NavigationMenuTrigger>
@@ -28,8 +30,8 @@ export default function Home() {
             </NavigationMenuContent>
           </NavigationMenuItem>
         </NavigationMenuList>
-      </NavigationMenu>
+      </NavigationMenu> */}
       {/* <TaskPage/> */}
-    </Layout>
+    </>
   );
 }
