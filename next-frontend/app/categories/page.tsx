@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card"; // ShadCN UI
 import { ScrollArea } from "@/components/ui/scroll-area"; // For sidebar scrolling
 import { Skeleton } from "@/components/ui/skeleton"; // For loading state
-
+//&
 type Category = {
   id: number;
   title: string;

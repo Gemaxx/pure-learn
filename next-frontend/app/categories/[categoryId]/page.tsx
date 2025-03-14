@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-
+import Link from "next/link";
+//&✅
 type CategoryDetail = {
   description: string;
   createdAt: string;
@@ -21,7 +22,10 @@ type Goal = {
 };
 
 // ✅ Fetch category details from API
-async function getCategoryDetail(learnerId: number, categoryId: number): Promise<CategoryDetail | null> {
+async function getCategoryDetail(
+  learnerId: number,
+  categoryId: number
+): Promise<CategoryDetail | null> {
   try {
     const res = await fetch(
       `http://localhost:5115/api/learners/${learnerId}/categories/${categoryId}`,
@@ -39,11 +43,14 @@ async function getCategoryDetail(learnerId: number, categoryId: number): Promise
 }
 
 // ✅ Fetch goals for a specific category
-async function getGoals(learnerId: number, categoryId: number): Promise<Goal[]> {
+async function getGoals(
+  learnerId: number,
+  categoryId: number
+): Promise<Goal[]> {
   try {
     // Using query parameter to filter by CategoryId
     const res = await fetch(
-      `http://localhost:5115/api/learners/${learnerId}/goals?CategoryId=${categoryId}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/learners/${learnerId}/goals?CategoryId=${categoryId}`,
       {
         headers: { Accept: "application/json" },
         cache: "no-store",
@@ -62,9 +69,9 @@ export default async function CategoryDetailPage({
 }: {
   params: { categoryId: string };
 }) {
-  const learnerId = 1; // Change this as needed
+  const learnerId = 3; // Change this as needed
   const categoryId = parseInt(params.categoryId, 10);
-  
+
   const categoryDetail = await getCategoryDetail(learnerId, categoryId);
   const goals = await getGoals(learnerId, categoryId);
 
@@ -86,7 +93,12 @@ export default async function CategoryDetailPage({
             className="text-2xl font-bold"
             style={{ color: categoryDetail.color }}
           >
-            {categoryDetail.title}
+            <Link
+              href={`/categories/${categoryDetail.parentCategoryId}`}
+              className="flex items-center gap-3"
+            >
+              {categoryDetail.title}
+            </Link>
           </CardTitle>
         </CardHeader>
         <CardContent>
