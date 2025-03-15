@@ -65,7 +65,8 @@ return (
     </div>
 
     {/* البطاقات */}
-    <div className="flex justify-center">
+    <div className="flex justify-center flex-col ">
+        <h2 className="text-xl font-bold mb-4 ">Goals</h2>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 max-w-6xl w-full px-4">
         {initialGoals
           .filter(goal => 
@@ -74,8 +75,8 @@ return (
           )
           .map((goal) => (
             <div 
-              key={goal.id}
-              className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
+            key={goal.id}
+            className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
             >
               <h3 className="text-lg font-semibold mb-2 text-center">{goal.title}</h3>
               
