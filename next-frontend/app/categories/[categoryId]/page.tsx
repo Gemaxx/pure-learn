@@ -1,7 +1,10 @@
-// app/categories/[categoryId]/page.tsx
+
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Filters from "../../categories/[categoryId]/goals/page";
 
+
+import Link from "next/link";
+//&✅
 type CategoryDetail = {
   description: string;
   createdAt: string;
@@ -25,7 +28,10 @@ type Goal = {
 };
 
 // ✅ Fetch category details from API
-async function getCategoryDetail(learnerId: number, categoryId: number): Promise<CategoryDetail | null> {
+async function getCategoryDetail(
+  learnerId: number,
+  categoryId: number
+): Promise<CategoryDetail | null> {
   try {
     const res = await fetch(
       `http://localhost:5115/api/learners/${learnerId}/categories/${categoryId}`,
@@ -43,10 +49,13 @@ async function getCategoryDetail(learnerId: number, categoryId: number): Promise
 }
 
 // ✅ Fetch goals for a specific category
-async function getGoals(learnerId: number, categoryId: number): Promise<Goal[]> {
+async function getGoals(
+  learnerId: number,
+  categoryId: number
+): Promise<Goal[]> {
   try {
     const res = await fetch(
-      `http://localhost:5115/api/learners/${learnerId}/goals?CategoryId=${categoryId}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/learners/${learnerId}/goals?CategoryId=${categoryId}`,
       {
         headers: { Accept: "application/json" },
         cache: "no-store",
@@ -84,6 +93,7 @@ export default async function CategoryDetailPage({
     getGoals(learnerId, categoryId)
   ]);
 
+
   if (!categoryDetail) {
     return (
       <div className="p-8 h-[100vh] flex items-center justify-center w-[100vw]">
@@ -118,10 +128,70 @@ export default async function CategoryDetailPage({
         </Card>
       </div>
 
+
       {/* الفلاتر والأهداف - متمركزة في المنتصف */}
       <div className="flex justify-center w-full">
         <Filters initialGoals={goals || []} />
       </div>
+
+      <Card className="bg-white/10 backdrop-blur-lg p-6 rounded-lg">
+        <CardHeader>
+          <CardTitle
+            className="text-2xl font-bold"
+            style={{ color: categoryDetail.color }}
+          >
+            <Link
+              href={`/categories/${categoryDetail.parentCategoryId}`}
+              className="flex items-center gap-3"
+            >
+              {categoryDetail.title}
+            </Link>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-300 mb-2">{categoryDetail.description}</p>
+          <p className="text-sm text-gray-400">
+            Created: {new Date(categoryDetail.createdAt).toLocaleString()}
+          </p>
+          <p className="text-sm text-gray-400">
+            Updated: {new Date(categoryDetail.updatedAt).toLocaleString()}
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Goals List */}
+      <section>
+        <h2 className="text-xl font-bold mb-4 t">Goals</h2>
+        {goals.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {goals.map((goal) => (
+              <Card
+                key={goal.id}
+                className="bg-white/10 backdrop-blur-lg p-4 rounded-lg hover:shadow-lg transition"
+              >
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold text-gray-600">
+                    {goal.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-300 text-sm">
+                    {goal.description || "No description available."}
+                  </p>
+                  {goal.status && (
+                    <p className="text-gray-400 text-xs mt-2">
+                      Status: {goal.status}
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-400">No goals found for this category.</p>
+        )}
+      </section>
+
     </div>
   );
 }
