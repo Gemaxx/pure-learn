@@ -22,9 +22,9 @@ type Task = {
 };
 
 const priorityColors = {
-  high: "border-red-500",
-  medium: "border-yellow-500",
-  low: "border-blue-500"
+  high: "border-red-500 text-red-500",
+  medium: "border-yellow-500 text-yellow-500",
+  low: "border-blue-500 text-blue-500"
 };
 
 export default function Page({ params }: { params: { goalId: string } }) {
@@ -60,7 +60,6 @@ export default function Page({ params }: { params: { goalId: string } }) {
       setnoteDescription('');
     }
   };
-
   const handleTaskClick = (index: number) => {
     setTasks(tasks.filter((_, i) => i !== index));
   };
@@ -88,25 +87,32 @@ export default function Page({ params }: { params: { goalId: string } }) {
           </DropdownMenu>
         </div>
 
-        {/* Task Management Section */}
-        <div className="mt-20 p-6 bg-white rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Tasks</h2>
-          <ul className="space-y-4">
-            {tasks.map((task, index) => (
-              <li key={index} className="flex items-center space-x-2">
-                <span 
-                  onMouseEnter={(e) => e.currentTarget.innerHTML = '✓'}
-                  onMouseLeave={(e) => e.currentTarget.innerHTML = ''}>
-                </span>
-                <span>{task.name}</span>
-              </li>
-            ))}
-            <li className="flex items-center space-x-2 text-red-600 cursor-pointer" onClick={() => setIsDialogOpen(true)}>
-              <span className="text-lg">+</span>
-              <span>Add Task</span>
-            </li>
-          </ul>
+{/* Task Management Section */}
+<div className="mt-20 p-6 bg-white rounded-lg shadow-md">
+  <h2 className="text-xl font-semibold mb-4">Tasks</h2>
+  <ul className="space-y-4">
+    {tasks.map((task, index) => (
+      <li 
+        key={index} 
+        className="flex items-center space-x-2 group cursor-pointer"
+        onClick={() => handleTaskClick(index)}
+      >
+        <div 
+          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center 
+            ${priorityColors[task.priority]} 
+            hover:bg-gray-100 transition-colors`}
+        >
+          <span className="hidden group-hover:inline text-current">✓</span>
         </div>
+        <span>{task.name}</span>
+      </li>
+    ))}
+    <li className="flex items-center space-x-2 text-red-600 cursor-pointer" onClick={() => setIsDialogOpen(true)}>
+      <span className="text-lg">+</span>
+      <span>Add Task</span>
+    </li>
+  </ul>
+</div>
 
         {/* Note Management Section */}
         <div className="mt-10 p-6 bg-white rounded-lg shadow-md">
