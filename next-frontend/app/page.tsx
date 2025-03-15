@@ -1,4 +1,4 @@
-import { AppSidebar } from "@/components/Sidebare/app-sidebar";
+import { AppSidebar } from "@/components/Sidebare/AppSidebar";
 import {
   NavigationMenu,
   NavigationMenuContent,

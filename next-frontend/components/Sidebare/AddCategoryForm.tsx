@@ -15,7 +15,14 @@ import {
 import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 
-export default function AddCategoryForm({ learnerId }: { learnerId: number }) {
+export default function AddCategoryForm({
+  learnerId,
+
+  onCategoryAdded, // ✅ أضف `onCategoryAdded` كـ prop اختياري
+}: {
+  learnerId: number;
+  onCategoryAdded?: () => void;
+}) {
   const [name, setName] = useState("");
   const [color, setColor] = useState("#09AD5d"); // ✅ اللون الافتراضي
   const [description, setDescription] = useState("");
@@ -24,18 +31,18 @@ export default function AddCategoryForm({ learnerId }: { learnerId: number }) {
   const [success, setSuccess] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
-    const learnerId = 3;
     e.preventDefault();
     setLoading(true);
     setError(null);
     setSuccess(null);
 
     try {
-      await addCategory(learnerId, { title: name, color, description }); // ✅ `color` يتم إرساله الآن
+      await addCategory(learnerId, { title: name, description, color }); // ✅ `color` يتم إرساله الآن
       setSuccess("Category added successfully!");
       setName("");
       setColor("#09AD5d"); // ✅ إعادة تعيين اللون الافتراضي
       setDescription("");
+      onCategoryAdded?.(); // ✅ تحديث القائمة بعد الإضافة مباشرةً
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unknown error occurred."
