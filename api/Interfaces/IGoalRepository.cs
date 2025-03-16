@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Dtos.Search;
 using api.Helpers;
 using api.Models;
 
@@ -29,6 +30,8 @@ namespace api.Interfaces
 
         // Restore a soft-deleted goal
         Task<bool> RestoreGoalAsync(long learnerId, long goalId);
+        // global search for goals
+        Task<List<SearchResultDto>> SearchGoalsAsync(string term, long learnerId);
 
     }
 }

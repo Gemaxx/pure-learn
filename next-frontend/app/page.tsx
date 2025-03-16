@@ -1,4 +1,4 @@
-import { AppSidebar } from "@/components/app-sidebar"
+import { AppSidebar } from "@/components/Sidebare/AppSidebar";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -8,18 +8,17 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   NavigationMenuViewport,
-} from "@/components/ui/navigation-menu"
+} from "@/components/ui/navigation-menu";
 import Layout from "./layout";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
-
 export default function Home() {
   return (
-    <Layout>
-      <AppSidebar />
-      <ThemeToggle />
-      <NavigationMenu>
+    <>
+      <div className=" bg-gray-100 ">home</div>
+      {/* <ThemeToggle /> */}
+      {/* <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuTrigger>help</NavigationMenuTrigger>
@@ -28,7 +27,8 @@ export default function Home() {
             </NavigationMenuContent>
           </NavigationMenuItem>
         </NavigationMenuList>
-      </NavigationMenu>
-    </Layout>
+      </NavigationMenu> */}
+      {/* <TaskPage/> */}
+    </>
   );
 }

@@ -4,11 +4,8 @@ import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,21 +28,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.purelearn.domain.model.Category
 import com.example.purelearn.domain.model.Goal
 import com.example.purelearn.domain.model.GoalResponse
 import com.example.purelearn.ui.theme.Goal.Goalviewmodel.GoalViewModel
 import com.example.purelearn.ui.theme.Goal.Goalviewmodel.events.GoalEvents
 import com.example.purelearn.ui.theme.Goal.Goalviewmodel.events.GoalUiEvents
-import com.example.purelearn.ui.theme.components.AddCategoryDialog
 import com.example.purelearn.ui.theme.components.AddGoalModalBottomSheet
 import com.example.purelearn.ui.theme.components.GoalCard
 import com.example.purelearn.ui.theme.components.GoalChipGroup
@@ -53,8 +46,6 @@ import com.example.purelearn.ui.theme.components.HomeTopAppBar
 import com.example.purelearn.ui.theme.components.LoadingBar
 import com.example.purelearn.ui.theme.components.SwipeToDeleteContainer
 import com.example.purelearn.ui.theme.components.showToast
-import com.example.purelearn.ui.theme.home.homeviewmodel.events.CategoryEvents
-import com.example.purelearn.ui.theme.home.homeviewmodel.events.CategoryUiEvents
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -223,7 +214,8 @@ fun GoalScreen(
             )
 
 
-            if (response.data.isNotEmpty()) {
+            if (response.data.isNotEmpty())
+            {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -249,6 +241,9 @@ fun GoalScreen(
                                         title = item.title
                                         isSheetOpen = true
                                         goalId = item.id
+
+                                        navController.navigate("ResourceScreen/$goalId")
+
                                     },
                                     onUpdateGoal = {
                                         isUpdateSheetOpen = true

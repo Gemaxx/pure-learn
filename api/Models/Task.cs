@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models;
 
@@ -9,24 +10,32 @@ public partial class Task
 
     public string Title { get; set; } = null!;
 
+
     public long TypeId { get; set; }
+
 
     public long KanbanStatusId { get; set; }
 
+   
     public string EisenhowerStatus { get; set; } = null!;
 
+   
     public string TimeTaskRelated { get; set; } = null!;
 
     public DateOnly? DueDate { get; set; }
 
+    
     public TimeOnly? EstimatedTime { get; set; }
 
     public TimeOnly? TimeSpent { get; set; }
 
+    
+    
     public string RepeatFrequency { get; set; } = null!;
 
     public int? RepeatInterval { get; set; }
 
+    
     public bool? RepeatOnSunday { get; set; }
 
     public bool? RepeatOnMonday { get; set; }
@@ -41,6 +50,7 @@ public partial class Task
 
     public bool? RepeatOnSaturday { get; set; }
 
+    
     public string? RepeatEnds { get; set; }
 
     public DateOnly? RepeatEndDate { get; set; }

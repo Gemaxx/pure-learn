@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Dtos.Search;
 using api.Helpers;
 using api.Models;
 
@@ -29,5 +30,9 @@ namespace api.Interfaces
 
         // Restore a soft-deleted note
         Task<bool> RestoreNoteAsync(long learnerId, long noteId);
+
+        // global search for notes
+        Task<List<SearchResultDto>> SearchNotesAsync(string term, long learnerId);
+
     }
 }

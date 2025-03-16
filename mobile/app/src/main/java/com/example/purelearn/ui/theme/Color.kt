@@ -8,7 +8,7 @@ val DarkBackground = Color(0xFF1C1C1C)  // Dark background
 val DarkSurface = Color(0xFF2A2A2A)  // Slightly lighter for cards
 val DarkPrimary = Color(0xFFFFFFFF)  // White text
 val DarkSecondary = Color(0xFFAAAAAA)  // Gray text
-val DarkFAB = Color(0xFF00A6FF)  // Blue FAB
+val DarkFAB = Color(0xFF9A77FF)  // Blue FAB
 
 // Light Mode Colors
 val LightBackground = Color(0xFFFFFFFF)  // White background
@@ -18,7 +18,7 @@ val LightSecondary = Color(0xFF666666)  // Dark gray text
 val LightFAB = Color(0xFF007AFF)  // Blue FAB
 
 
-val Blue = Color(0xFF007BFF)
+val Blue = Color(0xFF9A77FF)
 val Yellow = Color(0xFFFFA500)
 val Green = Color(0xFF28A745)
 val Red = Color(0xFFDC3545)

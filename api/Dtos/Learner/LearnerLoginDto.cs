@@ -2,7 +2,6 @@
 {
     public class LearnerLoginDto
     {
-        // Change from Gemax
     }
 }
 
