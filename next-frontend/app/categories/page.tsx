@@ -1,15 +1,15 @@
-// // 📄 app/categories/page.tsx
-// import React from "react";
-// import Link from "next/link";
-// import { Card } from "@/components/ui/card"; // ShadCN UI
-// import { ScrollArea } from "@/components/ui/scroll-area"; // For sidebar scrolling
-// import { Skeleton } from "@/components/ui/skeleton"; // For loading state
-// //&
-// type Category = {
-//   id: number;
-//   title: string;
-//   color: string;
-// };
+// 📄 app/categories/page.tsx
+import React from "react";
+import Link from "next/link";
+import { Card } from "@/components/ui/card"; // ShadCN UI
+import { ScrollArea } from "@/components/ui/scroll-area"; // For sidebar scrolling
+import { Skeleton } from "@/components/ui/skeleton"; // For loading state
+//&
+type Category = {
+  id: number;
+  title: string;
+  color: string;
+};
 
 // // ✅ Fetch categories from API
 // async function getCategories(learnerId: number): Promise<Category[]> {

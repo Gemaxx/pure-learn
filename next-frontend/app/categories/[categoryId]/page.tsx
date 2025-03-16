@@ -1,5 +1,8 @@
-import React from "react";
+
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import Filters from "../../categories/[categoryId]/goals/page";
+
+
 import Link from "next/link";
 //&✅
 type CategoryDetail = {
@@ -18,7 +21,10 @@ type Goal = {
   id: number;
   title: string;
   description?: string;
-  status?: string;
+  term: string;
+  status: string;
+  progress: string;
+  category: string;
 };
 
 // ✅ Fetch category details from API
@@ -48,16 +54,26 @@ async function getGoals(
   categoryId: number
 ): Promise<Goal[]> {
   try {
-    // Using query parameter to filter by CategoryId
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/learners/${learnerId}/goals?CategoryId=${categoryId}`,
+      `http://localhost:5115/api/learners/${learnerId}/goals?CategoryId=${categoryId}`,
       {
         headers: { Accept: "application/json" },
         cache: "no-store",
       }
     );
+    
     if (!res.ok) throw new Error("Failed to fetch goals");
-    return res.json();
+    
+    const data = await res.json();
+    
+    return data.map((goal: any) => ({
+      id: goal.id,
+      title: goal.title,
+      term: goal.term,
+      status: goal.status,
+      categoryId: goal.categoryId
+    }));
+    
   } catch (error) {
     console.error("Error fetching goals:", error);
     return [];
@@ -69,81 +85,56 @@ export default async function CategoryDetailPage({
 }: {
   params: { categoryId: string };
 }) {
-  const learnerId = 3; // Change this as needed
+  const learnerId = 1;
   const categoryId = parseInt(params.categoryId, 10);
+  
+  const [categoryDetail, goals] = await Promise.all([
+    getCategoryDetail(learnerId, categoryId),
+    getGoals(learnerId, categoryId)
+  ]);
 
-  const categoryDetail = await getCategoryDetail(learnerId, categoryId);
-  const goals = await getGoals(learnerId, categoryId);
 
   if (!categoryDetail) {
     return (
-      <div className="p-8">
+      <div className="p-8 h-[100vh] flex items-center justify-center w-[100vw]">
         <p className="text-red-500">Failed to load category detail.</p>
       </div>
     );
   }
 
   return (
-    <div className="p-8 space-y-8">
-      {/* Category Detail Card */}
-
-      <Card className="bg-white/10 backdrop-blur-lg p-6 rounded-lg">
-        <CardHeader>
-          <CardTitle
-            className="text-2xl font-bold"
-            style={{ color: categoryDetail.color }}
-          >
-            <Link
-              href={`/categories/${categoryDetail.parentCategoryId}`}
-              className="flex items-center gap-3"
+    <div className="p-8 mx-auto w-[80vw] h-[100vh] flex flex-col items-center space-y-8"> 
+      <div className="flex justify-center w-full">
+        <Card className="bg-white rounded-lg shadow-md p-6 w-full max-w-4xl">
+          <CardHeader>
+            <CardTitle
+              className="text-2xl font-bold text-center"
+              style={{ color: categoryDetail.color }}
             >
               {categoryDetail.title}
-            </Link>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-gray-300 mb-2">{categoryDetail.description}</p>
-          <p className="text-sm text-gray-400">
-            Created: {new Date(categoryDetail.createdAt).toLocaleString()}
-          </p>
-          <p className="text-sm text-gray-400">
-            Updated: {new Date(categoryDetail.updatedAt).toLocaleString()}
-          </p>
-        </CardContent>
-      </Card>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2 text-center">
+            <p className="text-gray-600 mb-2">{categoryDetail.description}</p>
+            <div className="flex gap-4 text-sm justify-center">
+              <p className="text-gray-500">
+                Created: {new Date(categoryDetail.createdAt).toLocaleDateString()}
+              </p>
+              <p className="text-gray-500">
+                Updated: {new Date(categoryDetail.updatedAt).toLocaleDateString()}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
-      {/* Goals List */}
-      <section>
-        <h2 className="text-xl font-bold mb-4 t">Goals</h2>
-        {goals.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {goals.map((goal) => (
-              <Card
-                key={goal.id}
-                className="bg-white/10 backdrop-blur-lg p-4 rounded-lg hover:shadow-lg transition"
-              >
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold text-gray-600">
-                    {goal.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-300 text-sm">
-                    {goal.description || "No description available."}
-                  </p>
-                  {goal.status && (
-                    <p className="text-gray-400 text-xs mt-2">
-                      Status: {goal.status}
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <p className="text-gray-400">No goals found for this category.</p>
-        )}
-      </section>
+
+      {/* الفلاتر والأهداف  */}
+      <div className="flex justify-center w-full">
+        <Filters initialGoals={goals || []} />
+      </div>
+
+
     </div>
   );
 }
