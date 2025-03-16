@@ -30,22 +30,20 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* <LearnerProvider> */}
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <SidebarProvider>
-              <AppSidebar />
-              <main>
-                <SidebarTrigger />
-                {children}
-              </main>
-            </SidebarProvider>
-          </ThemeProvider>
-        {/* </LearnerProvider> */}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SidebarProvider>
+            <AppSidebar />
+            <main>
+              <SidebarTrigger />
+              {children}
+            </main>
+          </SidebarProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
