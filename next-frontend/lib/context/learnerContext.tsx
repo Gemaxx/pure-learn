@@ -6,7 +6,11 @@ import { LearnerContextType } from "@/lib/types/learner";
 const LearnerContext = createContext<LearnerContextType | undefined>(undefined);
 
 export function LearnerProvider({ children }: { children: ReactNode }) {
-  const [learnerId, setLearnerId] = useState("3"); // 👈 هنا بتحط الـ ID الافتراضي أو تجيبه من API
+ const [learnerId, setLearnerId] = useState<number>(() => {
+   const storedId = localStorage.getItem("learnerId");
+   return storedId ? Number(storedId) : 1; // تحويل إلى رقم أو تعيين قيمة افتراضية
+ });
+
 
   return (
     <LearnerContext.Provider value={{ learnerId, setLearnerId }}>

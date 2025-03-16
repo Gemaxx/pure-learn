@@ -1,10 +1,10 @@
+"use client";
 
+import { useEffect, useState } from "react";
+import { useLearner } from "@/lib/context/learnerContext";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Filters from "../../categories/[categoryId]/goals/page";
 
-
-import Link from "next/link";
-//&✅
 type CategoryDetail = {
   description: string;
   createdAt: string;
@@ -61,40 +61,72 @@ async function getGoals(
         cache: "no-store",
       }
     );
-    
+
     if (!res.ok) throw new Error("Failed to fetch goals");
-    
+
     const data = await res.json();
-    
+
     return data.map((goal: any) => ({
       id: goal.id,
       title: goal.title,
       term: goal.term,
       status: goal.status,
-      categoryId: goal.categoryId
+      categoryId: goal.categoryId,
     }));
-    
   } catch (error) {
     console.error("Error fetching goals:", error);
     return [];
   }
 }
 
-export default async function CategoryDetailPage({
+export default function CategoryDetailPage({
   params,
 }: {
   params: { categoryId: string };
 }) {
-  const learnerId = 1;
+  const { learnerId } = useLearner();
   const categoryId = parseInt(params.categoryId, 10);
-  
-  const [categoryDetail, goals] = await Promise.all([
-    getCategoryDetail(learnerId, categoryId),
-    getGoals(learnerId, categoryId)
-  ]);
 
+  // ✅ استخدام `useState` لتخزين البيانات
+  const [categoryDetail, setCategoryDetail] = useState<CategoryDetail | null>(
+    null
+  );
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!categoryDetail) {
+  // ✅ استخدام `useEffect` لتحميل البيانات عند تحميل المكون
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      try {
+        const [category, goalsData] = await Promise.all([
+          getCategoryDetail(learnerId, categoryId),
+          getGoals(learnerId, categoryId),
+        ]);
+        setCategoryDetail(category);
+        setGoals(goalsData);
+      } catch (err) {
+        setError("Failed to load data");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, [learnerId, categoryId]);
+
+  // ✅ عرض رسالة أثناء التحميل
+  if (loading) {
+    return (
+      <div className="p-8 h-[100vh] flex items-center justify-center w-[100vw]">
+        <p className="text-gray-400">Loading category details...</p>
+      </div>
+    );
+  }
+
+  // ✅ عرض رسالة في حالة الخطأ
+  if (error || !categoryDetail) {
     return (
       <div className="p-8 h-[100vh] flex items-center justify-center w-[100vw]">
         <p className="text-red-500">Failed to load category detail.</p>
@@ -103,7 +135,7 @@ export default async function CategoryDetailPage({
   }
 
   return (
-    <div className="p-8 mx-auto w-[80vw] h-[100vh] flex flex-col items-center space-y-8"> 
+    <div className="p-8 mx-auto w-[80vw] h-[100vh] flex flex-col items-center space-y-8">
       <div className="flex justify-center w-full">
         <Card className="bg-white rounded-lg shadow-md p-6 w-full max-w-4xl">
           <CardHeader>
@@ -118,23 +150,22 @@ export default async function CategoryDetailPage({
             <p className="text-gray-600 mb-2">{categoryDetail.description}</p>
             <div className="flex gap-4 text-sm justify-center">
               <p className="text-gray-500">
-                Created: {new Date(categoryDetail.createdAt).toLocaleDateString()}
+                Created:{" "}
+                {new Date(categoryDetail.createdAt).toLocaleDateString()}
               </p>
               <p className="text-gray-500">
-                Updated: {new Date(categoryDetail.updatedAt).toLocaleDateString()}
+                Updated:{" "}
+                {new Date(categoryDetail.updatedAt).toLocaleDateString()}
               </p>
             </div>
           </CardContent>
         </Card>
       </div>
 
-
       {/* الفلاتر والأهداف  */}
       <div className="flex justify-center w-full">
         <Filters initialGoals={goals || []} />
       </div>
-
-
     </div>
   );
 }

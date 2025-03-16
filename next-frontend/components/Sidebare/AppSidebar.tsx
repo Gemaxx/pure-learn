@@ -47,8 +47,7 @@ const items = [
 ];
 
 export default function AppSidebar() {
-  // const { learnerId } = useLearner();
-   const learnerId  = 3; // 🔹 اجعلها ديناميكية لاحقًا
+  const { learnerId } = useLearner();  
   // const categories = await getCategories(learnerId);
   return (
     <Sidebar>
@@ -73,7 +72,6 @@ export default function AppSidebar() {
         </SidebarGroup>
         {/* //&------------------------------------------- */}
         {/* We create a collapsible SidebarGroup for each parent. */}
-        {/* <CategoriesList learnerId={Number(learnerId)} /> */}
         <CategoriesList learnerId={learnerId} />
       </SidebarContent>
     </Sidebar>

@@ -36,6 +36,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <LearnerProvider>
           <SidebarProvider>
             <AppSidebar />
             <main>
@@ -43,6 +44,7 @@ export default function RootLayout({
               {children}
             </main>
           </SidebarProvider>
+          </LearnerProvider>
         </ThemeProvider>
       </body>
     </html>

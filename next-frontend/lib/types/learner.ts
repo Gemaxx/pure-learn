@@ -1,4 +1,4 @@
 export interface LearnerContextType {
-  learnerId: string;
-  setLearnerId: (id: string) => void;
+  learnerId: number;
+  setLearnerId: (id: number) => void;
 }
