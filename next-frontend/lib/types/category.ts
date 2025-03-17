@@ -1,11 +1,18 @@
-// ✅ تعريف النوع الأساسي للتصنيفات (Categories)
+// types/category.ts
 export interface Category {
   id: number;
   title: string;
   description: string;
   color: string;
+  createdAt: string;
+  updatedAt: string;
+  parentCategoryId: number | null;
+  learnerId: number;
+  isDeleted: boolean;
 }
 
-// ✅ نوع خاص بإضافة تصنيف جديد
-//يزيل بعض الخصائص من Type لإنشاء NewCategory بدون id و createdAt
-export type NewCategory = Omit<Category, "id" | "createdAt">;
+export interface UpdateCategoryData {
+  title?: string;
+  description?: string;
+  color?: string;
+}
