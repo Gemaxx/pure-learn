@@ -1,3 +1,4 @@
+// Simplified DB PureLearn
 Table Learner {
     id BIGINT [primary key, unique, increment]
     Name NVARCHAR(255) [not null]
@@ -68,6 +69,7 @@ Table LearningResource {
     Title NVARCHAR(255) [not null]
     TotalUnits INT [not null, note: "CHECK (TotalUnits > 0)"]
     Progress INT [not null, note: "CHECK (Progress >= 0 AND Progress <= TotalUnits)"]
+    Status NVARCHAR(50) [not null, note: "CHECK (Status IN ('Not-Started', 'In-Progress', 'On-Hold', 'Done', 'Canceled'))"]
     Link NVARCHAR(MAX)
     IsDeleted BIT [default: 0]
     CreatedAt DATETIME [default: 'GETDATE()']
@@ -79,7 +81,8 @@ Table LearningResource {
 }
 
 Table KanbanStatus {
-    LearnerID BIGINT [not null, ref: > Learner.id]
+    // new update, learner remover   
+    GoalID BIGINT [not null, ref: > Goal.id]
     id BIGINT [primary key, unique, increment]
     Name NVARCHAR(255) [not null, unique]
     MaxTasks INT [note: 'Maximum number of tasks allowed, must be positive']
@@ -155,3 +158,91 @@ Table Note {
     DeletedAt DATETIME
     IsDeleted BIT [default: 0]
 }
+
+
+
+// Time Management
+
+// Think about merging with Event {
+Table Event {
+    id BIGINT [pk,unique, increment]
+    LearnerID BIGINT [ref: > Learner.id]
+    Title NVARCHAR(255)
+    Description NVARCHAR(MAX)
+    EventType NVARCHAR(50) [note: '=, Study Session, Break, Custom']
+    StartTime DATETIME
+    EndTime DATETIME
+    EstimatedTime TIME
+    RepeatFrequency NVARCHAR(50) [not null, default: 'None', note: "CHECK (RepeatFrequency IN ('None', 'Daily', 'Weekly', 'Monthly', 'Annually', 'Custom'))"]
+    RepeatInterval INT
+    RepeatOnSunday BIT [default: 0]
+    RepeatOnMonday BIT [default: 0]
+    RepeatOnTuesday BIT [default: 0]
+    RepeatOnWednesday BIT [default: 0]
+    RepeatOnThursday BIT [default: 0]
+    RepeatOnFriday BIT [default: 0]
+    RepeatOnSaturday BIT [default: 0]
+    RepeatEnds NVARCHAR(50) [note: "CHECK (RepeatEnds IN ('Never', 'On Date', 'After Occurrences'))"]
+    RepeatEndDate DATE
+    RepeatEndOccurrences INT
+    IsDeleted BIT [default: 0]
+    DeletedAt DATETIME
+    CreatedAt DATETIME [default: 'GETDATE()']
+    UpdatedAt DATETIME [default: 'GETDATE()']
+    TaskID BIGINT [ref: > Task.id]
+}
+
+Table DeepWorkSession {
+    id BIGINT [pk,unique, increment]
+    LearnerID BIGINT [ref: > Learner.id]
+    TaskID BIGINT [ref: > Task.id]
+    StartTime DATETIME
+    EndTime DATETIME
+    CycleCount INT
+    IsCompleted BIT [default: 0]
+    CreatedAt DATETIME [default: `GETDATE()`]
+    UpdatedAt DATETIME [default: `GETDATE()`]
+}
+
+Table Session {
+    id BIGINT [pk,unique, increment]
+    DeepWorkSessionID BIGINT [ref: > DeepWorkSession.id]
+    IsCompleted BIT [default: 0]
+    StartTime DATETIME
+    EndTime DATETIME
+    BreakType NVARCHAR(10) [note: 'Short or Long']
+    BreakStart DATETIME
+    BreakEnd DATETIME
+}
+
+Table TimerSettings {
+    id BIGINT [pk,unique, increment]
+    DeepWorkSessionID BIGINT [unique, ref: > DeepWorkSession.id]
+    FocusMinutes INT
+    ShortBreakMin INT
+    LongBreakMin INT
+    CyclesBeforeLongBreak INT
+}
+// }
+
+Table Reminder {
+    id BIGINT [pk,unique, increment]
+    LearnerID BIGINT [ref: > Learner.id]
+    TaskID BIGINT [ref: > Task.id]
+    EventID BIGINT [ref: > Event.id]
+    ReminderTime DATETIME
+    Message NVARCHAR(MAX)
+    IsSent BIT [default: 0]
+    CreatedAt DATETIME [default: `GETDATE()`]
+}
+
+/*
+Table DayPlan {
+    id BIGINT [pk,unique, increment]
+    LearnerID BIGINT [ref: > Learner.id]
+    Date DATE
+    Type NVARCHAR(20) [note: 'Study Day, Off Day, Mixed']
+    CreatedAt DATETIME [default: `GETDATE()`]
+    UpdatedAt DATETIME [default: `GETDATE()`]
+}
+*/
