@@ -38,6 +38,7 @@ public partial class PureLearnDbContext : DbContext
 
     public virtual DbSet<TaskType> TaskTypes { get; set; }
 
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=DefaultConnection");
 

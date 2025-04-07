@@ -22,4 +22,5 @@ public partial class TaskType
     public virtual Learner Learner { get; set; } = null!;
 
     public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
+    
 }

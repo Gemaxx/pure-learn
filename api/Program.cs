@@ -3,8 +3,15 @@ using api.Data;
 using api.Interfaces;
 using api.Repos;
 using api.Repository;
+using api.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +62,30 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IGoalRepository, GoalRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddSingleton<JwtService>();
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        var key = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not configured.");
+        var keyBytes = Encoding.UTF8.GetBytes(key);
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            
+            IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
+       
+        };
+    });
+
+builder.Services.AddAuthorization();
+
 
 
 builder.Logging.AddConsole();
