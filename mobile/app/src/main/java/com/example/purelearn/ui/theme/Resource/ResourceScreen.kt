@@ -1,30 +1,22 @@
 package com.example.purelearn.ui.theme.Resource
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,24 +24,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.purelearn.domain.model.Resource
 import com.example.purelearn.domain.model.ResourceResponse
 import com.example.purelearn.ui.theme.Resource.Resourceviewmodel.ResourceViewModel
 import com.example.purelearn.ui.theme.Resource.Resourceviewmodel.events.ResourceEvents
 import com.example.purelearn.ui.theme.Resource.Resourceviewmodel.events.ResourceUiEvents
 import com.example.purelearn.ui.theme.components.AddResourceBottomSheet
-import com.example.purelearn.ui.theme.components.HomeTopAppBar
+import com.example.purelearn.ui.theme.components.GlowingFAB
 import com.example.purelearn.ui.theme.components.ResourceCard
+import com.example.purelearn.ui.theme.components.SegmentedControlScreen
 import com.example.purelearn.ui.theme.components.SwipeToDeleteContainer
 import com.example.purelearn.ui.theme.components.showToast
 import kotlinx.coroutines.flow.collectLatest
@@ -57,14 +49,14 @@ import kotlinx.coroutines.flow.collectLatest
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResourceScreen(
-    //navController: NavController,
-    goalId: Int,
+    navController: NavController,
+    goalId: Int?,
     viewModel: ResourceViewModel = hiltViewModel(),
     ) {
 
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+//    val sheetState = rememberModalBottomSheetState(
+//        skipPartiallyExpanded = true
+//    )
     val isVisible = rememberSaveable { mutableStateOf(true) }
 
 
@@ -76,37 +68,43 @@ fun ResourceScreen(
     }
 
     var title by remember { mutableStateOf("") }
-    var  typeId by remember { mutableStateOf(0) }
+    var selectedTypeId by remember { mutableStateOf(0) }
     var  totalUnits by remember { mutableStateOf(0) }
     var  progress by remember { mutableStateOf(0) }
     var link by remember { mutableStateOf("") }
-    val response by viewModel.resourceResponseEvent
+    val resourceResponse by viewModel.resourceResponseEvent
     val context = LocalContext.current
     var isLoading by remember { mutableStateOf(false) }
 
 
 
     LaunchedEffect(Unit) {
-            viewModel.onEvent(ResourceEvents.ShowResources(goalId=6))
+        Log.d("ResourceScreen", "Fetching Resource for goalId: $goalId")
+        if (goalId != null) {
+            viewModel.onEvent(ResourceEvents.ShowResources(goalId))
+        } else {
+            Log.e("ResourceScreen", "goalId is null, cannot fetch resources")
+        }
     }
 
     LaunchedEffect(key1 = true) {
-        viewModel.addResourceEvent.collect {
+        viewModel.addResourceEvent.collectLatest {
             isLoading = when (it) {
                 is ResourceUiEvents.Success -> {
                     title = ""
-                    typeId = 0
-                    totalUnits = 0
-                    progress = 0
-                    link = ""
+                    selectedTypeId = 0
+                    totalUnits=0
+                    progress=0
+                    link=""
                     context.showToast("Learning resource Added")
                     isSheetOpen = false
-                        viewModel.onEvent(ResourceEvents.ShowResources(goalId))
+                    if(goalId!=null)
+                    viewModel.onEvent(ResourceEvents.ShowResources(goalId))
                     false
                 }
 
                 is ResourceUiEvents.Failure -> {
-                   //Log.d("main", "CategoryScreen:${it.msg} ")
+                    Log.d("main", "ResourceScreen:${it.msg} ")
                     context.showToast(it.msg)
                     false
                 }
@@ -122,12 +120,14 @@ fun ResourceScreen(
             isLoading = when (it) {
                 is ResourceUiEvents.Success -> {
                     context.showToast("Resource Deleted")
+                        if(goalId!=null)
                         viewModel.onEvent(ResourceEvents.ShowResources(goalId))
                     false
                 }
 
                 is ResourceUiEvents.Failure -> {
                     context.showToast(it.msg)
+                    if(goalId!=null)
                         viewModel.onEvent(ResourceEvents.ShowResources(goalId))
                     false
                 }
@@ -143,6 +143,7 @@ fun ResourceScreen(
             isLoading = when (it) {
                 is ResourceUiEvents.Success -> {
                     context.showToast("Resource Updated!")
+                        if(goalId!=null)
                         viewModel.onEvent(ResourceEvents.ShowResources(goalId))
                     isSheetOpen = false
                     false
@@ -159,151 +160,84 @@ fun ResourceScreen(
         }
     }
 
-    Scaffold(modifier = Modifier.fillMaxSize(),
+
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
-            AnimatedVisibility(
-                visible = isVisible.value,
-                enter = slideInVertically(initialOffsetY = { it * 2 }),
-                exit = slideOutVertically(targetOffsetY = { it * 2 })
-            ) {
-                ExtendedFloatingActionButton(
-                    onClick = { isSheetOpen=true },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "Add",
-                            tint = White
-                        )
-                    },
-                    text = { Text("Add Resource", color = White) },
-                    containerColor = Color(0xFF2196F3), // Blue color
-                    contentColor = White
-                )
+            GlowingFAB {
+                isSheetOpen = true
             }
         },
         topBar = {
-            HomeTopAppBar(
-                userName = "Fatema"
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Goal Name",
+                        color = Color.White,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
             )
         }
-    )
-    { paddingValues ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(paddingValues),
+            verticalArrangement = Arrangement.Top // Ensures items are stacked properly
         ) {
-
-
-            Column(
-                modifier = Modifier
-                    //.fillMaxSize()
-                    .background(
-                        color = MaterialTheme.colorScheme.background
-                    )
-            ) {
-                Text(
-                    text = "Goal Name",
-                    modifier = Modifier.padding(start = 16.dp),
-                    fontSize = 20.sp
+            // First, Segmented Control appears
+            if (goalId != null) {
+                SegmentedControlScreen(
+                    navController = navController,
+                    goalId =goalId
                 )
             }
 
-            Row(
-                modifier = Modifier.fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Button(
-                    onClick = { /* Handle click */ },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = White,
-                        contentColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(50),
-                    modifier = Modifier.height(40.dp)
-
+            // Then, Resource list appears below it
+            if (resourceResponse.data.isNotEmpty()) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
-                    Text(text = "Tasks", fontSize = 14.sp, fontWeight = FontWeight.Medium)
-                }
-                Button(
-                    onClick = { /* Handle click */ },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = White,
-                        contentColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(50),
-                    modifier = Modifier.height(40.dp)
+                    val resources: List<ResourceResponse> = resourceResponse.data
 
-                ) {
-                    Text(
-                        text = "Resources",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-                Button(
-                    onClick = { /* Handle click */ },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = White,
-                        contentColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(50),
-                    modifier = Modifier.height(40.dp)
-
-                ) {
-                    Text(text = "Notes", fontSize = 14.sp, fontWeight = FontWeight.Medium)
-                }
-
-            }
-            Text(
-                text = "Resources",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 10.dp)
-            )
-        }
-
-
-        if (response.data.isNotEmpty())
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                val resourses: List<ResourceResponse> = response.data
-
-
-                items(resourses, key = { it.id }) { resourse ->
-                    SwipeToDeleteContainer(
-                        item = resourse,
-                        onDelete = {
-                            viewModel.onEvent(ResourceEvents.DeleteResourceEvent(resourse.id))
-                        },
-                        animationDuration = 300,
-                        content = { item ->
-                            ResourceCard(
-                                resource = item,
-                                onClick = {
-                                    title = item.title
-                                    isSheetOpen = true
-                                    //goalId = item.id
-                                },
-                                onUpdateResource = {
-                                    isUpdateSheetOpen = true
-                                    title = item.title
-                                   // goalId = item.id
-                                }
-                            )
-                        }
-                    )
-
+                    items(resources, key = { it.id }) { resource ->
+                        SwipeToDeleteContainer(
+                            item = resource,
+                            onDelete = {
+                                viewModel.onEvent(ResourceEvents.DeleteResourceEvent(resource.id))
+                            },
+                            animationDuration = 300,
+                            content = { item ->
+                                ResourceCard(
+                                    resource = item,
+                                    onClick = {
+                                        title = item.title
+                                        isSheetOpen = true
+                                    },
+                                    onUpdateResource = {
+                                        isUpdateSheetOpen = true
+                                        title = item.title
+                                    }
+                                )
+                            }
+                        )
+                    }
                 }
             }
         }
-
+    }
 
 
     if (isSheetOpen) {
@@ -311,8 +245,8 @@ fun ResourceScreen(
             isOpen = isSheetOpen,
             title = title,
             onTitleChange = {title=it},
-            typeId =typeId ,
-            onTypeIdChange = {typeId=it},
+            typeId =selectedTypeId ,
+            onTypeIdChange = {selectedTypeId=it},
             totalUnits = totalUnits,
             onTotalUnitsChange = {totalUnits=it},
             progress = progress,
@@ -328,9 +262,9 @@ fun ResourceScreen(
                     viewModel.onEvent(
                         ResourceEvents.AddResourceEvent(
                             Resource(
-                                goalId = goalId ?: 0,
+                                goalId = goalId ?: 1,
                                 title = title,
-                                typeId =typeId,
+                                typeId =selectedTypeId,
                                 totalUnits =  totalUnits,
                                 progress = progress,
                                 link =  link,
@@ -344,24 +278,17 @@ fun ResourceScreen(
 //                    totalUnits = 0
 //                    progress = 0
 //                    link =  ""
-
+                    Log.d("dddd","$goalId $title $selectedTypeId $totalUnits $progress $link")
                 } else {
                     context.showToast("Please enter all required fields.")
                 }
             }
         )
     }
-        }
 
 
-
-
-
-
-
-
-
-
+//
+}
 
 
 

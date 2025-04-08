@@ -64,8 +64,12 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.compose.material)
+   // implementation(libs.androidx.material3)
+    //implementation(libs.androidx.material3.android)
+    //implementation(libs.androidx.compose.material)
+   // implementation(libs.androidx.material3.android)
+    implementation("androidx.compose.material3:material3:1.2.0")  // Or the latest version
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -119,7 +123,7 @@ dependencies {
     implementation("io.ktor:ktor-client-gson:2.2.3")
     implementation("io.ktor:ktor-serialization-gson:2.2.3")
 
-    implementation ("androidx.compose.material:material:1.2.0-alpha02")
+    //implementation ("androidx.compose.material:material:1.2.0-alpha02")
 
     //moshi
     implementation ("com.squareup.moshi:moshi-kotlin:1.13.0")
@@ -134,4 +138,19 @@ dependencies {
 
     implementation ("androidx.core:core-ktx:1.12.0")
 
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.31.0-alpha")
+
+
+
+
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+
+    implementation( "com.google.accompanist:accompanist-flowlayout:0.30.1")
+
+    implementation("org.kohsuke:github-api:1.313")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }

@@ -4,8 +4,12 @@ import com.example.purelearn.domain.model.Category
 import com.example.purelearn.domain.model.CategoryResponse
 import com.example.purelearn.domain.model.Goal
 import com.example.purelearn.domain.model.GoalResponse
+import com.example.purelearn.domain.model.NoteRequest
+import com.example.purelearn.domain.model.NoteResponse
 import com.example.purelearn.domain.model.Resource
 import com.example.purelearn.domain.model.ResourceResponse
+import com.example.purelearn.domain.model.ResourceType
+import com.example.purelearn.domain.model.ResourceTypeResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -118,4 +122,63 @@ interface RetrofitService {
     ): ResourceResponse
 
 
+
+
+    @GET("learners/{learnerId}/learningResourceTypes")
+    suspend fun getResourceType(
+        @Path("learnerId") learnerId: Int
+    ): List<ResourceTypeResponse>
+
+
+    @POST("learners/{learnerId}/learningResourceTypes")
+    suspend fun addResourceType(
+        @Path("learnerId") learnerId: Int,
+        @Body resourceType : ResourceType
+    ): ResourceTypeResponse
+
+
+    @PATCH("learners/{learnerId}/learningResourceTypes/{learningResourceTypeId}")
+    suspend fun updateResourceType(
+        @Path("learnerId") learnerId: Int,
+        @Path("learningResourceTypeId") resourceTypeId: Int,
+        @Body resourceType: ResourceType
+    ): ResourceTypeResponse
+
+    @DELETE("learners/{learnerId}/learningResourceTypes/{learningResourceTypeId}/hard-delete")
+    suspend fun deleteResourceType(
+        @Path("learnerId") learnerId: Int,
+        @Path("learningResourceTypeId") learningResourceTypeId: Int
+    ): ResourceTypeResponse
+
+
+
+
+    @GET("learners/{learnerId}/Notes")
+    suspend fun getNote(
+        @Path("learnerId") learnerId: Int,
+        @Query("goalId") goalId: Int,
+        @Query("IsDeleted") isDeleted: Boolean = false
+    ): List<NoteResponse>
+
+
+    @POST("learners/{learnerId}/Notes")
+    suspend fun addNote(
+        @Path("learnerId") learnerId: Int,
+        @Body note: NoteRequest
+    ): NoteRequest
+
+
+    @PATCH("learners/{learnerId}/Notes/{noteId}")
+    suspend fun updateNote(
+        @Path("learnerId") learnerId: Int,
+        @Path("noteId") noteId: Int,
+        @Body note: NoteRequest
+    ): NoteRequest
+
+
+    @DELETE("learners/{learnerId}/Notes/{noteId}/hard-delete")
+    suspend fun deleteNote(
+        @Path("learnerId") learnerId: Int,
+        @Path("noteId") noteId: Int
+    ): NoteResponse
 }

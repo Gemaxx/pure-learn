@@ -24,11 +24,19 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
+import android.app.Application
+
+
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
+//    @Provides
+//    @Singleton
+//    fun provideApplication(app: Application): Application {
+//        return app
+//    }
     // ktor dependency injection
     @Provides
     @Singleton
