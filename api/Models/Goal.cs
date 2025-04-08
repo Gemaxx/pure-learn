@@ -23,7 +23,7 @@ public partial class Goal
 
     public DateTime? UpdatedAt { get; set; }
 
-    public long? CategoryId { get; set; } 
+    public long? CategoryId { get; set; }
 
     public long LearnerId { get; set; }
 
@@ -32,6 +32,8 @@ public partial class Goal
     public bool IsDeleted { get; set; }
 
     public virtual Category? Category { get; set; }
+
+    public virtual ICollection<KanbanStatus> KanbanStatuses { get; set; } = new List<KanbanStatus>();
 
     public virtual Learner Learner { get; set; } = null!;
 

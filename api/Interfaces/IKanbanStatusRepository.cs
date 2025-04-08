@@ -9,23 +9,23 @@ namespace api.Interfaces
     public interface IKanbanStatusRepository
     {
         // Retrieve all Kanban statuses for a given learner.
-        Task<List<KanbanStatus>> GetKanbanStatusesAsync(long learnerId);
+        Task<List<KanbanStatus>> GetKanbanStatusesAsync(long goalId);
 
         // Retrieve a specific Kanban status by learner and status ID.
-        Task<KanbanStatus?> GetKanbanStatusAsync(long learnerId, long statusId);
+        Task<KanbanStatus?> GetKanbanStatusAsync(long goalId, long statusId);
 
         // Create a new Kanban status for a learner.
-        Task<KanbanStatus> CreateKanbanStatusAsync(long learnerId, KanbanStatus status);
+        Task<KanbanStatus> CreateKanbanStatusAsync(long goalId, KanbanStatus status);
 
         // Update an existing Kanban status.
-        Task<KanbanStatus?> UpdateKanbanStatusAsync(long learnerId, long statusId, KanbanStatus status);
+        Task<KanbanStatus?> UpdateKanbanStatusAsync(long goalId, long statusId, KanbanStatus status);
 
         // Delete a Kanban status permanently.
-        Task<bool> DeleteKanbanStatusAsync(long learnerId, long statusId);
+        Task<bool> DeleteKanbanStatusAsync(long goalId, long statusId);
 
         // Optional: Soft delete and restore methods if needed.
-         Task<bool> SoftDeleteKanbanStatusAsync(long learnerId, long statusId);
-         Task<bool> RestoreKanbanStatusAsync(long learnerId, long statusId);
+         Task<bool> SoftDeleteKanbanStatusAsync(long goalId, long statusId);
+         Task<bool> RestoreKanbanStatusAsync(long goalId, long statusId);
          
     }
 }

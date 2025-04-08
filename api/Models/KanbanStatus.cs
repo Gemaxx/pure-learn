@@ -11,13 +11,13 @@ public partial class KanbanStatus
 
     public int? MaxTasks { get; set; }
 
-    public long LearnerId { get; set; }
-
     public DateTime? DeletedAt { get; set; }
 
     public bool IsDeleted { get; set; }
 
-    public virtual Learner Learner { get; set; } = null!;
+    public long? GoalId { get; set; }
+
+    public virtual Goal? Goal { get; set; }
 
     public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
 }
