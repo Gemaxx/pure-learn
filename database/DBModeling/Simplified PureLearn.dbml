@@ -165,14 +165,14 @@
 
 // Time Management
 
-    // 
-    // Think about merging with Event {
     Table Event {
         id BIGINT [pk,unique, increment]
         LearnerID BIGINT [ref: > Learner.id]
+        TaskID BIGINT [ref: > Task.id]
         Title NVARCHAR(255)
         Description NVARCHAR(MAX)
-        EventType NVARCHAR(50) [note: '=, DeepWorkSession,Focus Session, Long break, short break, Custom']
+        // we have system defined event types (Deepwork Session, Focus Session, Long break, short break)
+        EventType NVARCHAR(50) [note: '=, Deepwork Session,Focus Session, Long break, short break, Custom']
         StartTime DATETIME
         EndTime DATETIME
         EstimatedTime TIME
@@ -192,10 +192,9 @@
         DeletedAt DATETIME
         CreatedAt DATETIME [default: 'GETDATE()']
         UpdatedAt DATETIME [default: 'GETDATE()']
-        TaskID BIGINT [ref: > Task.id]
     }
+    // Event type table
 
-    // }
     Table TimerSettings {
         id BIGINT [pk,unique, increment]
         DeepWorkSessionMin INT 
