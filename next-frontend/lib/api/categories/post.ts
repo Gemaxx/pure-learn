@@ -1,9 +1,9 @@
-import { NewCategory, Category } from "@/lib/types/category";
+import { UpdateCategoryData, Category } from "@/lib/types/category";
 
 export async function addCategory(
   learnerId: number,
-  categoryData: NewCategory,
-    onSuccess?: () => void
+  categoryData: UpdateCategoryData,
+  onSuccess?: () => void
 ): Promise<Category> {
   try {
     const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/learners/${learnerId}/categories`;

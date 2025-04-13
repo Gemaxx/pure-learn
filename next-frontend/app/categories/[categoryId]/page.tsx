@@ -127,7 +127,7 @@ export default function CategoryDetailPage({
   const handleDelete = async () => {
     const success = await deleteCategory(learnerId, categoryId);
     if (success) {
-      router.push("/categories");
+      router.push("/");
     }
   };
 

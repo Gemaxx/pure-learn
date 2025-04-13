@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 import { ScrollArea } from "../ui/scroll-area";
 import AddCategoryForm from "./AddCategoryForm";
+import { log } from "console";
 
 export default function CategoriesList({
   learnerId,
@@ -38,6 +39,7 @@ export default function CategoriesList({
       queryParams: { IsDeleted: false },
     }
   );
+console.log(learnerId, "learnerId from categoriesList");
 
   return (
     <ScrollArea className="h-[calc(100vh-5rem)]">

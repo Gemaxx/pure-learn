@@ -5,24 +5,31 @@ import { LearnerContextType } from "@/lib/types/learner";
 const LearnerContext = createContext<LearnerContextType | undefined>(undefined);
 
 export function LearnerProvider({ children }: { children: ReactNode }) {
-  const [learnerId, setLearnerId] = useState<number>(1); // Default value
+  const [learnerId, setLearnerId] = useState<number | null>(null);
+  const [isClient, setIsClient] = useState(false);
 
-  // ✅ Load from localStorage on client-side only
+  // ✅ تأكيد أن الكود يتم تشغيله فقط على العميل
   useEffect(() => {
+    setIsClient(true);
     if (typeof window !== "undefined") {
       const storedId = localStorage.getItem("learnerId");
       if (storedId) {
         setLearnerId(Number(storedId));
+      } else {
+        setLearnerId(1); // 🔹 تعيين قيمة افتراضية عند عدم وجود بيانات
       }
     }
   }, []);
 
-  // ✅ Save to localStorage on change
+  // ✅ حفظ `learnerId` في `localStorage` عند تغييره
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (isClient && learnerId !== null) {
       localStorage.setItem("learnerId", learnerId.toString());
     }
-  }, [learnerId]);
+  }, [learnerId, isClient]);
+
+  // ✅ تأجيل الريندر حتى لا يحصل Hydration Mismatch
+  if (!isClient || learnerId === null) return null;
 
   return (
     <LearnerContext.Provider value={{ learnerId, setLearnerId }}>

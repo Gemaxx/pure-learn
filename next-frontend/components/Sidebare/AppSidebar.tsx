@@ -48,6 +48,8 @@ const items = [
 
 export default function AppSidebar() {
   const { learnerId } = useLearner();  
+  console.log(learnerId, "learnerId from AppSidebar");
+  
   // const categories = await getCategories(learnerId);
   return (
     <Sidebar>
