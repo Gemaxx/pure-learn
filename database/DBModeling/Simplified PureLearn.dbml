@@ -1,157 +1,228 @@
-Table Learner {
-    id BIGINT [primary key, unique, increment]
-    Name NVARCHAR(255) [not null]
-    Email NVARCHAR(255) [not null, unique]
-    PasswordHash NVARCHAR(255) [not null]
-    ProfilePicture NVARCHAR(MAX)
-    Bio NVARCHAR(MAX)
-    IsDeleted BIT [default: 0]
-    CreatedAt DATETIME [default: 'GETDATE()']
-    UpdatedAt DATETIME [default: 'GETDATE()']
-    LastLogin DATETIME
-    DeletedAt DATETIME
-}
+// Simplified DB PureLearn
+ // Learner
+    Table Learner {
+        id BIGINT [primary key, unique, increment]
+        Name NVARCHAR(255) [not null]
+        Email NVARCHAR(255) [not null, unique]
+        PasswordHash NVARCHAR(255) [not null]
+        ProfilePicture NVARCHAR(MAX)
+        Bio NVARCHAR(MAX)
+        IsDeleted BIT [default: 0]
+        CreatedAt DATETIME [default: 'GETDATE()']
+        UpdatedAt DATETIME [default: 'GETDATE()']
+        LastLogin DATETIME
+        DeletedAt DATETIME
+    }
 
-Table Category {
-    id BIGINT [primary key, unique, increment]
-    // ParentCategoryID BIGINT [ref: > Category.id]
-    Title NVARCHAR(255) [not null]
-    Color NVARCHAR(50) [not null]
-    Description NVARCHAR(MAX)
-    CreatedAt DATETIME [default: 'GETDATE()']
-    UpdatedAt DATETIME [default: 'GETDATE()']
-    LearnerID BIGINT [not null, ref: > Learner.id]
-    DeletedAt DATETIME
-    IsDeleted BIT [default: 0]
-}
+// Goal Management
+    Table Category {
+        id BIGINT [primary key, unique, increment]
+        // ParentCategoryID BIGINT [ref: > Category.id]
+        Title NVARCHAR(255) [not null]
+        Color NVARCHAR(50) [not null]
+        Description NVARCHAR(MAX)
+        CreatedAt DATETIME [default: 'GETDATE()']
+        UpdatedAt DATETIME [default: 'GETDATE()']
+        LearnerID BIGINT [not null, ref: > Learner.id]
+        DeletedAt DATETIME
+        IsDeleted BIT [default: 0]
+    }
 
-Table Goal {
-    // LearnerID BIGINT [not null, ref: > Learner.id]
-    CategoryID BIGINT [not null, ref: > Category.id]
-    id BIGINT [primary key, unique, increment]
-    Title NVARCHAR(255) [not null]
-    Description NVARCHAR(MAX) [not null]
-    Motivation NVARCHAR(MAX) [not null]
-    Term NVARCHAR(50) [not null, note: "CHECK (Term IN ('Long-Term', 'Medium-Term', 'Short-Term'))"]
-    Status NVARCHAR(50) [not null, note: "CHECK (Status IN ('Not-Started', 'In-Progress', 'On-Hold', 'Done', 'Canceled'))"]
-    CompletionDate DATE
-    CreatedAt DATETIME [default: 'GETDATE()']
-    UpdatedAt DATETIME [default: 'GETDATE()']
-    DeletedAt DATETIME
-}
-/*
-Table Subgoal {
-    id BIGINT [primary key, unique, increment]
-    Title NVARCHAR(255) [not null]
-    Description NVARCHAR(MAX) [not null]
-    Status NVARCHAR(50) [not null]
-    CreatedAt DATETIME [default: 'GETDATE()']
-    UpdatedAt DATETIME [default: 'GETDATE()']
-    GoalID BIGINT [not null, ref: > Goal.id]
-    DeletedAt DATETIME
-    IsDeleted BIT [default: 0]
-}
-*/
-Table LearningResourceType {
-    LearnerID BIGINT [not null, ref: > Learner.id]
-    id BIGINT [primary key, unique, increment]
-    Name NVARCHAR(255) [not null, unique]
-    UnitType NVARCHAR(255) [not null, unique]
-    DeletedAt DATETIME
-    IsDeleted BIT [default: 0]
-}
+    Table Goal {
+        // LearnerID BIGINT [not null, ref: > Learner.id]
+        CategoryID BIGINT [not null, ref: > Category.id]
+        id BIGINT [primary key, unique, increment]
+        Title NVARCHAR(255) [not null]
+        Description NVARCHAR(MAX) [not null]
+        Motivation NVARCHAR(MAX) [not null]
+        Term NVARCHAR(50) [not null, note: "CHECK (Term IN ('Long-Term', 'Medium-Term', 'Short-Term'))"]
+        Status NVARCHAR(50) [not null, note: "CHECK (Status IN ('Not-Started', 'In-Progress', 'On-Hold', 'Done', 'Canceled'))"]
+        CompletionDate DATE
+        CreatedAt DATETIME [default: 'GETDATE()']
+        UpdatedAt DATETIME [default: 'GETDATE()']
+        DeletedAt DATETIME
+    }
+    /*
+    Table Subgoal {
+        id BIGINT [primary key, unique, increment]
+        Title NVARCHAR(255) [not null]
+        Description NVARCHAR(MAX) [not null]
+        Status NVARCHAR(50) [not null]
+        CreatedAt DATETIME [default: 'GETDATE()']
+        UpdatedAt DATETIME [default: 'GETDATE()']
+        GoalID BIGINT [not null, ref: > Goal.id]
+        DeletedAt DATETIME
+        IsDeleted BIT [default: 0]
+    }
+    */
+    Table LearningResourceType {
+        LearnerID BIGINT [not null, ref: > Learner.id]
+        id BIGINT [primary key, unique, increment]
+        Name NVARCHAR(255) [not null, unique]
+        UnitType NVARCHAR(255) [not null, unique]
+        DeletedAt DATETIME
+        IsDeleted BIT [default: 0]
+    }
 
-Table LearningResource {
-    GoalID BIGINT [not null, ref: > Goal.id]
-    TypeID BIGINT [not null, ref: > LearningResourceType.id]
-    id BIGINT [primary key, unique, increment]
-    Title NVARCHAR(255) [not null]
-    TotalUnits INT [not null, note: "CHECK (TotalUnits > 0)"]
-    Progress INT [not null, note: "CHECK (Progress >= 0 AND Progress <= TotalUnits)"]
-    Link NVARCHAR(MAX)
-    IsDeleted BIT [default: 0]
-    CreatedAt DATETIME [default: 'GETDATE()']
-    UpdatedAt DATETIME [default: 'GETDATE()']
-    // LearnerID BIGINT [not null, ref: > Learner.id]
-    // CategoryID BIGINT [ref: > Category.id]
-    // SubgoalID BIGINT [ref: > Subgoal.id]
-    DeletedAt DATETIME
-}
+    Table LearningResource {
+        GoalID BIGINT [not null, ref: > Goal.id]
+        TypeID BIGINT [not null, ref: > LearningResourceType.id]
+        id BIGINT [primary key, unique, increment]
+        Title NVARCHAR(255) [not null]
+        TotalUnits INT [not null, note: "CHECK (TotalUnits > 0)"]
+        Progress INT [not null, note: "CHECK (Progress >= 0 AND Progress <= TotalUnits)"]
+        Status NVARCHAR(50) [not null, note: "CHECK (Status IN ('Not-Started', 'In-Progress', 'On-Hold', 'Done', 'Canceled'))"]
+        Link NVARCHAR(MAX)
+        IsDeleted BIT [default: 0]
+        CreatedAt DATETIME [default: 'GETDATE()']
+        UpdatedAt DATETIME [default: 'GETDATE()']
+        // LearnerID BIGINT [not null, ref: > Learner.id]
+        // CategoryID BIGINT [ref: > Category.id]
+        // SubgoalID BIGINT [ref: > Subgoal.id]
+        DeletedAt DATETIME
+    }
 
-Table KanbanStatus {
-    LearnerID BIGINT [not null, ref: > Learner.id]
-    id BIGINT [primary key, unique, increment]
-    Name NVARCHAR(255) [not null, unique]
-    MaxTasks INT [note: 'Maximum number of tasks allowed, must be positive']
-    IsDeleted BIT [default: 0]
-    DeletedAt DATETIME
-}
+    Table KanbanStatus {
+        // new update, learner remover   
+        GoalID BIGINT [not null, ref: > Goal.id]
+        id BIGINT [primary key, unique, increment]
+        Name NVARCHAR(255) [not null, unique]
+        MaxTasks INT [note: 'Maximum number of tasks allowed, must be positive']
+        IsDeleted BIT [default: 0]
+        DeletedAt DATETIME
+    }
 
-Table TaskType {
-    LearnerID BIGINT [not null, ref: > Learner.id]
-    id BIGINT [primary key, unique, increment]
-    Name NVARCHAR(255) [not null, unique]
-    Description NVARCHAR(500)
-    Icon VARBINARY(MAX)
-    DeletedAt DATETIME
-    IsDeleted BIT [default: 0]
-}
+    Table TaskType {
+        LearnerID BIGINT [not null, ref: > Learner.id]
+        id BIGINT [primary key, unique, increment]
+        Name NVARCHAR(255) [not null, unique]
+        Description NVARCHAR(500)
+        Icon VARBINARY(MAX)
+        DeletedAt DATETIME
+        IsDeleted BIT [default: 0]
+    }
 
-Table Task {
-    GoalID BIGINT [not null, ref: > Goal.id]
-    KanbanStatusID BIGINT [not null, ref: > KanbanStatus.id]
-    TypeID BIGINT [not null, ref: > TaskType.id]
-    id BIGINT [primary key, unique, increment]
-    Title NVARCHAR(255) [not null]
-    EisenhowerStatus NVARCHAR(50) [not null, note: "CHECK (EisenhowerStatus IN ('Urgent & Important', 'Not Urgent but Important', 'Urgent but Not Important', 'Not Urgent & Not Important'))"]
-    TimeTaskRelated NVARCHAR(50) [not null, note: "CHECK (TimeTaskRelated IN ('Today', 'Tomorrow', 'This Week', 'Someday'))"]
-    DueDate DATE
-    EstimatedTime TIME
-    TimeSpent TIME
-    RepeatFrequency NVARCHAR(50) [not null, default: 'None', note: "CHECK (RepeatFrequency IN ('None', 'Daily', 'Weekly', 'Monthly', 'Annually', 'Custom'))"]
-    RepeatInterval INT
-    RepeatOnSunday BIT [default: 0]
-    RepeatOnMonday BIT [default: 0]
-    RepeatOnTuesday BIT [default: 0]
-    RepeatOnWednesday BIT [default: 0]
-    RepeatOnThursday BIT [default: 0]
-    RepeatOnFriday BIT [default: 0]
-    RepeatOnSaturday BIT [default: 0]
-    RepeatEnds NVARCHAR(50) [note: "CHECK (RepeatEnds IN ('Never', 'On Date', 'After Occurrences'))"]
-    RepeatEndDate DATE
-    RepeatEndOccurrences INT
-    IsDeleted BIT [default: 0]
-    DeletedAt DATETIME
-    CreatedAt DATETIME [default: 'GETDATE()']
-    UpdatedAt DATETIME [default: 'GETDATE()']
-    // LearnerID BIGINT [not null, ref: > Learner.id]
-    // CategoryID BIGINT [ref: > Category.id]
-    // SubgoalID BIGINT [ref: > Subgoal.id]
-    // LearningResourceID BIGINT [ref: > LearningResource.id]
-}
+    Table Task {
+        GoalID BIGINT [not null, ref: > Goal.id]
+        KanbanStatusID BIGINT [not null, ref: > KanbanStatus.id]
+        TypeID BIGINT [not null, ref: > TaskType.id]
+        id BIGINT [primary key, unique, increment]
+        Title NVARCHAR(255) [not null]
+        EisenhowerStatus NVARCHAR(50) [not null, note: "CHECK (EisenhowerStatus IN ('Urgent & Important', 'Not Urgent but Important', 'Urgent but Not Important', 'Not Urgent & Not Important'))"]
+        TimeTaskRelated NVARCHAR(50) [not null, note: "CHECK (TimeTaskRelated IN ('Today', 'Tomorrow', 'This Week', 'Someday'))"]
+        DueDate DATE
+        EstimatedTime TIME
+        TimeSpent TIME
+        RepeatFrequency NVARCHAR(50) [not null, default: 'None', note: "CHECK (RepeatFrequency IN ('None', 'Daily', 'Weekly', 'Monthly', 'Annually', 'Custom'))"]
+        RepeatInterval INT
+        RepeatOnSunday BIT [default: 0]
+        RepeatOnMonday BIT [default: 0]
+        RepeatOnTuesday BIT [default: 0]
+        RepeatOnWednesday BIT [default: 0]
+        RepeatOnThursday BIT [default: 0]
+        RepeatOnFriday BIT [default: 0]
+        RepeatOnSaturday BIT [default: 0]
+        RepeatEnds NVARCHAR(50) [note: "CHECK (RepeatEnds IN ('Never', 'On Date', 'After Occurrences'))"]
+        RepeatEndDate DATE
+        RepeatEndOccurrences INT
+        IsDeleted BIT [default: 0]
+        DeletedAt DATETIME
+        CreatedAt DATETIME [default: 'GETDATE()']
+        UpdatedAt DATETIME [default: 'GETDATE()']
+        // LearnerID BIGINT [not null, ref: > Learner.id]
+        // CategoryID BIGINT [ref: > Category.id]
+        // SubgoalID BIGINT [ref: > Subgoal.id]
+        // LearningResourceID BIGINT [ref: > LearningResource.id]
+    }
 
-Table Subtask {
-    TaskID BIGINT [not null, ref: > Task.id]
-    id BIGINT [primary key, unique, increment]
-    Title NVARCHAR(255) [not null]
-    Status NVARCHAR(50) [not null, note: "CHECK (Status IN ('Not Started', 'In Progress', 'Completed'))"]
-    IsDeleted BIT [default: 0]
-    DeletedAt DATETIME
-    CreatedAt DATETIME [default: 'GETDATE()']
-    UpdatedAt DATETIME [default: 'GETDATE()']
-}
+    Table Subtask {
+        TaskID BIGINT [not null, ref: > Task.id]
+        id BIGINT [primary key, unique, increment]
+        Title NVARCHAR(255) [not null]
+        Status NVARCHAR(50) [not null, note: "CHECK (Status IN ('Not Started', 'In Progress', 'Completed'))"]
+        IsDeleted BIT [default: 0]
+        DeletedAt DATETIME
+        CreatedAt DATETIME [default: 'GETDATE()']
+        UpdatedAt DATETIME [default: 'GETDATE()']
+    }
 
-Table Note {
-    GoalID BIGINT [not null, ref: > Goal.id]
-    id BIGINT [primary key, unique, increment]
-    Title NVARCHAR(255) [not null]
-    Body NVARCHAR(MAX) [not null]
-    CreatedAt DATETIME [default: 'GETDATE()']
-    UpdatedAt DATETIME [default: 'GETDATE()']
-    //CategoryID BIGINT [ref: > Category.id]
-    // SubgoalID BIGINT [ref: > Subgoal.id]
-    // TaskID BIGINT [ref: > Task.id]
-    // LearnerID BIGINT [not null, ref: > Learner.id]
-    DeletedAt DATETIME
-    IsDeleted BIT [default: 0]
-}
+    Table Note {
+        GoalID BIGINT [not null, ref: > Goal.id]
+        id BIGINT [primary key, unique, increment]
+        Title NVARCHAR(255) [not null]
+        Body NVARCHAR(MAX) [not null]
+        CreatedAt DATETIME [default: 'GETDATE()']
+        UpdatedAt DATETIME [default: 'GETDATE()']
+        //CategoryID BIGINT [ref: > Category.id]
+        // SubgoalID BIGINT [ref: > Subgoal.id]
+        // TaskID BIGINT [ref: > Task.id]
+        // LearnerID BIGINT [not null, ref: > Learner.id]
+        DeletedAt DATETIME
+        IsDeleted BIT [default: 0]
+    }
+
+
+
+// Time Management
+
+    Table Event {
+        id BIGINT [pk,unique, increment]
+        LearnerID BIGINT [ref: > Learner.id]
+        TaskID BIGINT [ref: > Task.id]
+        Title NVARCHAR(255)
+        Description NVARCHAR(MAX)
+        // we have system defined event types (Deepwork Session, Focus Session, Long break, short break)
+        EventType NVARCHAR(50) [note: '=, Deepwork Session,Focus Session, Long break, short break, Custom']
+        StartTime DATETIME
+        EndTime DATETIME
+        EstimatedTime TIME
+        RepeatFrequency NVARCHAR(50) [not null, default: 'None', note: "CHECK (RepeatFrequency IN ('None', 'Daily', 'Weekly', 'Monthly', 'Annually', 'Custom'))"]
+        RepeatInterval INT
+        RepeatOnSunday BIT [default: 0]
+        RepeatOnMonday BIT [default: 0]
+        RepeatOnTuesday BIT [default: 0]
+        RepeatOnWednesday BIT [default: 0]
+        RepeatOnThursday BIT [default: 0]
+        RepeatOnFriday BIT [default: 0]
+        RepeatOnSaturday BIT [default: 0]
+        RepeatEnds NVARCHAR(50) [note: "CHECK (RepeatEnds IN ('Never', 'On Date', 'After Occurrences'))"]
+        RepeatEndDate DATE
+        RepeatEndOccurrences INT
+        IsDeleted BIT [default: 0]
+        DeletedAt DATETIME
+        CreatedAt DATETIME [default: 'GETDATE()']
+        UpdatedAt DATETIME [default: 'GETDATE()']
+    }
+    // Event type table
+
+    Table TimerSettings {
+        id BIGINT [pk,unique, increment]
+        DeepWorkSessionMin INT 
+        FocusMinutes INT
+        ShortBreakMin INT
+        LongBreakMin INT
+        CyclesBeforeLongBreak INT
+        CycleCount INT
+    }
+
+    Table Reminder {
+        id BIGINT [pk,unique, increment]
+        LearnerID BIGINT [ref: > Learner.id]
+        TaskID BIGINT [ref: > Task.id]
+        EventID BIGINT [ref: > Event.id]
+        ReminderTime DATETIME
+        Message NVARCHAR(MAX)
+        IsSent BIT [default: 0]
+        CreatedAt DATETIME [default: `GETDATE()`]
+    }
+
+    /*
+    Table DayPlan {
+        id BIGINT [pk,unique, increment]
+        LearnerID BIGINT [ref: > Learner.id]
+        Date DATE
+        Type NVARCHAR(20) [note: 'Study Day, Off Day, Mixed']
+        CreatedAt DATETIME [default: `GETDATE()`]
+        UpdatedAt DATETIME [default: `GETDATE()`]
+    }
+    */

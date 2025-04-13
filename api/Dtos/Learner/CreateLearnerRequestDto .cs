@@ -24,5 +24,6 @@ namespace api.Dtos.Learner
 
         [MaxLength(500, ErrorMessage = "Bio cannot exceed 500 characters.")]
         public string? Bio { get; set; }
+        
     }
 }

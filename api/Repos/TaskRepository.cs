@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.Dtos.Search;
+using api.Dtos.Task;
 using api.Helpers;
 using api.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -135,6 +136,20 @@ namespace api.Repos
         })
         .ToListAsync();
 }
+public async Task<List<BriefTaskDto>> GetBriefTasksAsync(long learnerId)
+{
+    return await _context.Tasks
+        .Where(t => t.LearnerId == learnerId && !t.IsDeleted)
+        .Select(t => new BriefTaskDto
+        {
+            Id = t.Id,
+            Title = t.Title,
+            DueDate = t.DueDate.HasValue ? t.DueDate.Value.ToDateTime(TimeOnly.MinValue) : (DateTime?)null,
+            Status = t.KanbanStatus.Name
+        })
+        .ToListAsync();
+}
+
 
     }
 }

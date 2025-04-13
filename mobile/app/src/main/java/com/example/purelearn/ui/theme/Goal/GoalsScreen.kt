@@ -1,37 +1,44 @@
 package com.example.purelearn.ui.theme.Goal
 
 import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.purelearn.domain.model.Goal
@@ -40,13 +47,13 @@ import com.example.purelearn.ui.theme.Goal.Goalviewmodel.GoalViewModel
 import com.example.purelearn.ui.theme.Goal.Goalviewmodel.events.GoalEvents
 import com.example.purelearn.ui.theme.Goal.Goalviewmodel.events.GoalUiEvents
 import com.example.purelearn.ui.theme.components.AddGoalModalBottomSheet
+import com.example.purelearn.ui.theme.components.GlowingFAB
 import com.example.purelearn.ui.theme.components.GoalCard
-import com.example.purelearn.ui.theme.components.GoalChipGroup
-import com.example.purelearn.ui.theme.components.HomeTopAppBar
 import com.example.purelearn.ui.theme.components.LoadingBar
 import com.example.purelearn.ui.theme.components.SwipeToDeleteContainer
 import com.example.purelearn.ui.theme.components.showToast
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,7 +62,7 @@ fun GoalScreen(
     categoryId: Int?,
     viewModel: GoalViewModel = hiltViewModel(),
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+  //  val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     var isSheetOpen by remember { mutableStateOf(false) }
     var isUpdateSheetOpen by remember { mutableStateOf(false) }
@@ -159,38 +166,42 @@ fun GoalScreen(
             }
         }
     }
-
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
-            AnimatedVisibility(
-                visible = isVisible.value,
-                enter = slideInVertically(initialOffsetY = { it * 2 }),
-                exit = slideOutVertically(targetOffsetY = { it * 2 })
-            ) {
-                FloatingActionButton(
-                    modifier = Modifier.size(72.dp),
-                    onClick = {
-                        title = ""
-                        description = ""
-                        motivation = ""
-                        term = ""
-                        status = ""
-                        goalId = 0
-                        isSheetOpen = true
-                              },
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                ) {
-                    Icon(
-                        Icons.Filled.Add,
-                        contentDescription = "Add",
-                        tint = Color.White,
-                        modifier = Modifier.size(36.dp)
-                    )
-                }
+
+            GlowingFAB {
+                isSheetOpen = true
             }
         },
-        topBar = { HomeTopAppBar(userName = "Fatema") },
+        topBar = {
+            TopAppBar(
+            title = {
+                Text(
+                    text = "Category Name",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            navigationIcon = {
+                IconButton(onClick = {
+                    scope.launch {
+                        drawerState.open()
+                    }
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = "Menu"
+                    )
+                }
+            },
+            colors = TopAppBarDefaults.mediumTopAppBarColors(
+                containerColor =MaterialTheme.colorScheme.background
+            )
+        ) },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
 
@@ -199,18 +210,11 @@ fun GoalScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            Text(
-                text = "Category Name",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 10.dp)
-            )
 
-            GoalChipGroup(
-                selectedFilter = selectedFilter,
-                onFilterSelected = { selectedFilter = it }
+//
+            StatusChipGroup(
+                selectedStatus = selectedFilter,
+                onStatusSelected ={ selectedFilter = it }
             )
 
 
@@ -218,7 +222,7 @@ fun GoalScreen(
             {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(0.dp),
                 ) {
                     //val goals: List<GoalResponse> = response.data
                     val goals: List<GoalResponse> = if (selectedFilter == "All") {
@@ -234,7 +238,7 @@ fun GoalScreen(
                                 viewModel.onEvent(GoalEvents.DeleteGoalEvent(goal.id))
                             },
                             animationDuration = 300,
-                            content = { item ->
+                            content = { item:GoalResponse ->
                                 GoalCard(
                                     goal = item,
                                     onClick = {
@@ -242,7 +246,8 @@ fun GoalScreen(
                                         isSheetOpen = true
                                         goalId = item.id
 
-                                        navController.navigate("ResourceScreen/$goalId")
+                                        navController.navigate("ResourceScreen/${item.id}")
+
 
                                     },
                                     onUpdateGoal = {
@@ -353,5 +358,52 @@ fun GoalScreen(
                 }
             }
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StatusChipGroup(selectedStatus: String, onStatusSelected: (String) -> Unit) {
+    val statuses = listOf("All", "Long-Term", "Medium-Term", "Short-Term", "Not-Started", "In-Progress", "Done", "On-Hold", "Cancelled")
+
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        items(statuses) { status ->
+            FilterChip(
+                selected = selectedStatus == status,
+                onClick = { onStatusSelected(status) },
+                label = {
+                    Text(
+                        text = status,
+                        color = if (selectedStatus == status) Color.White else Color.Black,
+                        fontWeight = FontWeight.Medium
+                    )
+                },
+                shape = RoundedCornerShape(8.dp),
+//                border = FilterChipDefaults.filterChipBorder(
+//                    borderWidth = if (selectedStatus == status) 2.dp else 1.dp,
+//                    borderColor = if (selectedStatus == status) Color.White else Color.Gray
+//                ),
+                border = FilterChipDefaults.filterChipBorder(
+                    borderColor = Color.White,
+                    borderWidth = 2.dp,
+                    enabled = true,
+                    selected = selectedStatus == status,
+
+                ),
+
+                colors = FilterChipDefaults.filterChipColors(
+                    containerColor = if (selectedStatus == status) Color.Black else Color.White,
+                    selectedContainerColor = Color.Black
+                ),
+                modifier = Modifier.height(36.dp)
+                 //   .background(Color.Black) // Add background to ensure the white stroke is visible
+
+            )
+        }
     }
 }

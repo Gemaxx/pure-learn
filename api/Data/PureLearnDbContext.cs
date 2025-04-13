@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using api.Models;
 using Microsoft.EntityFrameworkCore;
+using api.Models;
 
 namespace api.Data;
 
@@ -39,7 +39,7 @@ public partial class PureLearnDbContext : DbContext
     public virtual DbSet<TaskType> TaskTypes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=DefaultConnection");
+        => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DefaultConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -148,23 +148,22 @@ public partial class PureLearnDbContext : DbContext
 
             entity.HasIndex(e => e.Name, "UQ__KanbanSt__72E12F1B5B560D7E").IsUnique();
 
-            entity.HasIndex(e => e.LearnerId, "idx_kanbanstatus_learner_id");
+            entity.HasIndex(e => e.GoalId, "idx_kanbanstatus_goal_id");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+            entity.Property(e => e.GoalId).HasColumnName("goal_id");
             entity.Property(e => e.IsDeleted)
                 .HasDefaultValue(false)
                 .HasColumnName("is_deleted");
-            entity.Property(e => e.LearnerId).HasColumnName("learner_id");
             entity.Property(e => e.MaxTasks).HasColumnName("max_tasks");
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
                 .HasColumnName("name");
 
-            entity.HasOne(d => d.Learner).WithMany(p => p.KanbanStatuses)
-                .HasForeignKey(d => d.LearnerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__KanbanSta__learn__04E4BC85");
+            entity.HasOne(d => d.Goal).WithMany(p => p.KanbanStatuses)
+                .HasForeignKey(d => d.GoalId)
+                .HasConstraintName("FK_KanbanStatus_Goal");
         });
 
         modelBuilder.Entity<Learner>(entity =>
@@ -199,7 +198,6 @@ public partial class PureLearnDbContext : DbContext
                 .HasDefaultValueSql("(sysdatetime())")
                 .HasColumnName("updated_at");
         });
-
 
         modelBuilder.Entity<LearningResource>(entity =>
         {
@@ -267,10 +265,6 @@ public partial class PureLearnDbContext : DbContext
 
             entity.ToTable("LearningResourceType");
 
-            entity.HasIndex(e => e.Name, "UQ__Learning__72E12F1BA472CB30").IsUnique();
-
-            entity.HasIndex(e => e.UnitType, "UQ__Learning__978BEDD53942A437").IsUnique();
-
             entity.HasIndex(e => e.LearnerId, "idx_learningresourcetype_learner_id");
 
             entity.Property(e => e.Id).HasColumnName("id");
@@ -291,7 +285,6 @@ public partial class PureLearnDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__LearningR__learn__75A278F5");
         });
-
 
         modelBuilder.Entity<Note>(entity =>
         {
@@ -514,7 +507,7 @@ public partial class PureLearnDbContext : DbContext
 
             entity.HasOne(d => d.KanbanStatus).WithMany(p => p.Tasks)
                 .HasForeignKey(d => d.KanbanStatusId)
-                .HasConstraintName("FK__Task__kanban_sta__0C85DE4D");
+                .HasConstraintName("FK__Task__kanban_sta__1C873BEC");
 
             entity.HasOne(d => d.Learner).WithMany(p => p.Tasks)
                 .HasForeignKey(d => d.LearnerId)

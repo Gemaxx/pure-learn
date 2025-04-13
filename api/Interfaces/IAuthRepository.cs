@@ -1,0 +1,17 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using api.Dtos;
+using api.Interfaces;
+using api.Dtos.Learner; 
+using api.Models;
+
+namespace api.Interfaces
+{
+    public interface IAuthRepository
+    {
+        Task<LearnerAuthDto > RegisterAsync(LearnerRegistrationRequestDto  dto); 
+        Task<LearnerAuthDto?> LoginAsync(LearnerLoginRequestDto dto);   
+    }
+}

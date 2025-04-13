@@ -12,21 +12,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.SheetValue
+import androidx.compose.material3.SheetState
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,7 +53,7 @@ fun AddGoalModalBottomSheet(
         ModalBottomSheet(
             sheetState = sheetState,
             onDismissRequest = { onDismiss() },
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = MaterialTheme.colorScheme.background,
             shape = RoundedCornerShape(16.dp)
         ) {
             Box(
@@ -63,10 +63,8 @@ fun AddGoalModalBottomSheet(
                     .verticalScroll(scrollState) // <-- Make the content scrollable
             ) {
                 Column(
-                  //  horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top
                 ) {
-                    // Top Row: Cancel & Save
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -90,8 +88,7 @@ fun AddGoalModalBottomSheet(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Goal Title
-                    Text(text = "Title", color = MaterialTheme.colorScheme.onSurface)
+                    Text(text = "Title", color = MaterialTheme.colorScheme.primary)
                     AppTextField(
                         text = title,
                         placeholder = "Enter goal title",
@@ -101,8 +98,7 @@ fun AddGoalModalBottomSheet(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Goal Description
-                    Text(text = "Description", color = MaterialTheme.colorScheme.onSurface)
+                    Text(text = "Description", color = MaterialTheme.colorScheme.primary)
                     AppTextField(
                         text = description,
                         placeholder = "Enter goal description",
@@ -112,8 +108,8 @@ fun AddGoalModalBottomSheet(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Motivation
-                    Text(text = "Why do you want to achieve this goal?", color = MaterialTheme.colorScheme.onSurface)
+
+                    Text(text = "Why do you want to achieve this goal?", color = MaterialTheme.colorScheme.primary)
                     AppTextField(
                         text = motivation,
                         placeholder = "Enter your motivation",
@@ -123,23 +119,21 @@ fun AddGoalModalBottomSheet(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Term Duration Dropdown
                     Text(
                         text = "Term Duration",
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.primary
                     )
                     TermDropDownList(selectedTerm = term, onTermChange = onTermChange)
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Goal Status Dropdown
                     Text(
                         text = "Goal Status",
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     GoalStatusDropDownList(selectedStatus = status, onStatusChange = onStatusChange)
 
-                    Spacer(modifier = Modifier.height(16.dp)) // Extra space for better scrolling
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }

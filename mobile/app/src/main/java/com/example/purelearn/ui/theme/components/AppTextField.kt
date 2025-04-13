@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -38,15 +39,15 @@ fun AppTextField(
         placeholder = {
             Text(
                 text = placeholder, style = TextStyle(
-                    color = Color.DarkGray, fontSize = 14.sp, fontWeight = FontWeight.Normal
+                    color = MaterialTheme.colorScheme.secondary, fontSize = 14.sp, fontWeight = FontWeight.Normal
                 )
             )
         },
         modifier = modifier.fillMaxWidth()
         .padding(vertical = 4.dp),
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color.Gray,
-            focusedContainerColor = Color.LightGray,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
             unfocusedIndicatorColor = Color.Transparent,  // Hides the underline when not focused
             focusedIndicatorColor = Color.Transparent  // Hides the underline when focused
         ),

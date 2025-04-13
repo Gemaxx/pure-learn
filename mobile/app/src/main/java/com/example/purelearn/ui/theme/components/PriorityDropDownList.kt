@@ -49,8 +49,8 @@ fun PriorityDropDownList() {
     ) {
 
         Box (modifier = Modifier
-            .background(Color.Gray, RoundedCornerShape(12.dp))
-            .padding(17.dp)
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(12.dp))
+           // .padding(17.dp)
             //.fillMaxWidth()
             ){
             Row(

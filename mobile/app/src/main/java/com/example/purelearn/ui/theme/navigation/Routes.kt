@@ -6,8 +6,12 @@ object Routes{
     var GoalScreen="GoalScreen/{categoryId}"
     var AddTaskScreen="AddTaskScreen"
     var CalendarScreen="CalendarScreen"
+    var ScreenTimeScreen="ScreenTimeScreen"
+    var SettingsScreen="SettingsScreen"
+
     var ChatBotScreen="ChatBotScreen"
     var TimerScreen="TimerScreen"
+    var ResourceScreen="ResourceScreen"
 
 
 

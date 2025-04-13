@@ -1,5 +1,6 @@
 package com.example.purelearn.ui.theme.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,6 +39,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
@@ -74,57 +77,52 @@ fun GoalCard(
 
     val usernames = listOf("ToDo", "In-Progress", "Done")
 
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
-        shape = RoundedCornerShape(16.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable { onClick() }
-    )  {
-        Row(
+        Card(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .fillMaxWidth()
+                .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)
+                .shadow(8.dp, shape = RoundedCornerShape(12.dp))
+            //    .border(0.25.dp, Color.White, shape = RoundedCornerShape(12.dp))
+                .clickable { onClick() },
+            elevation = CardDefaults.cardElevation(8.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
         ) {
-            Column(modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
-                ) {
-                Text(
-                    text = goal.title,
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.background
-
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Button(
-                    onClick = {onUpdateGoal()},
-                    colors = ButtonDefaults.buttonColors(containerColor = getStatusColor(goal.status)),
-                        shape = RoundedCornerShape(15.dp),
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .height(40.dp)
-                        .padding(vertical = 4.dp),
-                ) {
-                    Text(text = goal.status, color = Black, fontSize = 12.sp)
-                }
-                }
-            }
-
-            GoalProgress(
-                progress = 0.5f,
+            Row(
                 modifier = Modifier
-            )
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = goal.title,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Button(
+                        onClick = { onUpdateGoal() },
+                        colors = ButtonDefaults.buttonColors(containerColor = getStatusColor(goal.status)),
+                        shape = RoundedCornerShape(16.dp),
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                        modifier = Modifier.height(32.dp).padding(start = 24.dp).width(112.dp)
+                    ) {
+                        Text(text = goal.status, fontSize = 12.sp, color = MaterialTheme.colorScheme.primary)
+                    }
+                }
+
+                GoalProgress(
+                    progress = 0.5f
+                )
+            }
         }
-    }
+
 
 
 
@@ -132,52 +130,37 @@ fun GoalCard(
 
 @Composable
 private fun GoalProgress(
-    modifier: Modifier,
     progress:Float
 ) {
-
-    val percentageProgress= remember (progress){
-        (progress*100).toInt().coerceIn(0,100)
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.size(50.dp)
+    ) {
+        CircularProgressIndicator(
+            progress = progress,  // Use Material3 instead of Wear OS
+            modifier = Modifier.size(40.dp),
+            color = Color.White,  // Corrected property
+            strokeWidth = 4.dp
+        )
+        Text(
+            text = "${(progress * 100).toInt()}%",
+            fontSize = 12.sp,
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.Bold
+        )
     }
-    Row (
-        modifier=modifier,
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically
-    ){
 
-
-        Box(modifier =Modifier.size(75.dp),
-            contentAlignment = Alignment.Center)
-        {
-            CircularProgressIndicator(
-                modifier = Modifier.size(50.dp),
-                progress = 1f,
-                strokeWidth = 4.dp,
-                strokeCap = StrokeCap.Round,
-                color = MaterialTheme.colorScheme.surfaceVariant
-
-
-            )
-            CircularProgressIndicator(
-                modifier = Modifier.size(50.dp),
-                progress = progress,
-                strokeWidth = 4.dp,
-                strokeCap = StrokeCap.Round,
-                )
-            Text(text = "$percentageProgress%")
-        }
-    }
 }
 
 
 @Composable
 fun getStatusColor(status: String): Color {
     return when (status) {
-        "Not-Started" -> Color(0xFFD3D3D3)
+        "Not-Started" -> Color(0xFFCAC4D0)
         "In-Progress" ->Color(0xFF007BFF)
-        "Done" -> Color(0xFF28A745)
-        "Canceled" -> Color(0xFFDC3545)
-        "On-Hold" ->  Color(0xFFFFA500)
+        "Done" -> Color(0xFF2BD073)
+        "Canceled" -> Color(0xFFFF8789)
+        "On-Hold" ->  Color(0xFFF1AF49)
         else -> Color.LightGray
     }
 }

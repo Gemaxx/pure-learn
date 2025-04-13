@@ -17,13 +17,14 @@ namespace api.Helpers
         // public long? TaskId { get; set; }
 
         // Sorting (e.g., "title", "createdAt", "updatedAt")
-        public string? SortBy { get; set; } = "createdAt";
+        public string? SortBy { get; set; } = "CreatedAt";
         public bool IsDescending { get; set; } = true;
 
         // Pagination
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
         public bool IsDeleted { get; set; } = false;
-
+        public long? CategoryId { get; set; }
+        public long? TaskId { get; set; }
     }
 }
