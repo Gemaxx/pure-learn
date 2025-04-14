@@ -40,13 +40,18 @@ namespace api.Repos
             {
                 tasksQuery = tasksQuery.Where(t => t.EisenhowerStatus == query.EisenhowerStatus);
             }
+            if (!string.IsNullOrWhiteSpace(query.Priority))
+            {
+                tasksQuery = tasksQuery.Where(t => t.Priority == query.Priority);
+            }
 
             return await tasksQuery.ToListAsync();
         }
 
         // Retrieve a single task for the specified learner and taskId.
         public async Task<Models.Task?> GetTaskAsync(long learnerId, long taskId)
-        {
+        {   
+            
             return await _context.Tasks
                 .FirstOrDefaultAsync(t => t.Id == taskId 
                                           && t.LearnerId == learnerId 

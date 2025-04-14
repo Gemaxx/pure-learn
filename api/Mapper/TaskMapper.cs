@@ -37,6 +37,8 @@ namespace api.Mapper
                 RepeatEnds = taskModel.RepeatEnds,
                 RepeatEndDate = taskModel.RepeatEndDate,
                 RepeatEndOccurrences = taskModel.RepeatEndOccurrences,
+                Priority = taskModel.Priority // Added here
+
             };
         }
 
@@ -65,7 +67,9 @@ namespace api.Mapper
                 RepeatOnSaturday = createDto.RepeatOnSaturday,
                 RepeatEnds = createDto.RepeatEnds,
                 RepeatEndDate = createDto.RepeatEndDate,
-                RepeatEndOccurrences = createDto.RepeatEndOccurrences
+                RepeatEndOccurrences = createDto.RepeatEndOccurrences,
+                           Priority = createDto.Priority // Added here
+
             };
         }
 
@@ -114,8 +118,13 @@ namespace api.Mapper
                 task.RepeatEndDate = patchDto.RepeatEndDate;
             if (patchDto.RepeatEndOccurrences.HasValue)
                 task.RepeatEndOccurrences = patchDto.RepeatEndOccurrences.Value;
+ if (!string.IsNullOrWhiteSpace(patchDto.Priority)) // Added here
+            {
+                task.Priority = patchDto.Priority;
+            }
 
             task.UpdatedAt = DateTime.UtcNow;
         }
+        
     }
 }

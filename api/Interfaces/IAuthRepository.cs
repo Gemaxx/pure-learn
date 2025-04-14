@@ -13,5 +13,6 @@ namespace api.Interfaces
     {
         Task<LearnerAuthDto > RegisterAsync(LearnerRegistrationRequestDto  dto); 
         Task<LearnerAuthDto?> LoginAsync(LearnerLoginRequestDto dto);   
+    
     }
 }

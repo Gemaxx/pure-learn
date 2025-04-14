@@ -90,5 +90,38 @@ namespace api.Controllers
 
             return NoContent();
         }
+
+        // 🔥 SOFT DELETE Task
+// PATCH: api/learners/{learnerId}/tasks/soft-delete/{taskId}
+[HttpPatch("soft-delete/{taskId:long}")]
+public async Task<IActionResult> SoftDeleteTask(long learnerId, long taskId)
+{
+    var learner = await _learnerRepo.GetLearnerAsync(learnerId);
+    if (learner == null)
+        return NotFound(new { Message = "Learner not found." });
+
+    var result = await _taskRepo.SoftDeleteTaskAsync(learnerId, taskId);
+    if (!result)
+        return NotFound(new { Message = "Task not found or already deleted." });
+
+    return Ok(new { Message = "Task soft deleted successfully." });
+}
+
+// 🔄 RESTORE Soft Deleted Task
+// PATCH: api/learners/{learnerId}/tasks/restore/{taskId}
+[HttpPatch("restore/{taskId:long}")]
+public async Task<IActionResult> RestoreTask(long learnerId, long taskId)
+{
+    var learner = await _learnerRepo.GetLearnerAsync(learnerId);
+    if (learner == null)
+        return NotFound(new { Message = "Learner not found." });
+
+    var result = await _taskRepo.RestoreTaskAsync(learnerId, taskId);
+    if (!result)
+        return NotFound(new { Message = "Task not found or not soft deleted." });
+
+    return Ok(new { Message = "Task restored successfully." });
+}
+
     }
 }
