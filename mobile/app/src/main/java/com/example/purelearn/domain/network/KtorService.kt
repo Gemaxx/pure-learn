@@ -4,8 +4,13 @@ import com.example.purelearn.domain.model.Category
 import com.example.purelearn.domain.model.CategoryResponse
 import com.example.purelearn.domain.model.Goal
 import com.example.purelearn.domain.model.GoalResponse
+import com.example.purelearn.domain.model.Note
+import com.example.purelearn.domain.model.NoteRequest
+import com.example.purelearn.domain.model.NoteResponse
 import com.example.purelearn.domain.model.Resource
 import com.example.purelearn.domain.model.ResourceResponse
+import com.example.purelearn.domain.model.ResourceType
+import com.example.purelearn.domain.model.ResourceTypeResponse
 
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -132,5 +137,71 @@ class KtorService @Inject constructor(
 
 
 
+    suspend fun getResourceType(): List<ResourceTypeResponse> {
+        return httpClient.get {
+            url(baseUrl){
+                timeout { requestTimeoutMillis=60000 }
+            }
+        }.body()
+    }
+
+    suspend fun addResourceType(resourceType:ResourceType): ResourceTypeResponse {
+        return httpClient.post {
+            contentType(ContentType.Application.Json)
+            url(baseUrl)
+            setBody(resourceType)
+
+        }.body()
+    }
+
+
+    suspend fun deleteResourceType(id: Int): HttpResponse {
+        return httpClient.delete("$baseUrl/$id")
+    }
+
+    @OptIn(InternalAPI::class)
+    suspend fun updateResourceType(learnerId: Int, learningResourceTypeId: Int, resourceType: ResourceType): ResourceTypeResponse {
+        return httpClient.patch {
+            url("$baseUrl/api/learners/$learnerId/learningResourceTypes/$learningResourceTypeId")
+            contentType(ContentType.Application.Json)
+            setBody(resourceType)
+        }.body()
+    }
+
+
+
+
+    suspend fun getNote(): List<NoteResponse> {
+        return httpClient.get {
+            url(baseUrl){
+                timeout { requestTimeoutMillis=60000 }
+            }
+        }.body()
+    }
+
+
+
+    @OptIn(InternalAPI::class)
+    suspend fun addNote(note: NoteRequest): NoteRequest {
+        return httpClient.post {
+            contentType(ContentType.Application.Json)
+            url(baseUrl)
+            setBody(note)
+
+        }.body()
+    }
+
+    suspend fun deleteNote(id: Int): HttpResponse {
+        return httpClient.delete("$baseUrl/$id")
+    }
+
+    @OptIn(InternalAPI::class)
+    suspend fun updateNote(learnerId: Int, noteId: Int, note: NoteRequest): NoteRequest {
+        return httpClient.patch {
+            url("$baseUrl/api/learners/$learnerId/Notes/$noteId")
+            contentType(ContentType.Application.Json)
+            setBody(note)
+        }.body()
+    }
 
 }

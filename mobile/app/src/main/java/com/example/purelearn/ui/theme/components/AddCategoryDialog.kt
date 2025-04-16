@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -66,7 +67,7 @@ fun AddCategoryDialog(
     if(isOpen){
         AlertDialog(
             onDismissRequest = {},
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = MaterialTheme.colorScheme.background,
             shape = RoundedCornerShape(16.dp),
             title = {
                 Box(
@@ -76,14 +77,14 @@ fun AddCategoryDialog(
                     Text(
                         text = "Add Category",
                         style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
+                        color = MaterialTheme.colorScheme.primary,
 
                         )
                 }
             },
             text = {
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(text = "Title", color = MaterialTheme.colorScheme.onSurface)
+                    Text(text = "Title", color = MaterialTheme.colorScheme.primary)
                     AppTextField(
                         text = title,
                         placeholder = stringResource(R.string.enter_title),
@@ -129,7 +130,7 @@ fun AddCategoryDialog(
                     enabled = title.isNotEmpty()
                 ) {
                     if (isLoading) {
-                        CircularProgressIndicator(modifier = Modifier.size(20.dp), color = MaterialTheme.colorScheme.onPrimary)
+                        CircularProgressIndicator(modifier = Modifier.size(20.dp), color = Color.Black)
                     } else {
                         Text("Save")
                     }

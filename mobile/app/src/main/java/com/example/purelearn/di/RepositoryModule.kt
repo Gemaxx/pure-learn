@@ -2,10 +2,14 @@ package com.example.purelearn.di
 
 import com.example.purelearn.domain.repository.CategoryRepositoryImpl
 import com.example.purelearn.domain.repository.GoalRepositoryImpl
+import com.example.purelearn.domain.repository.NoteRepositoryImpl
+import com.example.purelearn.domain.repository.ResourceRepositoryImpl
+import com.example.purelearn.domain.repository.ResourceTypeRepositoryImp
 import com.example.purelearn.repository.CategoryRepository
 import com.example.purelearn.repository.GoalRepository
-import com.example.purelearn.domain.repository.ResourceRepositoryImpl
+import com.example.purelearn.repository.NoteRepository
 import com.example.purelearn.repository.ResourceRepository
+import com.example.purelearn.repository.ResourceTypeRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -31,7 +35,15 @@ abstract class RepositoryModule {
         resourceRepositoryImpl: ResourceRepositoryImpl
     ): ResourceRepository
 
+    @Binds
+    abstract fun providesResourceTypeRepository(
+        resourceTypeRepositoryImpl: ResourceTypeRepositoryImp
+    ): ResourceTypeRepository
 
+    @Binds
+    abstract fun providesNoteRepository(
+        noteRepositoryImpl: NoteRepositoryImpl
+    ): NoteRepository
 
 }
 

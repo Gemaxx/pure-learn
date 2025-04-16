@@ -2,11 +2,11 @@
 export async function deleteCategory(learnerId: number, categoryId: number) {
     try {
       const response = await fetch(
-        `http://localhost:5115/api/learners/${learnerId}/categories/${categoryId}`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/learners/${learnerId}/categories/${categoryId}`,
         {
-          method: 'DELETE',
+          method: "DELETE",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );

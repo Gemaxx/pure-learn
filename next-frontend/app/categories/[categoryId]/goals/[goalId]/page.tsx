@@ -234,7 +234,9 @@ export default function Page({ params }: { params: { goalId: string } }) {
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>New Task</DialogTitle>
-            <DialogDescription>Create a new task for this goal</DialogDescription>
+            <DialogDescription>
+              Create a new task for this goal
+            </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
@@ -249,7 +251,9 @@ export default function Page({ params }: { params: { goalId: string } }) {
               <Label>Priority</Label>
               <Select
                 value={taskPriority}
-                onValueChange={(value) => setTaskPriority(value as typeof taskPriority)}
+                onValueChange={(value) =>
+                  setTaskPriority(value as typeof taskPriority)
+                }
               >
                 <SelectTrigger>
                   {taskPriority ? (
@@ -347,7 +351,10 @@ export default function Page({ params }: { params: { goalId: string } }) {
             </div>
           </div>
           <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setIsNoteDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsNoteDialogOpen(false)}
+            >
               Cancel
             </Button>
             <Button onClick={handleCreateNote}>Create</Button>

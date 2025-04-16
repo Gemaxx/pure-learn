@@ -37,13 +37,13 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <LearnerProvider>
-          <SidebarProvider>
-            <AppSidebar />
-            <main>
-              <SidebarTrigger />
-              {children}
-            </main>
-          </SidebarProvider>
+            <SidebarProvider>
+              <AppSidebar />
+              <main className="w-full">
+                <SidebarTrigger />
+                {children}
+              </main>
+            </SidebarProvider>
           </LearnerProvider>
         </ThemeProvider>
       </body>

@@ -1,86 +1,154 @@
 package com.example.purelearn.ui.theme.components
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.purelearn.R
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.purelearn.domain.model.ResourceTypeResponse
+import com.example.purelearn.ui.theme.ResourceType.ResourceTypeViewModel.ResourceTypeViewModel
+import com.example.purelearn.ui.theme.ResourceType.ResourceTypeViewModel.events.ResourceTypeEvents
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResourceTypeDropDownList(
-    selectedType: String,
-    onTypeSelected : (String) -> Unit
+    viewModel: ResourceTypeViewModel = hiltViewModel(),
+    onTypeSelected: (ResourceTypeResponse) -> Unit,
+    onEditClicked: (ResourceTypeResponse) -> Unit,  // Callback for edit
+    onDeleteClicked: (ResourceTypeResponse) -> Unit // Callback for delete
+//        onEditClicked: () -> Unit,  // Callback for edit
+//    onDeleteClicked: () -> Unit // Callback for delete
+
 ) {
+    val response = viewModel.resourceTypeResponseEvent.value
+    val resourceTypes = response.data ?: emptyList()
+    var expanded by remember { mutableStateOf(false) }
+    var selectedType by remember { mutableStateOf<ResourceTypeResponse?>(null) }
 
-    val isDropDownExpanded = remember {
-        mutableStateOf(false)
+    LaunchedEffect(key1 = true) {
+        viewModel.onEvent(ResourceTypeEvents.ShowResourceType)
     }
 
-    val itemPosition = remember {
-        mutableStateOf(0)
-    }
+    Box(modifier = Modifier.padding(16.dp)) {
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded }
+        ) {
+//            TextField(
+//                value = selectedType?.name ?: "Select a Resource Type",
+//                onValueChange = {},
+//                readOnly = true,
+//                modifier = Modifier.menuAnchor(),
+//                trailingIcon = {
+//                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+//                }
+//            )
 
-    val learningResources = listOf("Book", "Video", "Research papers","Online Course","Podcast")
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(start = 17.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
 
-        Box (modifier = Modifier
-            .background(Color.Gray, RoundedCornerShape(12.dp))
-            .padding(17.dp)
 
-        ){
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(start = 17.dp).clickable {
-                    isDropDownExpanded.value = true
-                }
+            TextField(
+                value = selectedType?.name ?: "Select a Resource Type",
+                onValueChange = {},
+                readOnly = true,
+                placeholder = {
+                    Text(
+                        text = "Select a Resource Type", style = TextStyle(
+                            color = MaterialTheme.colorScheme.secondary, fontSize = 14.sp, fontWeight = FontWeight.Normal
+                        )
+                    )
+                },
+                modifier = Modifier.menuAnchor()
+                    .padding(vertical = 4.dp),
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedIndicatorColor = Color.Transparent,  // Hides the underline when not focused
+                    focusedIndicatorColor = Color.Transparent  // Hides the underline when focused
+                ),
+                shape = RoundedCornerShape(12.dp),
+
+
+//                singleLine = singleLine,
+//                keyboardActions = KeyboardActions(
+//                    onDone = { onDone() },
+//                    onNext = { onNext() }
+//                ),
+//                keyboardOptions = KeyboardOptions(
+//                    imeAction = imeAction
+//                )
+            )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
             ) {
-                Text(text = learningResources[itemPosition.value])
-                Image(
-                    painter = painterResource(id = R.drawable.drop_down_ic),
-                    contentDescription = "DropDown Icon"
-                )
-            }
-            DropdownMenu(
+                resourceTypes.forEach { type ->
+                    var menuExpanded by remember { mutableStateOf(false) }
 
-                expanded = isDropDownExpanded.value,
-                onDismissRequest = {
-                    isDropDownExpanded.value = false
-                }) {
-                learningResources.forEachIndexed { index, status ->
-                    DropdownMenuItem(text = {
-                        Text(text = status)
-                    },
+                    DropdownMenuItem(
+                        text = {
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                Text(type.name, modifier = Modifier.weight(1f))
+                                IconButton(onClick = { menuExpanded = true }) {
+                                    Icon(Icons.Default.MoreVert, contentDescription = "Options")
+                                }
+                                DropdownMenu(
+                                    expanded = menuExpanded,
+                                    onDismissRequest = { menuExpanded = false }
+                                ) {
+                                    DropdownMenuItem(
+                                        text = { Text("Edit") },
+                                        onClick = {
+                                            menuExpanded = false
+                                            onEditClicked(type)
+                                        }
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text("Delete") },
+                                        onClick = {
+                                            menuExpanded = false
+                                           onDeleteClicked(type)
+                                        }
+                                    )
+                                }
+                            }
+                        },
                         onClick = {
-                            isDropDownExpanded.value = false
-                            itemPosition.value = index
-                          //  onStatusChange(status)
-                        })
+                            selectedType = type
+                            expanded = false
+                            onTypeSelected(type)
+                        }
+                    )
                 }
             }
         }
-
     }
 }
