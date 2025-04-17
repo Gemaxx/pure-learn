@@ -48,5 +48,8 @@ namespace api.Dtos.Task
 
         public DateOnly? RepeatEndDate { get; set; }
         public int? RepeatEndOccurrences { get; set; }
+        [RegularExpression("Low|Medium|High", ErrorMessage = "Priority must be Low, Medium, or High.")]
+        public string Priority { get; set; } = "Medium";
+
     }
 }

@@ -52,5 +52,6 @@ namespace api.Dtos.Task
 
         public DateOnly? RepeatEndDate { get; set; }
         public int? RepeatEndOccurrences { get; set; }
+        public string Priority { get; internal set; }
     }
 }

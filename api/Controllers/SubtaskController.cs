@@ -76,5 +76,30 @@ namespace api.Controllers
 
             return NoContent();
         }
+
+        //هنمسح سب تاسك مسح ناعم
+// PATCH: api/tasks/{taskId}/subtasks/{subtaskId}/soft-delete
+[HttpPatch("{subtaskId:long}/soft-delete")]
+public async Task<IActionResult> SoftDeleteSubtask(long taskId, long subtaskId)
+{
+    var result = await _subtaskRepo.SoftDeleteSubtaskAsync(taskId, subtaskId);
+    if (!result)
+        return NotFound(new { Message = "Subtask not found or already deleted." });
+
+    return Ok(new { Message = "Subtask soft deleted successfully." });
+}
+
+//هنرجع سب تاسك بعد ما اتعمله سوفت ديليت
+// PATCH: api/tasks/{taskId}/subtasks/{subtaskId}/restore
+[HttpPatch("{subtaskId:long}/restore")]
+public async Task<IActionResult> RestoreSubtask(long taskId, long subtaskId)
+{
+    var result = await _subtaskRepo.RestoreSubtaskAsync(taskId, subtaskId);
+    if (!result)
+        return NotFound(new { Message = "Subtask not found or not deleted." });
+
+    return Ok(new { Message = "Subtask restored successfully." });
+}
+
     }
 }
