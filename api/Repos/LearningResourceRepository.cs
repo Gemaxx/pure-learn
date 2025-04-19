@@ -15,26 +15,6 @@ namespace api.Repos
             _context = context;
         }
 
-        public async Task<LearningResource> CreateLearningResourceAsync(long learnerId, LearningResource learningResource)
-        {
-            learningResource.LearnerId = learnerId;
-            await _context.LearningResources.AddAsync(learningResource);
-            await _context.SaveChangesAsync();
-            return learningResource;
-        }
-
-        public async Task<bool> DeleteLearningResourceAsync(long learnerId, long learningResourceId)
-        {
-            var learningResource = await _context.LearningResources
-            .FirstOrDefaultAsync(lr => lr.LearnerId == learnerId && lr.Id == learningResourceId && lr.IsDeleted == false);
-
-            if (learningResource == null) {return false;}
-            
-            _context.LearningResources.Remove(learningResource);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
         public async Task<LearningResource?> GetLearningResourceAsync(long learnerId, long learningResourceId)
         {
             return await _context.LearningResources
@@ -64,33 +44,12 @@ namespace api.Repos
 
         }
 
-        public async Task<bool> RestoreLearningResourceAsync(long learnerId, long learningResourceId)
+        public async Task<LearningResource> CreateLearningResourceAsync(long learnerId, LearningResource learningResource)
         {
-            var learningResource = await _context.LearningResources
-            .FirstOrDefaultAsync(lr=> lr.LearnerId == learnerId && lr.Id == learningResourceId && lr.IsDeleted == true);
-
-            if (learningResource == null) {return false;}
-
-            learningResource.IsDeleted = false;
-
-            _context.LearningResources.Update(learningResource);
+            learningResource.LearnerId = learnerId;
+            await _context.LearningResources.AddAsync(learningResource);
             await _context.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<bool> SoftDeleteLearningResourceAsync(long learnerId, long learningResourceId)
-        {
-            var learningResource = await _context.LearningResources
-            .FirstOrDefaultAsync(lr => lr.LearnerId == learnerId && lr.Id == learningResourceId && lr.IsDeleted == false);
-
-            if(learningResource == null) {return false;}
-            
-            learningResource.IsDeleted = true;
-
-            _context.LearningResources.Update(learningResource);
-            await _context.SaveChangesAsync();
-            return true;
+            return learningResource;
         }
 
         public async Task<LearningResource?> UpdateLearningResourceAsync(long learnerId, long learningResourceId, LearningResource learningResource)
@@ -138,5 +97,47 @@ namespace api.Repos
             await _context.SaveChangesAsync();
             return learningResource;
         }
+        public async Task<bool> DeleteLearningResourceAsync(long learnerId, long learningResourceId)
+        {
+            var learningResource = await _context.LearningResources
+            .FirstOrDefaultAsync(lr => lr.LearnerId == learnerId && lr.Id == learningResourceId && lr.IsDeleted == false);
+
+            if (learningResource == null) {return false;}
+            
+            _context.LearningResources.Remove(learningResource);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+
+        public async Task<bool> RestoreLearningResourceAsync(long learnerId, long learningResourceId)
+        {
+            var learningResource = await _context.LearningResources
+            .FirstOrDefaultAsync(lr=> lr.LearnerId == learnerId && lr.Id == learningResourceId && lr.IsDeleted == true);
+
+            if (learningResource == null) {return false;}
+
+            learningResource.IsDeleted = false;
+
+            _context.LearningResources.Update(learningResource);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> SoftDeleteLearningResourceAsync(long learnerId, long learningResourceId)
+        {
+            var learningResource = await _context.LearningResources
+            .FirstOrDefaultAsync(lr => lr.LearnerId == learnerId && lr.Id == learningResourceId && lr.IsDeleted == false);
+
+            if(learningResource == null) {return false;}
+            
+            learningResource.IsDeleted = true;
+
+            _context.LearningResources.Update(learningResource);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

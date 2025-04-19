@@ -11,10 +11,10 @@ public partial class Task
     public string Title { get; set; } = null!;
 
 
-    public long TypeId { get; set; }
+    public long? TypeId { get; set; }
 
 
-    public long KanbanStatusId { get; set; }
+    public long? KanbanStatusId { get; set; }
 
    
     public string EisenhowerStatus { get; set; } = null!;
@@ -31,7 +31,7 @@ public partial class Task
 
     
     
-    public string RepeatFrequency { get; set; } = null!;
+    public string? RepeatFrequency { get; set; }
 
     public int? RepeatInterval { get; set; }
 
@@ -92,6 +92,4 @@ public partial class Task
     public virtual ICollection<Subtask> Subtasks { get; set; } = new List<Subtask>();
 
     public virtual TaskType Type { get; set; } = null!;
-    public string Priority { get; set; } = "Medium"; // Possible values: Low, Medium, High
-
 }

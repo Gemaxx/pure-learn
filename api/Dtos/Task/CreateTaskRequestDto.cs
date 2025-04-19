@@ -1,57 +1,69 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace api.Dtos.Task
 {
     public class CreateTaskRequestDto
     {
         [Required]
-        public long GoalId { get; set; }
+        [StringLength(100, MinimumLength = 1, ErrorMessage = "Title must be between 1 and 100 characters.")]
+        public string Title { get; set; } = "Untitled Task";
 
-        [Required]
-        public long KanbanStatusId { get; set; }
+        public long? GoalId { get; set; }
+        // public long? CategoryId { get; set; }
+        // public long? SubgoalId { get; set; }
+        // public long? LearningResourceId { get; set; }
 
         [Required]
         public long TypeId { get; set; }
 
         [Required]
-        [StringLength(255, MinimumLength = 1, ErrorMessage = "Title must be between 1 and 255 characters.")]
-        public string Title { get; set; } = "Untitled Task";
+        public long KanbanStatusId { get; set; }
 
         [Required]
         [StringLength(50, ErrorMessage = "EisenhowerStatus cannot exceed 50 characters.")]
-        public string EisenhowerStatus { get; set; } ="Urgent & Important";
+        [RegularExpression(
+            "Not Urgent & Not Important|Urgent but Not Important|Not Urgent but Important|Urgent & Important",
+            ErrorMessage = "Invalid EisenhowerStatus value."
+        )]
+        public string EisenhowerStatus { get; set; } = "Urgent & Important";
 
         [Required]
-        [StringLength(50, ErrorMessage = "TimeTaskRelated cannot exceed 50 characters.")]
+        [RegularExpression(
+            "Someday|This Week|Tomorrow|Today",
+            ErrorMessage = "Invalid TimeTaskRelated value."
+        )]
         public string TimeTaskRelated { get; set; } = "Today";
 
-        // Optional fields
         public DateOnly? DueDate { get; set; }
         public TimeOnly? EstimatedTime { get; set; }
         public TimeOnly? TimeSpent { get; set; }
 
         [Required]
         [StringLength(50, ErrorMessage = "RepeatFrequency cannot exceed 50 characters.")]
-        public string RepeatFrequency { get; set; } = "None"; // Allowed: "None", "Daily", etc.
+        [RegularExpression(
+            "Custom|Annually|Monthly|Weekly|Daily|None",
+            ErrorMessage = "Invalid RepeatFrequency value."
+        )]
+        public string RepeatFrequency { get; set; } = "None";
 
         public int? RepeatInterval { get; set; }
-        public bool RepeatOnSunday { get; set; } = false;
-        public bool RepeatOnMonday { get; set; } = false;
-        public bool RepeatOnTuesday { get; set; } = false;
-        public bool RepeatOnWednesday { get; set; } = false;
-        public bool RepeatOnThursday { get; set; } = false;
-        public bool RepeatOnFriday { get; set; } = false;
-        public bool RepeatOnSaturday { get; set; } = false;
+        public bool? RepeatOnSunday { get; set; }
+        public bool? RepeatOnMonday { get; set; }
+        public bool? RepeatOnTuesday { get; set; }
+        public bool? RepeatOnWednesday { get; set; }
+        public bool? RepeatOnThursday { get; set; }
+        public bool? RepeatOnFriday { get; set; }
+        public bool? RepeatOnSaturday { get; set; }
 
         [StringLength(50, ErrorMessage = "RepeatEnds cannot exceed 50 characters.")]
+        [RegularExpression(
+            "After Occurrences|On Date|Never",
+            ErrorMessage = "Invalid RepeatEnds value."
+        )]
         public string? RepeatEnds { get; set; }
 
         public DateOnly? RepeatEndDate { get; set; }
         public int? RepeatEndOccurrences { get; set; }
-        public string Priority { get; internal set; }
     }
 }

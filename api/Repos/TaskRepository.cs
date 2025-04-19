@@ -20,32 +20,38 @@ namespace api.Repos
             _context = context;
         }
 
-        // Retrieve all tasks for a specific learner with optional filtering using TaskQueryObject.
+        // Retrieve all tasks for a specific learner with optional filtering and pagination using TaskQueryObjects.
         public async Task<List<Models.Task>> GetTasksAsync(long learnerId, TaskQueryObjects query)
         {
             var tasksQuery = _context.Tasks
-                .Where(t => t.LearnerId == learnerId && !t.IsDeleted);
+            .Where(t => t.LearnerId == learnerId && !t.IsDeleted);
 
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
-                tasksQuery = tasksQuery.Where(t => t.Title.Contains(query.Title));
+            tasksQuery = tasksQuery.Where(t => t.Title.Contains(query.Title));
             }
 
             if (query.DueDate.HasValue)
             {
-                tasksQuery = tasksQuery.Where(t => t.DueDate == query.DueDate);
+            tasksQuery = tasksQuery.Where(t => t.DueDate == query.DueDate);
             }
 
             if (!string.IsNullOrWhiteSpace(query.EisenhowerStatus))
             {
-                tasksQuery = tasksQuery.Where(t => t.EisenhowerStatus == query.EisenhowerStatus);
-            }
-            if (!string.IsNullOrWhiteSpace(query.Priority))
-            {
-                tasksQuery = tasksQuery.Where(t => t.Priority == query.Priority);
+            tasksQuery = tasksQuery.Where(t => t.EisenhowerStatus == query.EisenhowerStatus);
             }
 
-            return await tasksQuery.ToListAsync();
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+            tasksQuery = query.IsDescending
+                ? tasksQuery.OrderByDescending(t => EF.Property<object>(t, query.SortBy))
+                : tasksQuery.OrderBy(t => EF.Property<object>(t, query.SortBy));
+            }
+
+            return await tasksQuery
+            .Skip((query.PageNumber - 1) * query.PageSize)
+            .Take(query.PageSize)
+            .ToListAsync();
         }
 
         // Retrieve a single task for the specified learner and taskId.
@@ -66,7 +72,7 @@ namespace api.Repos
             task.CreatedAt = DateTime.UtcNow;
             task.UpdatedAt = DateTime.UtcNow;
 
-            _context.Tasks.Add(task);
+            await _context.Tasks.AddAsync(task);
             await _context.SaveChangesAsync();
 
             return task;
@@ -75,12 +81,92 @@ namespace api.Repos
         // Update an existing task.
         public async Task<Models.Task?> UpdateTaskAsync(long learnerId, long taskId, Models.Task task)
         {
-            var existingTask = await GetTaskAsync(learnerId, taskId);
-            if (existingTask == null)
-                return null;
+            var existingTask = await _context.Tasks
+            .FirstOrDefaultAsync(t => t.LearnerId == learnerId && t.Id == taskId && !t.IsDeleted);
 
-            // Update properties—using EF Core's CurrentValues.SetValues here.
-            _context.Entry(existingTask).CurrentValues.SetValues(task);
+            if (existingTask == null)
+            {
+            return null;
+            }
+
+            if (task.GoalId != null)
+            {
+            existingTask.GoalId = task.GoalId;
+            }
+
+            if (!string.IsNullOrWhiteSpace(task.Title))
+            {
+            existingTask.Title = task.Title;
+            }
+
+            if (task.KanbanStatusId != null)
+            {
+            existingTask.KanbanStatusId = task.KanbanStatusId;
+            }
+
+            if (task.TypeId != null)
+            {
+            existingTask.TypeId = task.TypeId;
+            }
+
+            if (task.DueDate.HasValue)
+            {
+            existingTask.DueDate = task.DueDate;
+            }
+
+            if (task.EstimatedTime.HasValue)
+            {
+            existingTask.EstimatedTime = task.EstimatedTime;
+            }
+
+            if (task.TimeSpent.HasValue)
+            {
+            existingTask.TimeSpent = task.TimeSpent;
+            }
+
+            if (!string.IsNullOrWhiteSpace(task.EisenhowerStatus))
+            {
+            existingTask.EisenhowerStatus = task.EisenhowerStatus;
+            }
+
+            if (!string.IsNullOrWhiteSpace(task.TimeTaskRelated))
+            {
+            existingTask.TimeTaskRelated = task.TimeTaskRelated;
+            }
+
+            if (!string.IsNullOrWhiteSpace(task.RepeatFrequency))
+            {
+            existingTask.RepeatFrequency = task.RepeatFrequency;
+            }
+
+            if (task.RepeatInterval.HasValue)
+            {
+            existingTask.RepeatInterval = task.RepeatInterval;
+            }
+
+            existingTask.RepeatOnSunday = task.RepeatOnSunday;
+            existingTask.RepeatOnMonday = task.RepeatOnMonday;
+            existingTask.RepeatOnTuesday = task.RepeatOnTuesday;
+            existingTask.RepeatOnWednesday = task.RepeatOnWednesday;
+            existingTask.RepeatOnThursday = task.RepeatOnThursday;
+            existingTask.RepeatOnFriday = task.RepeatOnFriday;
+            existingTask.RepeatOnSaturday = task.RepeatOnSaturday;
+
+            if (!string.IsNullOrWhiteSpace(task.RepeatEnds))
+            {
+            existingTask.RepeatEnds = task.RepeatEnds;
+            }
+
+            if (task.RepeatEndDate.HasValue)
+            {
+            existingTask.RepeatEndDate = task.RepeatEndDate;
+            }
+
+            if (task.RepeatEndOccurrences.HasValue)
+            {
+            existingTask.RepeatEndOccurrences = task.RepeatEndOccurrences;
+            }
+
             existingTask.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
@@ -128,33 +214,5 @@ namespace api.Repos
             await _context.SaveChangesAsync();
             return true;
         }
-        public async Task<List<SearchResultDto>> SearchTasksAsync(string term, long learnerId)
-{
-    return await _context.Tasks
-        .Where(t => t.LearnerId == learnerId && t.Title.Contains(term) && !t.IsDeleted)
-        .Select(t => new SearchResultDto
-        {
-            EntityType = "Task",
-            Id = t.Id,
-            Title = t.Title,
-            Description = null
-        })
-        .ToListAsync();
-}
-public async Task<List<BriefTaskDto>> GetBriefTasksAsync(long learnerId)
-{
-    return await _context.Tasks
-        .Where(t => t.LearnerId == learnerId && !t.IsDeleted)
-        .Select(t => new BriefTaskDto
-        {
-            Id = t.Id,
-            Title = t.Title,
-            DueDate = t.DueDate.HasValue ? t.DueDate.Value.ToDateTime(TimeOnly.MinValue) : (DateTime?)null,
-            Status = t.KanbanStatus.Name
-        })
-        .ToListAsync();
-}
-
-
     }
 }

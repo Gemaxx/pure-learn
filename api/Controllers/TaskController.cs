@@ -20,22 +20,20 @@ namespace api.Controllers
             _learnerRepo = learnerRepo;
         }
 
-        //هنجيب كل التاسكات
         // GET: api/learners/{learnerId}/tasks
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskDto>>> GetTasks(long learnerId, [FromQuery] TaskQueryObjects query)
+        public async Task<ActionResult<IEnumerable<TaskDetailsDto>>> GetTasks(long learnerId, [FromQuery] TaskQueryObjects query)
         {
             var learner = await _learnerRepo.GetLearnerAsync(learnerId);
             if (learner == null) return NotFound(new { Message = "Learner not found." });
 
             var tasks = await _taskRepo.GetTasksAsync(learnerId, query);
-            return Ok(tasks.Select(t => t.ToTaskDto()));
+            return Ok(tasks.Select(t=> t.ToTaskDto()));
         }
 
-        //هنجيب تاسك معين   
         // GET: api/learners/{learnerId}/tasks/{taskId:long}
         [HttpGet("{taskId:long}")]
-        public async Task<ActionResult<TaskDto>> GetTask(long learnerId, long taskId)
+        public async Task<ActionResult<TaskDetailsDto>> GetTask(long learnerId, long taskId)
         {
             var learner = await _learnerRepo.GetLearnerAsync(learnerId);
             if (learner == null) return NotFound(new { Message = "Learner not found." });
@@ -43,10 +41,9 @@ namespace api.Controllers
             var task = await _taskRepo.GetTaskAsync(learnerId, taskId);
             if (task == null) return NotFound(new { Message = "Task not found." });
 
-            return Ok(task.ToTaskDto());
+            return Ok(task.ToTaskDetailsDto());
         }
 
-        //هنعمل تاسك جديد
         // POST: api/learners/{learnerId}/tasks
         [HttpPost]
         public async Task<IActionResult> CreateTask(long learnerId, [FromBody] CreateTaskRequestDto createTaskDto)
@@ -62,10 +59,9 @@ namespace api.Controllers
                 createdTask.ToTaskDto());
         }
 
-        //هنعمل تعديل على تاسك معين
         // PATCH: api/learners/{learnerId}/tasks/{taskId:long}
         [HttpPatch("{taskId:long}")]
-        public async Task<IActionResult> UpdateTask(long learnerId, long taskId, [FromBody] PatchTaskRequest patchTaskDto)
+        public async Task<IActionResult> UpdateTask(long learnerId, long taskId, [FromBody] PatchTaskRequestDto patchTaskDto)
         {
             var task = await _taskRepo.GetTaskAsync(learnerId, taskId);
             if (task == null)
@@ -79,49 +75,26 @@ namespace api.Controllers
             return Ok(updatedTask.ToTaskDto());
         }
 
-        //هنمسح تاسك معين
-        // DELETE: api/learners/{learnerId}/tasks/{taskId:long}
-        [HttpDelete("{taskId:long}")]
-        public async Task<IActionResult> DeleteTask(long learnerId, long taskId)
+        [HttpDelete("{taskId:long}/hard-delete")]
+        public async Task<IActionResult> HardDeleteTask(long learnerId, long taskId)
         {
-            var result = await _taskRepo.DeleteTaskAsync(learnerId, taskId);
-            if (!result)
-                return NotFound(new { Message = "Task not found or deletion failed." });
-
-            return NoContent();
+            if (await _taskRepo.DeleteTaskAsync(learnerId, taskId)) return NoContent();
+            return NotFound(new { Message = "Learner ID or Task ID is incorrect or does not exist." });
         }
 
-        // 🔥 SOFT DELETE Task
-// PATCH: api/learners/{learnerId}/tasks/soft-delete/{taskId}
-[HttpPatch("soft-delete/{taskId:long}")]
-public async Task<IActionResult> SoftDeleteTask(long learnerId, long taskId)
-{
-    var learner = await _learnerRepo.GetLearnerAsync(learnerId);
-    if (learner == null)
-        return NotFound(new { Message = "Learner not found." });
+        [HttpDelete("{taskId:long}/soft-delete")]
+        public async Task<IActionResult> SoftDeleteTask(long learnerId, long taskId)
+        {
+            if (await _taskRepo.SoftDeleteTaskAsync(learnerId, taskId)) return NoContent();
+            return NotFound(new { Message = "Learner ID or Task ID is incorrect or does not exist." });
+        }
 
-    var result = await _taskRepo.SoftDeleteTaskAsync(learnerId, taskId);
-    if (!result)
-        return NotFound(new { Message = "Task not found or already deleted." });
-
-    return Ok(new { Message = "Task soft deleted successfully." });
-}
-
-// 🔄 RESTORE Soft Deleted Task
-// PATCH: api/learners/{learnerId}/tasks/restore/{taskId}
-[HttpPatch("restore/{taskId:long}")]
-public async Task<IActionResult> RestoreTask(long learnerId, long taskId)
-{
-    var learner = await _learnerRepo.GetLearnerAsync(learnerId);
-    if (learner == null)
-        return NotFound(new { Message = "Learner not found." });
-
-    var result = await _taskRepo.RestoreTaskAsync(learnerId, taskId);
-    if (!result)
-        return NotFound(new { Message = "Task not found or not soft deleted." });
-
-    return Ok(new { Message = "Task restored successfully." });
-}
+        [HttpPatch("{taskId:long}/restore")]
+        public async Task<IActionResult> RestoreTask(long learnerId, long taskId)
+        {
+            if (await _taskRepo.RestoreTaskAsync(learnerId, taskId)) return Ok(new { Message = "Restored" });
+            return NotFound(new { Message = "Learner ID or Task ID is incorrect or does not exist." });
+        }
 
     }
 }

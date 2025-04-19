@@ -17,7 +17,5 @@ namespace api.Interfaces
         Task<bool> DeleteTaskAsync(long learnerId, long taskId);
         Task<bool> SoftDeleteTaskAsync(long learnerId, long taskId);
         Task<bool> RestoreTaskAsync(long learnerId, long taskId);
-        Task<List<SearchResultDto>> SearchTasksAsync(string term, long learnerId);
-
     }
 }

@@ -138,6 +138,14 @@ Unlock Your Learning Potiential
 8. Register Dependencies in [Program.cs file](Program.cs)
 9. 🎉 🚀 We are Done, Happy Coding!!! ✨
 
+### **UI/UX Design**
+
+- Information Architecture 
+- Wireframing
+- High-Fidelity Design in Figma
+- User Testing & Iteration
+- Design System Implementation
+
 ### **Frontend Development**
 
 - Develop Components & Pages
@@ -145,12 +153,6 @@ Unlock Your Learning Potiential
   - **Task List, Kanban Board, Eisenhower Matrix, Time-Task View**
 - Utilize AI for UI optimization
 
-### **UI/UX Design**
-
-- Wireframing & Prototyping
-- High-Fidelity Design in Figma
-- User Testing & Iteration
-- Design System Implementation
 
 ## **3. DEPLOYMENT** 🚀✅
 

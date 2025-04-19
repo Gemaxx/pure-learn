@@ -13,11 +13,6 @@ namespace api.Helpers
         public string? Status { get; set; } // e.g. Not-Started, In-Progress, Done
         public bool? IsDeleted { get; set; } = false;
 
-        // 📅 Date filters
-        public DateTime? CreatedAfter { get; set; }
-        public DateTime? CreatedBefore { get; set; }
-        public DateTime? UpdatedAfter { get; set; }
-        public DateTime? UpdatedBefore { get; set; }
 
         // 🔃 Sorting
         public string? SortBy { get; set; } = "CreatedAt"; // Title, Status, UpdatedAt

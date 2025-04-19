@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using api.Dtos.Search;
 using api.Helpers;
 using api.Interfaces;
@@ -40,13 +37,13 @@ namespace api.Controllers
 
             var categoryResults = await _categoryRepo.SearchCategoriesAsync(query.Term, learnerId);
             var goalResults = await _goalRepo.SearchGoalsAsync(query.Term, learnerId);
-            var taskResults = await _taskRepo.SearchTasksAsync(query.Term, learnerId);
+            // var taskResults = await _taskRepo.SearchTasksAsync(query.Term, learnerId);
             var noteResults = await _noteRepo.SearchNotesAsync(query.Term, learnerId);
 
             var combinedResults = categoryResults.Concat(goalResults)
-                                                 .Concat(taskResults)
                                                  .Concat(noteResults)
                                                  .ToList();
+                                                 //.Concat(taskResults)
 
             return Ok(combinedResults);
         }

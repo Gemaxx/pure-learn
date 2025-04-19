@@ -1,22 +1,30 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using api.Models;
 using api.Dtos.Task;
-using api.Dtos.Subtask;
 
 namespace api.Mapper
 {
     public static class TaskMapper
-    {
-        // Mapping from Task model to TaskDto (basic view)
+    { 
+        // Mapping from Task model to TaskDto (summary view)
         public static TaskDto ToTaskDto(this Models.Task taskModel)
         {
             return new TaskDto
             {
                 Id = taskModel.Id,
-                GoalId = taskModel.GoalId ?? 0,
+                Title = taskModel.Title,
+                GoalId = taskModel.GoalId,
+                TypeId = taskModel.TypeId,
+                KanbanStatusId = taskModel.KanbanStatusId,
+                EisenhowerStatus = taskModel.EisenhowerStatus,
+                TimeTaskRelated = taskModel.TimeTaskRelated
+            };
+        }
+        // Mapping from Task model to TaskDetailsDto (detailed view)
+        public static TaskDetailsDto ToTaskDetailsDto(this Models.Task taskModel)
+        {
+            return new TaskDetailsDto
+            {
+                Id = taskModel.Id,
+                GoalId = taskModel.GoalId,
                 KanbanStatusId = taskModel.KanbanStatusId,
                 TypeId = taskModel.TypeId,
                 Title = taskModel.Title,
@@ -25,7 +33,7 @@ namespace api.Mapper
                 DueDate = taskModel.DueDate,
                 EstimatedTime = taskModel.EstimatedTime,
                 TimeSpent = taskModel.TimeSpent,
-                RepeatFrequency = taskModel.RepeatFrequency,
+                RepeatFrequency = taskModel.RepeatFrequency ?? "None",
                 RepeatInterval = taskModel.RepeatInterval,
                 RepeatOnSunday = taskModel.RepeatOnSunday,
                 RepeatOnMonday = taskModel.RepeatOnMonday,
@@ -37,11 +45,15 @@ namespace api.Mapper
                 RepeatEnds = taskModel.RepeatEnds,
                 RepeatEndDate = taskModel.RepeatEndDate,
                 RepeatEndOccurrences = taskModel.RepeatEndOccurrences,
-                Priority = taskModel.Priority // Added here
-
+                CreatedAt = taskModel.CreatedAt,
+                UpdatedAt = taskModel.UpdatedAt,
+                // CategoryId = taskModel.CategoryId,
+                // SubgoalId = taskModel.SubgoalId,
+                // LearningResourceId = taskModel.LearningResourceId,
+                DeletedAt = taskModel.DeletedAt,
+                IsDeleted = taskModel.IsDeleted
             };
         }
-
         // Mapping from CreateTaskRequestDto to Task model
         public static Models.Task ToTaskEntity(this CreateTaskRequestDto createDto)
         {
@@ -68,13 +80,14 @@ namespace api.Mapper
                 RepeatEnds = createDto.RepeatEnds,
                 RepeatEndDate = createDto.RepeatEndDate,
                 RepeatEndOccurrences = createDto.RepeatEndOccurrences,
-                           Priority = createDto.Priority // Added here
-
+                // CategoryId = createDto.CategoryId,
+                // SubgoalId = createDto.SubgoalId,
+                // LearningResourceId = createDto.LearningResourceId
             };
         }
 
         // Mapping from PatchTaskRequest to update an existing Task model
-        public static void UpdateTaskFromPatch(this Models.Task task, PatchTaskRequest patchDto)
+        public static void UpdateTaskFromPatch(this Models.Task task, PatchTaskRequestDto patchDto)
         {
             if (!string.IsNullOrEmpty(patchDto.Title))
                 task.Title = patchDto.Title;
@@ -118,13 +131,6 @@ namespace api.Mapper
                 task.RepeatEndDate = patchDto.RepeatEndDate;
             if (patchDto.RepeatEndOccurrences.HasValue)
                 task.RepeatEndOccurrences = patchDto.RepeatEndOccurrences.Value;
- if (!string.IsNullOrWhiteSpace(patchDto.Priority)) // Added here
-            {
-                task.Priority = patchDto.Priority;
-            }
-
-            task.UpdatedAt = DateTime.UtcNow;
         }
-        
     }
 }

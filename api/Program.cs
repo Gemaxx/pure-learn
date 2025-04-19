@@ -10,94 +10,113 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-
-
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowSpecificOrigin",
-        builder => builder.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader());
-});
+// Add services to the container
+ConfigureServices(builder.Services, builder.Configuration);
 
-// Adding DbContext
-builder.Services.AddDbContext<PureLearnDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
-            maxRetryCount: 5,              // Maximum number of retries
-            maxRetryDelay: TimeSpan.FromSeconds(30), // Maximum delay between retries
-            errorNumbersToAdd: null        // Optional: List of SQL error numbers to retry
-        )
-    )
-);
-
-// Configure JSON serialization options to ignore cycles when serializing objects
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        // Set the reference handler to ignore cycles, preventing stack overflows and other issues
-        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-    });
-
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<ILearnerRepository, LearnerRepository>();
-builder.Services.AddScoped<IGoalRepository, GoalRepository>();
-builder.Services.AddScoped<ILearningResourceRepository, LearningResourceRepository>();
-builder.Services.AddScoped<ILearningResourceTypeRepository, LearningResourceTypeRepository>();
-builder.Services.AddScoped<INoteRepository, NoteRepository>();
-builder.Services.AddScoped<ITaskRepository, TaskRepository>();
-builder.Services.AddScoped<ISubtaskRepository, SubtaskRepository>();
-builder.Services.AddScoped<ITaskTypeRepository, TaskTypeRepository>();
-builder.Services.AddScoped<IKanbanStatusRepository, KanbanStatusRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IGoalRepository, GoalRepository>();
-builder.Services.AddScoped<ITaskRepository, TaskRepository>();
-builder.Services.AddScoped<INoteRepository, NoteRepository>();
-builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-builder.Services.AddSingleton<JwtService>();
-builder.Services.AddAuthentication("Bearer")
-    .AddJwtBearer("Bearer", options =>
-    {
-        var key = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not configured.");
-        var keyBytes = Encoding.UTF8.GetBytes(key);
-
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            
-            IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
-       
-        };
-    });
-
-builder.Services.AddAuthorization();
-
-
-
+// Configure logging
 builder.Logging.AddConsole();
 
-
 var app = builder.Build();
-// Configure the HTTP request pipeline.
-app.UseSwagger();
-app.UseSwaggerUI();
 
-app.UseCors("AllowSpecificOrigin");
-
-app.MapControllers();
+// Configure the HTTP request pipeline
+ConfigureMiddleware(app);
 
 app.Run();
+
+void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+{
+    // Add controllers with JSON serialization options
+    services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        });
+
+    // Add Swagger/OpenAPI
+    services.AddEndpointsApiExplorer();
+    services.AddSwaggerGen();
+
+    // Add CORS policy
+    services.AddCors(options =>
+    {
+        options.AddPolicy("AllowSpecificOrigin", policy =>
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader());
+    });
+
+    // Add DbContext with retry logic
+    services.AddDbContext<PureLearnDbContext>(options =>
+        options.UseSqlServer(
+            configuration.GetConnectionString("DefaultConnection"),
+            sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(30),
+                errorNumbersToAdd: null
+            )
+        )
+    );
+
+    // Register repositories
+    RegisterRepositories(services);
+
+    // Register services
+    services.AddSingleton<JwtService>();
+
+    // Configure authentication
+    ConfigureAuthentication(services, configuration);
+
+    // Add authorization
+    services.AddAuthorization();
+}
+
+void RegisterRepositories(IServiceCollection services)
+{
+    services.AddScoped<ICategoryRepository, CategoryRepository>();
+    services.AddScoped<ILearnerRepository, LearnerRepository>();
+    services.AddScoped<IGoalRepository, GoalRepository>();
+    services.AddScoped<ILearningResourceRepository, LearningResourceRepository>();
+    services.AddScoped<ILearningResourceTypeRepository, LearningResourceTypeRepository>();
+    services.AddScoped<INoteRepository, NoteRepository>();
+    services.AddScoped<ITaskRepository, TaskRepository>();
+    services.AddScoped<ISubtaskRepository, SubtaskRepository>();
+    services.AddScoped<ITaskTypeRepository, TaskTypeRepository>();
+    services.AddScoped<IKanbanStatusRepository, KanbanStatusRepository>();
+    services.AddScoped<IAuthRepository, AuthRepository>();
+}
+
+void ConfigureAuthentication(IServiceCollection services, IConfiguration configuration)
+{
+    var key = configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not configured.");
+    var keyBytes = Encoding.UTF8.GetBytes(key);
+
+    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = configuration["Jwt:Issuer"],
+                ValidAudience = configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
+            };
+        });
+}
+
+void ConfigureMiddleware(WebApplication app)
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+
+    app.UseCors("AllowSpecificOrigin");
+
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    app.MapControllers();
+}

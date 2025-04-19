@@ -23,7 +23,7 @@ namespace api.Dtos.Goal
 
         public DateOnly? CompletionDate { get; set; }
 
-        public List<TaskDto> Tasks { get; set; } = new();
+        public List<TaskDetailsDto> Tasks { get; set; } = new();
         public List<LearningResourceDto> LearningResources { get; set; } = new();
 
         public List<NoteDto> Notes { get; set; } = new();
