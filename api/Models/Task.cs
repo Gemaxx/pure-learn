@@ -17,11 +17,9 @@ public partial class Task
     public long? KanbanStatusId { get; set; }
 
    
-    public string EisenhowerStatus { get; set; } = null!;
+    public string? EisenhowerStatus { get; set; }
 
    
-    public string TimeTaskRelated { get; set; } = null!;
-
     public DateOnly? DueDate { get; set; }
 
     

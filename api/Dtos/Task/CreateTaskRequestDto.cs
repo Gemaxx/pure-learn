@@ -14,13 +14,10 @@ namespace api.Dtos.Task
         // public long? SubgoalId { get; set; }
         // public long? LearningResourceId { get; set; }
 
-        [Required]
         public long TypeId { get; set; }
 
-        [Required]
         public long KanbanStatusId { get; set; }
 
-        [Required]
         [StringLength(50, ErrorMessage = "EisenhowerStatus cannot exceed 50 characters.")]
         [RegularExpression(
             "Not Urgent & Not Important|Urgent but Not Important|Not Urgent but Important|Urgent & Important",
@@ -28,17 +25,20 @@ namespace api.Dtos.Task
         )]
         public string EisenhowerStatus { get; set; } = "Urgent & Important";
 
-        [Required]
         [RegularExpression(
             "Someday|This Week|Tomorrow|Today",
             ErrorMessage = "Invalid TimeTaskRelated value."
         )]
-        public string TimeTaskRelated { get; set; } = "Today";
-
+    // Due Date Task    
+        public string TimeTaskRelated { get; set; } = "Someday";
         public DateOnly? DueDate { get; set; }
+        
+    // focus session on Tasks    
         public TimeOnly? EstimatedTime { get; set; }
         public TimeOnly? TimeSpent { get; set; }
 
+    
+    // Repeat Task   
         [Required]
         [StringLength(50, ErrorMessage = "RepeatFrequency cannot exceed 50 characters.")]
         [RegularExpression(

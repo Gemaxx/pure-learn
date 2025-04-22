@@ -27,8 +27,7 @@ namespace api.Dtos.LearningResource
         public int? Progress { get; set; }
 
         public static ValidationResult? ValidateProgress(int? progress, ValidationContext context)
-        {
-            var instance = (CreateLearningResourceRequestDto)context.ObjectInstance;
+        {            var instance = (CreateLearningResourceRequestDto)context.ObjectInstance;
             if (progress < 0 || (instance.TotalUnits.HasValue && progress > instance.TotalUnits.Value))
             {
                 return new ValidationResult("Progress cannot be negative or greater than TotalUnits.");
