@@ -1,3 +1,4 @@
+// app/Sidebare/catygoryList.tsx
 "use client";
 
 import { useFetchData } from "@/lib/hooks/useFetchData";
@@ -18,7 +19,7 @@ import {
 import Link from "next/link";
 import { ScrollArea } from "../ui/scroll-area";
 import AddCategoryForm from "./AddCategoryForm";
-import { log } from "console";
+import { useEffect } from "react"; // أضف هذا الاستيراد
 
 export default function CategoriesList({
   learnerId,
@@ -39,7 +40,13 @@ export default function CategoriesList({
       queryParams: { IsDeleted: false },
     }
   );
-console.log(learnerId, "learnerId from categoriesList");
+
+  // أضف useEffect لمراقبة تغيرات learnerId
+  useEffect(() => {
+    if (learnerId) {
+      refetch();
+    }
+  }, [learnerId]);
 
   return (
     <ScrollArea className="h-[calc(100vh-5rem)]">
@@ -58,35 +65,34 @@ console.log(learnerId, "learnerId from categoriesList");
           <CollapsibleContent>
             <SidebarGroupContent>
               <SidebarMenu>
-                {/* ✅ التعامل مع حالات التحميل والخطأ */}
                 {loading && (
                   <p className="text-gray-400 p-3">Loading categories...</p>
                 )}
                 {error && (
-                  <p className="text-red-500 p-3">Failed to load categories.</p>
+                  <p className="text-red-500 p-3">Error: {error}</p> // عرض الرسالة التفصيلية
                 )}
-                {!loading && !error && categories?.length! > 0
-                  ? categories!.map((category) => (
-                      <SidebarMenuItem key={category.id}>
-                        <SidebarMenuButton asChild>
-                          <Link
-                            href={`/categories/${category.id}`}
-                            className="flex items-center gap-3"
-                          >
-                            <span
-                              className="w-3 h-3 rounded-full"
-                              style={{ backgroundColor: category.color }}
-                            />
-                            {category.title}
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    ))
-                  : !loading && (
-                      <p className="text-gray-400 p-3">No categories found.</p>
-                    )}
+                {!loading && !error && categories?.length === 0 && (
+                  <p className="text-gray-400 p-3">No categories found.</p>
+                )}
+                {!loading &&
+                  !error &&
+                  categories?.map((category) => (
+                    <SidebarMenuItem key={category.id}>
+                      <SidebarMenuButton asChild>
+                        <Link
+                          href={`/categories/${category.id}`}
+                          className="flex items-center gap-3"
+                        >
+                          <span
+                            className="w-3 h-3 rounded-full"
+                            style={{ backgroundColor: category.color }}
+                          />
+                          {category.title}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
 
-                {/* ✅ تمرير `onCategoryAdded` و `refetch` عند إضافة تصنيف جديد */}
                 <AddCategoryForm
                   learnerId={learnerId}
                   onCategoryAdded={() => {

@@ -1,20 +1,26 @@
 // lib/api/categories/delete.ts
-export async function deleteCategory(learnerId: number, categoryId: number) {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/learners/${learnerId}/categories/${categoryId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-  
-      if (!response.ok) throw new Error('Failed to delete category');
-      return true;
-    } catch (error) {
-      console.error('Error deleting category:', error);
-      return false;
-    }
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5115/api';
+
+export async function deleteCategory(
+  learnerId: number,
+  categoryId: number
+): Promise<boolean> {
+  if (learnerId === null) {
+    console.error("Cannot delete category: Learner ID is null");
+    return false;
   }
+  
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/learners/${learnerId}/categories/${categoryId}`,
+      {
+        method: "DELETE",
+      }
+    );
+    
+    return response.ok;
+  } catch (error) {
+    console.error("Error deleting category:", error);
+    return false;
+  }
+}

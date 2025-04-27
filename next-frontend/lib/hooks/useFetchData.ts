@@ -14,40 +14,39 @@ export function useFetchData<T>(
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // 🔹 تكوين `query params` إذا وُجدت
-  function buildQueryParams(
+  const buildQueryParams = (
     params?: Record<string, string | number | boolean>
-  ) {
+  ) => {
     if (!params) return "";
-    const queryString = new URLSearchParams();
-    Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        queryString.append(key, value.toString());
-      }
-    });
-    return queryString.toString() ? `?${queryString.toString()}` : "";
-  }
+    return "?" + new URLSearchParams(params as Record<string, string>).toString();
+  };
 
   async function fetchData() {
     try {
-      setLoading(true);
-      setError(null);
+      if (!learnerId || isNaN(learnerId)) {
+        throw new Error("Invalid learner ID");
+      }
 
       const queryString = buildQueryParams(options?.queryParams);
-      const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/learners/${learnerId}/${endpoint}${queryString}`;
+      const url = `http://localhost:5115/api/learners/${learnerId}/${endpoint}${queryString}`;
 
       const res = await fetch(url, {
         headers: { Accept: "application/json" },
-        cache: "no-store",
       });
 
-      if (!res.ok)
-        throw new Error(`Failed to fetch ${endpoint}, Status: ${res.status}`);
+      if (!res.ok) {
+        if (res.status === 404) {
+          throw new Error(`Resource not found at: ${url}`);
+        }
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
 
       const jsonData = await res.json();
       setData(jsonData);
+      setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unknown error");
+      setError(err instanceof Error ? err.message : "Failed to fetch data");
+      setData(null);
     } finally {
       setLoading(false);
     }

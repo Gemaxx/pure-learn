@@ -1,120 +1,65 @@
-//[categoryId] is a dynamic route that will be passed as a prop to the page component
+// [categoryId]/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { useLearner } from "@/lib/context/learnerContext";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Filters from "../../categories/[categoryId]/goals/page";
-import { toast } from "sonner"; 
+import Filters from "./goals/page";
+import { toast } from "sonner";
+import { useParams } from 'next/navigation';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical } from "lucide-react";
-import { deleteCategory } from "@/lib/api/categories/delete";
-import { updateCategory } from "@/lib/api/categories/update";
+import { MoreVertical, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-type CategoryDetail = {
-  description: string;
-  createdAt: string;
-  updatedAt: string;
-  parentCategoryId: number | null;
-  learnerId: number;
-  isDeleted: boolean;
-  id: number;
-  title: string;
-  color: string;
-};
+import { getCategory, deleteCategory, updateCategory } from "@/lib/api/categories";
+import { getGoals, deleteGoal, createGoal } from "@/lib/api/goals";
 
-type Goal = {
-  id: number;
-  title: string;
-  description?: string;
-  term: string;
-  status: string;
-  progress: string;
-  category: string;
-};
+import { Category, UpdateCategoryData } from "@/lib/types/category";
+import { Goal, GoalFormData } from "@/lib/types/goal";
 
-// ✅ Fetch category details from API
-async function getCategoryDetail(
-  learnerId: number,
-  categoryId: number
-): Promise<CategoryDetail | null> {
-  try {
-    const res = await fetch(
-      `http://localhost:5115/api/learners/${learnerId}/categories/${categoryId}`,
-      {
-        headers: { Accept: "application/json" },
-        cache: "no-store",
-      }
-    );
-    if (!res.ok) throw new Error("Failed to fetch category detail");
-    return res.json();
-  } catch (error) {
-    console.error("Error fetching category detail:", error);
-    return null;
-  }
-}
-
-// ✅ Fetch goals for a specific category
-async function getGoals(
-  learnerId: number,
-  categoryId: number
-): Promise<Goal[]> {
-  try {
-    const res = await fetch(
-      `http://localhost:5115/api/learners/${learnerId}/goals?CategoryId=${categoryId}`,
-      {
-        headers: { Accept: "application/json" },
-        cache: "no-store",
-      }
-    );
-
-    if (!res.ok) throw new Error("Failed to fetch goals");
-
-    const data = await res.json();
-
-    return data.map((goal: any) => ({
-      id: goal.id,
-      title: goal.title,
-      term: goal.term,
-      status: goal.status,
-      categoryId: goal.categoryId,
-    }));
-  } catch (error) {
-    console.error("Error fetching goals:", error);
-    return [];
-  }
-}
-
-export default function CategoryDetailPage({
-  params,
-}: {
-  params: { categoryId: string };
-}) {
+export default function CategoryDetailPage() {
+  const params = useParams();
   const router = useRouter();
-  const { learnerId } = useLearner();
-  const categoryId = parseInt(params.categoryId, 10);
+  const { learnerId, isLoading: learnerLoading } = useLearner();
 
-  // ✅ استخدام `useState` لتخزين البيانات
-  const [categoryDetail, setCategoryDetail] = useState<CategoryDetail | null>(
-    null
+  const categoryId = parseInt(
+    typeof params.categoryId === 'string'
+      ? params.categoryId
+      : Array.isArray(params.categoryId)
+        ? params.categoryId[0]
+        : '0',
+    10
   );
+
+  const [categoryDetail, setCategoryDetail] = useState<Category | null>(null);
   const [goals, setGoals] = useState<Goal[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isAddGoalDialogOpen, setIsAddGoalDialogOpen] = useState(false);
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [color, setColor] = useState("#000000");
+
+  const [goalData, setGoalData] = useState<GoalFormData>({
+    title: "",
+    description: "",
+    term: "Short-Term",
+    status: "Not-Started",
+    motivation: "",
+  });
 
   useEffect(() => {
     if (categoryDetail) {
@@ -125,93 +70,175 @@ export default function CategoryDetailPage({
   }, [categoryDetail]);
 
   const handleDelete = async () => {
+    if (learnerId === null) {
+      toast.error("Cannot delete category: Learner ID is not available");
+      return;
+    }
+
     const success = await deleteCategory(learnerId, categoryId);
     if (success) {
+      toast.success("Category deleted successfully");
       router.push("/");
+    } else {
+      toast.error("Failed to delete category");
     }
   };
 
-  const handleUpdate = async () => {
-    try {
-      // 1. جمع البيانات من الحالة
-      const updateData = {
-        title: title || categoryDetail?.title,
-        description: description || categoryDetail?.description,
-        color: color || categoryDetail?.color
-      };
-  
-      // 2. استدعاء API التحديث
-      const updatedCategory = await updateCategory(
-        learnerId,
-        categoryId,
-        updateData
-      );
-  
-      // 3. إذا كانت الاستجابة ناجحة
-      if (updatedCategory) {
-        // تحديث الحالة المحلية
-        setCategoryDetail(prev => ({
-          ...prev!,
-          ...updatedCategory
-        }));
-  
-        // إظهار إشعار النجاح
-        toast.success("تم التحديث بنجاح!");
-      } else {
-        // إعادة جلب البيانات إذا لم تكن هناك استجابة
-        const freshData = await getCategoryDetail(learnerId, categoryId);
-        setCategoryDetail(freshData);
-      }
-  
-      // 4. إغلاق النافذة المنبثقة
-      setIsEditDialogOpen(false);
-  
-    } catch (error) {
-      // معالجة الأخطاء
-      console.error("فشل التحديث:", error);
-      if (error instanceof Error) {
-        toast.error(`خطأ في التحديث: ${error.message}`);
-      } else {
-        toast.error("خطأ في التحديث: حدث خطأ غير معروف");
-      }
-    }
-  };
-
-  // ✅ استخدام `useEffect` لتحميل البيانات عند تحميل المكون
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
+      setError(null);
+
       try {
+        if (learnerId === null) {
+          if (!learnerLoading) {
+            setError("No learner ID available");
+          }
+          return;
+        }
+
+        if (isNaN(categoryId) || categoryId <= 0) {
+          setError("Invalid category ID");
+          return;
+        }
+
         const [category, goalsData] = await Promise.all([
-          getCategoryDetail(learnerId, categoryId),
+          getCategory(learnerId, categoryId),
           getGoals(learnerId, categoryId),
         ]);
+
+        if (!category) {
+          setError("Category not found");
+          return;
+        }
+
         setCategoryDetail(category);
         setGoals(goalsData);
       } catch (err) {
+        console.error("Error fetching data:", err);
         setError("Failed to load data");
       } finally {
         setLoading(false);
       }
     }
 
-    fetchData();
-  }, [learnerId, categoryId]);
+    if (learnerId !== null || learnerLoading) {
+      fetchData();
+    } else {
+      setError("No learner ID available");
+      setLoading(false);
+    }
+  }, [learnerId, categoryId, learnerLoading]);
 
-  // ✅ عرض رسالة أثناء التحميل
-  if (loading) {
+  const handleUpdate = async () => {
+    try {
+      if (learnerId === null) {
+        toast.error("Cannot update category: Learner ID is not available");
+        return;
+      }
+
+      const updateData: UpdateCategoryData = {
+        title: title || categoryDetail?.title,
+        description: description || categoryDetail?.description,
+        color: color || categoryDetail?.color
+      };
+
+      const updatedCategory = await updateCategory(
+        learnerId,
+        categoryId,
+        updateData
+      );
+
+      if (updatedCategory) {
+        setCategoryDetail(prev => ({
+          ...prev!,
+          ...updatedCategory
+        }));
+        toast.success("Updated successfully!");
+      } else {
+        if (learnerId !== null) {
+          const freshData = await getCategory(learnerId, categoryId);
+          setCategoryDetail(freshData);
+        }
+      }
+      setIsEditDialogOpen(false);
+    } catch (error) {
+      console.error("Update failed:", error);
+      if (error instanceof Error) {
+        toast.error(`Update error: ${error.message}`);
+      } else {
+        toast.error("Update error: Unknown error occurred");
+      }
+    }
+  };
+
+  const handleAddGoal = async () => {
+    try {
+      if (learnerId === null) {
+        toast.error("Cannot add goal: Learner ID is not available");
+        return;
+      }
+
+      if (!goalData.title || !goalData.term || !goalData.status || !goalData.motivation) {
+        toast.error("Please fill in all required fields");
+        return;
+      }
+      const newGoal = await createGoal(
+        learnerId,
+        categoryId,
+        goalData
+      );
+
+      if (newGoal) {
+        setGoals(prev => [...prev, newGoal]);
+
+        setGoalData({
+          title: "",
+          description: "",
+          term: "Short-Term",
+          status: "Not-Started",
+          motivation: ""
+        });
+        setIsAddGoalDialogOpen(false);
+        toast.success("Goal created successfully!");
+      } else {
+        throw new Error("Failed to create goal");
+      }
+    } catch (error) {
+      console.error("Error creating goal:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to create goal");
+    }
+  };
+
+  const handleDeleteGoal = async (goalId: number) => {
+    try {
+      if (learnerId === null) {
+        toast.error("Cannot delete goal: Learner ID is not available");
+        return;
+      }
+
+      const success = await deleteGoal(learnerId, goalId);
+      if (!success) throw new Error('Deletion failed');
+      setGoals(prev => prev.filter(g => g.id !== goalId));
+      toast.success('Goal deleted!');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Deletion failed");
+    }
+  };
+
+  if (loading || learnerLoading) {
     return (
       <div className="p-8 h-[100vh] flex items-center justify-center w-[100vw]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mr-2" />
         <p className="text-gray-400">Loading category details...</p>
       </div>
     );
   }
 
-  // ✅ عرض رسالة في حالة الخطأ
   if (error || !categoryDetail) {
     return (
       <div className="p-8 h-[100vh] flex items-center justify-center w-[100vw]">
-        <p className="text-red-500">Failed to load category detail.</p>
+        <p className="text-red-500">{error || "Failed to load category detail."}</p>
       </div>
     );
   }
@@ -226,6 +253,9 @@ export default function CategoryDetailPage({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => setIsAddGoalDialogOpen(true)}>
+              Add Goal
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setIsEditDialogOpen(true)}>
               Edit Category
             </DropdownMenuItem>
@@ -236,7 +266,6 @@ export default function CategoryDetailPage({
         </DropdownMenu>
       </div>
 
-      {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -274,6 +303,83 @@ export default function CategoryDetailPage({
           </div>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={isAddGoalDialogOpen} onOpenChange={setIsAddGoalDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Goal</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Title *</Label>
+              <Input
+                value={goalData.title}
+                onChange={(e) => setGoalData({ ...goalData, title: e.target.value })}
+                required
+              />
+            </div>
+            <div>
+              <Label>Description</Label>
+              <Input
+                value={goalData.description}
+                onChange={(e) => setGoalData({ ...goalData, description: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>Motivation *</Label>
+              <Input
+                value={goalData.motivation}
+                onChange={(e) => setGoalData({ ...goalData, motivation: e.target.value })}
+                required
+                placeholder="Why is this goal important to you?"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Term *</Label>
+                <Select
+                  value={goalData.term}
+                  onValueChange={(value) => setGoalData({ ...goalData, term: value as Goal['term'] })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Term" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Short-Term">Short-Term</SelectItem>
+                    <SelectItem value="Medium-Term">Medium-Term</SelectItem>
+                    <SelectItem value="Long-Term">Long-Term</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Status *</Label>
+                <Select
+                  value={goalData.status}
+                  onValueChange={(value) => setGoalData({ ...goalData, status: value as Goal['status'] })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Not-Started">Not Started</SelectItem>
+                    <SelectItem value="In-Progress">In Progress</SelectItem>
+                    <SelectItem value="Done">Done</SelectItem>
+                    <SelectItem value="Canceled">Canceled</SelectItem>
+                    <SelectItem value="On-Hold">On Hold</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setIsAddGoalDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleAddGoal}>Create Goal</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <div className="flex justify-center w-full">
         <Card className="bg-white rounded-lg shadow-md p-6 w-full max-w-4xl">
           <CardHeader>
@@ -300,7 +406,6 @@ export default function CategoryDetailPage({
         </Card>
       </div>
 
-      {/* الفلاتر والأهداف  */}
       <div className="flex justify-center w-full">
         <Filters initialGoals={goals || []} />
       </div>
