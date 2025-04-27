@@ -345,13 +345,14 @@ export default function GoalDetailPage() {
         ) : tasks.length > 0 ? (
           <ul className="space-y-3">
             {tasks.map(task => (
-              <TaskItem
-                key={task.id}
-                task={task}
-                onComplete={handleDeleteTask}
-                onEdit={handleEditTask}
-                priorityColors={priorityColors}
-              />
+          <TaskItem
+          key={task.id}
+          task={task}
+          onComplete={(taskId) => handleUpdateTask(taskId, { completed: true })}
+          onDelete={handleDeleteTask}
+          onEdit={handleEditTask}
+          priorityColors={priorityColors}
+        />
             ))}
           </ul>
         ) : (
