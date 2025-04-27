@@ -10,6 +10,8 @@ namespace api.Dtos.Task
 
         [StringLength(100, MinimumLength = 1, ErrorMessage = "Title must be between 1 and 100 characters.")]
         public string? Title { get; set; }
+        public bool? IsCompleted { get; set; } 
+
 
         public DateOnly? DueDate { get; set; }
 
@@ -24,13 +26,6 @@ namespace api.Dtos.Task
             ErrorMessage = "Invalid EisenhowerStatus value."
         )]
         public string? EisenhowerStatus { get; set; }
-
-        [StringLength(50, ErrorMessage = "TimeTaskRelated cannot exceed 50 characters.")]
-        [RegularExpression(
-            "Someday|This Week|Tomorrow|Today",
-            ErrorMessage = "Invalid TimeTaskRelated value."
-        )]
-        public string? TimeTaskRelated { get; set; }
 
         [StringLength(50, ErrorMessage = "RepeatFrequency cannot exceed 50 characters.")]
         [RegularExpression(

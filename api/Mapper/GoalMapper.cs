@@ -21,16 +21,16 @@ namespace api.Mapper
 
         public static GoalDetailDto ToGoalDetailDto(this Goal goal) {
             return new GoalDetailDto {
+                CategoryId = goal.CategoryId,
                 Id = goal.Id,
                 Title = goal.Title,
                 Description = goal.Description,
                 Motivation = goal.Motivation,
-                CreatedAt = goal.CreatedAt,
-                UpdatedAt = goal.UpdatedAt,
                 Term = goal.Term,
                 Status = goal.Status,
                 CompletionDate = goal.CompletionDate,
-                CategoryId = goal.CategoryId,
+                CreatedAt = goal.CreatedAt,
+                UpdatedAt = goal.UpdatedAt,
             };
         }
         public static Goal ToGoalFromCreateDto(this CreateGoalRequestDto createGoalRequestDto) {

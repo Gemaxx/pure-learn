@@ -7,6 +7,8 @@ namespace api.Dtos.Task
 
 
         public string Title { get; set; } = "Untitled Task";
+        public bool? IsCompleted { get; set; } = false;  
+
 
         public long? TypeId { get; set; }
 
@@ -14,8 +16,7 @@ namespace api.Dtos.Task
 
         public string EisenhowerStatus { get; set; } = "Urgent & Important";
 
-        public string TimeTaskRelated { get; set; } = "Today";
-
+        /*
         public DateOnly? DueDate { get; set; }
 
         public TimeOnly? EstimatedTime { get; set; }
@@ -45,10 +46,12 @@ namespace api.Dtos.Task
         public DateOnly? RepeatEndDate { get; set; }
 
         public int? RepeatEndOccurrences { get; set; }
+        */
 
         public DateTime? CreatedAt { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
+     
 
         // public long? CategoryId { get; set; }
 
@@ -59,5 +62,7 @@ namespace api.Dtos.Task
         public DateTime? DeletedAt { get; set; }
 
         public bool IsDeleted { get; set; }
+
+    
     }
 }

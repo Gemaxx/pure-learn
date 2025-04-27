@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using api.Models;
 
 namespace api.Data;
@@ -441,11 +439,9 @@ public partial class PureLearnDbContext : DbContext
                 .HasDefaultValueSql("(sysdatetime())")
                 .HasColumnName("CREATEd_at");
             entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
-            entity.Property(e => e.DueDate).HasColumnName("due_date");
             entity.Property(e => e.EisenhowerStatus)
                 .HasMaxLength(50)
                 .HasColumnName("eisenhower_status");
-            entity.Property(e => e.EstimatedTime).HasColumnName("estimated_time");
             entity.Property(e => e.GoalId).HasColumnName("goal_id");
             entity.Property(e => e.IsDeleted)
                 .HasDefaultValue(false)
@@ -453,6 +449,9 @@ public partial class PureLearnDbContext : DbContext
             entity.Property(e => e.KanbanStatusId).HasColumnName("kanban_status_id");
             entity.Property(e => e.LearnerId).HasColumnName("learner_id");
             entity.Property(e => e.LearningResourceId).HasColumnName("learning_resource_id");
+            /*
+            entity.Property(e => e.EstimatedTime).HasColumnName("estimated_time");
+            entity.Property(e => e.DueDate).HasColumnName("due_date");
             entity.Property(e => e.RepeatEndDate).HasColumnName("repeat_end_date");
             entity.Property(e => e.RepeatEndOccurrences).HasColumnName("repeat_end_occurrences");
             entity.Property(e => e.RepeatEnds)
@@ -484,14 +483,13 @@ public partial class PureLearnDbContext : DbContext
             entity.Property(e => e.RepeatOnWednesday)
                 .HasDefaultValue(false)
                 .HasColumnName("repeat_on_wednesday");
-            entity.Property(e => e.SubgoalId).HasColumnName("subgoal_id");
             entity.Property(e => e.TimeSpent).HasColumnName("time_spent");
-            entity.Property(e => e.TimeTaskRelated)
-                .HasMaxLength(50)
-                .HasColumnName("time_task_related");
+            */
+            entity.Property(e => e.SubgoalId).HasColumnName("subgoal_id");
             entity.Property(e => e.Title)
                 .HasMaxLength(100)
                 .HasColumnName("title");
+            entity.Property(e => e.IsCompleted).HasColumnName("is_completed");
             entity.Property(e => e.TypeId).HasColumnName("type_id");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(sysdatetime())")

@@ -30,12 +30,7 @@ namespace api.Repos
             {
             tasksQuery = tasksQuery.Where(t => t.Title.Contains(query.Title));
             }
-
-            if (query.DueDate.HasValue)
-            {
-            tasksQuery = tasksQuery.Where(t => t.DueDate == query.DueDate);
-            }
-
+            
             if (!string.IsNullOrWhiteSpace(query.EisenhowerStatus))
             {
             tasksQuery = tasksQuery.Where(t => t.EisenhowerStatus == query.EisenhowerStatus);
@@ -108,7 +103,7 @@ namespace api.Repos
             {
             existingTask.TypeId = task.TypeId;
             }
-
+            /*
             if (task.DueDate.HasValue)
             {
             existingTask.DueDate = task.DueDate;
@@ -165,13 +160,14 @@ namespace api.Repos
             if (task.RepeatEndOccurrences.HasValue)
             {
             existingTask.RepeatEndOccurrences = task.RepeatEndOccurrences;
-            }
+            }*/
 
             existingTask.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
             return existingTask;
         }
+
 
         // Permanently delete a task.
         public async Task<bool> DeleteTaskAsync(long learnerId, long taskId)

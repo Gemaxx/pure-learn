@@ -9,8 +9,7 @@ public partial class Task
     public long Id { get; set; }
 
     public string Title { get; set; } = null!;
-
-
+    public bool? IsCompleted { get; set; } = false;  
     public long? TypeId { get; set; }
 
 
@@ -19,16 +18,16 @@ public partial class Task
    
     public string? EisenhowerStatus { get; set; }
 
-   
+    // Time Management
+    /*
     public DateOnly? DueDate { get; set; }
 
-    
+    // Task Duration
     public TimeOnly? EstimatedTime { get; set; }
 
     public TimeOnly? TimeSpent { get; set; }
 
-    
-    
+    // RecurrencePatterns  عايز يتحط ف تابول لواحده ويتشا من التاسكات
     public string? RepeatFrequency { get; set; }
 
     public int? RepeatInterval { get; set; }
@@ -54,6 +53,8 @@ public partial class Task
     public DateOnly? RepeatEndDate { get; set; }
 
     public int? RepeatEndOccurrences { get; set; }
+
+    */
 
     public DateTime? CreatedAt { get; set; }
 

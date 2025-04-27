@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace api.Helpers
 {
     public class TaskQueryObjects
@@ -12,7 +7,6 @@ namespace api.Helpers
         public long? KanbanStatusId { get; set; } 
         public long? TypeId { get; set; }
         public string? EisenhowerStatus { get; set; }
-        public string? TimeTaskRelated { get; set; }
         public DateOnly? DueDate { get; set; }
 
     //  public long? CategoryId { get; set; } 

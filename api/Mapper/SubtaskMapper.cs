@@ -28,7 +28,6 @@ namespace api.Mapper
             return new Subtask
             {
                 Title = createDto.Title,
-                Status = createDto.Status
                 // Audit fields will be set in the repository or automatically.
             };
         }

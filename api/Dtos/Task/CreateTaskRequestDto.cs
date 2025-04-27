@@ -25,15 +25,11 @@ namespace api.Dtos.Task
         )]
         public string EisenhowerStatus { get; set; } = "Urgent & Important";
 
-        [RegularExpression(
-            "Someday|This Week|Tomorrow|Today",
-            ErrorMessage = "Invalid TimeTaskRelated value."
-        )]
+    /*
     // Due Date Task    
-        public string TimeTaskRelated { get; set; } = "Someday";
         public DateOnly? DueDate { get; set; }
         
-    // focus session on Tasks    
+    // Task Duration  
         public TimeOnly? EstimatedTime { get; set; }
         public TimeOnly? TimeSpent { get; set; }
 
@@ -61,9 +57,10 @@ namespace api.Dtos.Task
             "After Occurrences|On Date|Never",
             ErrorMessage = "Invalid RepeatEnds value."
         )]
+        // (New) public string? RepeatStartDate { get; set; }
         public string? RepeatEnds { get; set; }
-
         public DateOnly? RepeatEndDate { get; set; }
         public int? RepeatEndOccurrences { get; set; }
+        */
     }
 }

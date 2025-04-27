@@ -11,11 +11,11 @@ namespace api.Mapper
             {
                 Id = taskModel.Id,
                 Title = taskModel.Title,
+                IsCompleted = taskModel.IsCompleted,
                 GoalId = taskModel.GoalId,
                 TypeId = taskModel.TypeId,
                 KanbanStatusId = taskModel.KanbanStatusId,
-                EisenhowerStatus = taskModel.EisenhowerStatus,
-                TimeTaskRelated = taskModel.TimeTaskRelated
+                EisenhowerStatus = taskModel.EisenhowerStatus?? "Urgent & Important",
             };
         }
         // Mapping from Task model to TaskDetailsDto (detailed view)
@@ -25,11 +25,13 @@ namespace api.Mapper
             {
                 Id = taskModel.Id,
                 GoalId = taskModel.GoalId,
+                
                 KanbanStatusId = taskModel.KanbanStatusId,
                 TypeId = taskModel.TypeId,
+                IsCompleted = taskModel.IsCompleted,
                 Title = taskModel.Title,
-                EisenhowerStatus = taskModel.EisenhowerStatus,
-                TimeTaskRelated = taskModel.TimeTaskRelated,
+                EisenhowerStatus = taskModel.EisenhowerStatus ?? "Urgent & Important",
+                /*
                 DueDate = taskModel.DueDate,
                 EstimatedTime = taskModel.EstimatedTime,
                 TimeSpent = taskModel.TimeSpent,
@@ -45,6 +47,7 @@ namespace api.Mapper
                 RepeatEnds = taskModel.RepeatEnds,
                 RepeatEndDate = taskModel.RepeatEndDate,
                 RepeatEndOccurrences = taskModel.RepeatEndOccurrences,
+                */
                 CreatedAt = taskModel.CreatedAt,
                 UpdatedAt = taskModel.UpdatedAt,
                 // CategoryId = taskModel.CategoryId,
@@ -64,7 +67,7 @@ namespace api.Mapper
                 TypeId = createDto.TypeId,
                 Title = createDto.Title,
                 EisenhowerStatus = createDto.EisenhowerStatus,
-                TimeTaskRelated = createDto.TimeTaskRelated,
+                /*
                 DueDate = createDto.DueDate,
                 EstimatedTime = createDto.EstimatedTime,
                 TimeSpent = createDto.TimeSpent,
@@ -80,6 +83,7 @@ namespace api.Mapper
                 RepeatEnds = createDto.RepeatEnds,
                 RepeatEndDate = createDto.RepeatEndDate,
                 RepeatEndOccurrences = createDto.RepeatEndOccurrences,
+                */
                 // CategoryId = createDto.CategoryId,
                 // SubgoalId = createDto.SubgoalId,
                 // LearningResourceId = createDto.LearningResourceId
@@ -91,6 +95,8 @@ namespace api.Mapper
         {
             if (!string.IsNullOrEmpty(patchDto.Title))
                 task.Title = patchDto.Title;
+            if (patchDto.IsCompleted.HasValue)
+                task.IsCompleted = patchDto.IsCompleted.Value;
             if (patchDto.GoalId.HasValue)
                 task.GoalId = patchDto.GoalId.Value;
             if (patchDto.KanbanStatusId.HasValue)
@@ -99,8 +105,7 @@ namespace api.Mapper
                 task.TypeId = patchDto.TypeId.Value;
             if (!string.IsNullOrEmpty(patchDto.EisenhowerStatus))
                 task.EisenhowerStatus = patchDto.EisenhowerStatus;
-            if (!string.IsNullOrEmpty(patchDto.TimeTaskRelated))
-                task.TimeTaskRelated = patchDto.TimeTaskRelated;
+            /*
             if (patchDto.DueDate.HasValue)
                 task.DueDate = patchDto.DueDate;
             if (patchDto.EstimatedTime.HasValue)
@@ -131,6 +136,7 @@ namespace api.Mapper
                 task.RepeatEndDate = patchDto.RepeatEndDate;
             if (patchDto.RepeatEndOccurrences.HasValue)
                 task.RepeatEndOccurrences = patchDto.RepeatEndOccurrences.Value;
+            */
         }
     }
 }
