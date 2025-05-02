@@ -1,40 +1,38 @@
 // lib/api/categories/update.ts
-import { Category, UpdateCategoryData } from "../../types/category";
+import { Category, UpdateCategoryData } from "@/lib/types/category";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5115/api';
+
+/**
+ * Update an existing category
+ */
 export async function updateCategory(
   learnerId: number,
   categoryId: number,
-  updatedData: UpdateCategoryData
+  updateData: UpdateCategoryData
 ): Promise<Category | null> {
+  if (learnerId === null) {
+    console.error("Cannot update category: Learner ID is null");
+    return null;
+  }
+
   try {
-    // 1. بناء URL الصحيح حسب Swagger
-    const url = `http://localhost:5115/api/learners/${learnerId}/categories/${categoryId}`;
+    const response = await fetch(
+      `${API_BASE_URL}/learners/${learnerId}/categories/${categoryId}`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updateData),
+      }
+    );
 
-    // 2. استخدام طريقة PATCH بدلاً من PUT
-    const response = await fetch(url, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedData),
-    });
-
-    // 3. معالجة حالة الـ 204 No Content
-    if (response.status === 204) {
-      return null;
-    }
-
-    // 4. التحقق من صحة الاستجابة
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to update category: ${errorText}`);
+      throw new Error(`Failed to update category: ${response.statusText}`);
     }
 
-    // 5. إرجاع البيانات المحدثة
     return await response.json();
-    
   } catch (error) {
-    console.error('Error in updateCategory:', error);
-    throw error;
+    console.error("Error updating category:", error);
+    return null;
   }
 }

@@ -1,25 +1,28 @@
+// app/categories/goals/[goalId]/page.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal } from "lucide-react";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectTrigger, SelectContent, SelectItem } from '@/components/ui/select';
+import { MoreHorizontal, Plus, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
+import { useParams, useRouter } from 'next/navigation';
 
-const goals = [
-  { title: "Jetpack Compose Course", status: "In-Progress", progress: "1%", category: "Short-Term" },
-  { title: "React Native Project", status: "Not-Started", progress: "0%", category: "Medium-Term" },
-  { title: "Angular Mastery", status: "Done", progress: "100%", category: "Long-Term" }
-];
+// Import components
+import { TaskForm } from '@/components/tasks/TaskForm';
+import { TaskItem } from '@/components/tasks/TaskItem';
+import { NoteForm } from '@/components/notes/NoteForm';
+import { NoteItem } from '@/components/notes/NoteItem';
 
-type Task = {
-  name: string;
-  priority: "high" | "medium" | "low";
-  description: string;
-};
+// Import API functions
+import { getGoal } from '@/lib/api/goals';
+import { getTasks, createTask, updateTask, deleteTask } from '@/lib/api/tasks';
+import { getNotes, createNote, updateNote, deleteNote } from '@/lib/api/notes';
+
+// Import types
+import { Task } from '@/lib/types/task';
+import { Note, NoteFormData } from '@/lib/types/note';
+import { Goal } from '@/lib/types/goal';
 
 const priorityColors = {
   high: "border-red-500 text-red-500",
@@ -27,340 +30,413 @@ const priorityColors = {
   low: "border-blue-500 text-blue-500"
 };
 
-export default function Page({ params }: { params: { goalId: string } }) {
-  const { goalId } = params;
-  const goal = goals.find((goal, index) => (index + 1).toString() === goalId);
-  
-  // States for tasks
+export default function GoalDetailPage() {
+  // Get route params and router
+  const params = useParams();
+  const router = useRouter();
+  const categoryId = Number(params.categoryId);
+  const goalId = Number(params.goalId);
+
+  // Fixed learnerId to prevent localStorage issues
+  const learnerId = 1;
+
+  // Data states
+  const [goal, setGoal] = useState<Goal | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [taskName, setTaskName] = useState('');
-  const [taskPriority, setTaskPriority] = useState<"high" | "medium" | "low" | ''>('');
-  const [taskDescription, setTaskDescription] = useState('');
-  
-  // States for notes
-  const [notes, setNotes] = useState<{ title: string; description: string }[]>([]);
-  const [noteName, setNoteName] = useState('');
-  const [noteDescription, setNoteDescription] = useState('');
-  
+  const [notes, setNotes] = useState<Note[]>([]);
+
+  // UI states
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   // Dialog states
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
   const [isNoteDialogOpen, setIsNoteDialogOpen] = useState(false);
-  const [isEditNoteDialogOpen, setIsEditNoteDialogOpen] = useState(false);
-  const [selectedNote, setSelectedNote] = useState<{title: string, description: string, index: number} | null>(null);
+
+  // Editing states
+  const [isEditingTask, setIsEditingTask] = useState(false);
+  const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
+  const [isEditingNote, setIsEditingNote] = useState(false);
+  const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
+
+  // Load all data at once to prevent multiple rerenders
+  useEffect(() => {
+    let isMounted = true;
+    
+    async function loadData() {
+      if (!goalId || !learnerId) return;
+      
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        // Fetch data from all endpoints using the imported API functions
+        const [fetchedGoal, fetchedTasks, fetchedNotes] = await Promise.all([
+          getGoal(learnerId, goalId),
+          getTasks(learnerId, goalId),
+          getNotes(learnerId, goalId)
+        ]);
+        
+        // Only update state if component is still mounted
+        if (isMounted) {
+          if (!fetchedGoal) {
+            setError("Goal not found");
+          } else {
+            setGoal(fetchedGoal);
+            setTasks(fetchedTasks);
+            setNotes(fetchedNotes);
+            setError(null);
+          }
+        }
+      } catch (err) {
+        if (isMounted) {
+          console.error("Error loading data:", err);
+          setError("Failed to load goal data. Please try again later.");
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+    
+    loadData();
+    
+    // Cleanup function
+    return () => {
+      isMounted = false;
+    };
+  }, [goalId, learnerId]);
 
   // Task handlers
-  const handleCreateTask = () => {
-    if (taskName && taskPriority) {
-      setTasks([...tasks, { 
-        name: taskName, 
-        priority: taskPriority, 
-        description: taskDescription 
-      }]);
-      setIsDialogOpen(false);
-      setTaskName('');
-      setTaskPriority('');
-      setTaskDescription('');
+  const handleCreateTask = async (taskData: Omit<Task, 'id'>) => {
+    if (!goalId) {
+      toast.error("Cannot create task: Goal ID is missing");
+      return;
+    }
+
+    try {
+      const newTask = await createTask(learnerId, {
+        ...taskData,
+        goalId: goalId
+      });
+
+      if (newTask) {
+        setTasks(prev => [...prev, newTask]);
+        toast.success("Task created successfully!");
+        setIsTaskDialogOpen(false);
+      } else {
+        throw new Error("Failed to create task");
+      }
+    } catch (err) {
+      toast.error(`Failed to create task: ${err instanceof Error ? err.message : String(err)}`);
     }
   };
 
-  const handleTaskClick = (index: number) => {
-    setTasks(tasks.filter((_, i) => i !== index));
+  const handleUpdateTask = async (taskId: number, taskData: Partial<Task>) => {
+    try {
+      const updatedTask = await updateTask(learnerId, taskId, taskData);
+
+      if (updatedTask) {
+        setTasks(prev => prev.map(task =>
+          task.id === taskId ? updatedTask : task
+        ));
+        toast.success("Task updated successfully!");
+        setIsTaskDialogOpen(false);
+        setIsEditingTask(false);
+        setEditingTaskId(null);
+      } else {
+        throw new Error("Failed to update task");
+      }
+    } catch (err) {
+      toast.error(`Failed to update task: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  };
+
+  const handleDeleteTask = async (taskId: number) => {
+    try {
+      const success = await deleteTask(learnerId, taskId);
+
+      if (success) {
+        setTasks(prev => prev.filter(task => task.id !== taskId));
+        toast.success("Task deleted successfully!");
+      } else {
+        throw new Error("Failed to delete task");
+      }
+    } catch (err) {
+      toast.error(`Failed to delete task: ${err instanceof Error ? err.message : String(err)}`);
+    }
   };
 
   // Note handlers
-  const handleCreateNote = () => {
-    if (noteName && noteDescription) {
-      setNotes([...notes, { 
-        title: noteName, 
-        description: noteDescription 
-      }]);
-      setIsNoteDialogOpen(false);
-      setNoteName('');
-      setNoteDescription('');
+  const handleCreateNote = async (noteData: NoteFormData) => {
+    if (!goalId) {
+      toast.error("Cannot create note: Goal ID is missing");
+      return;
+    }
+
+    try {
+      const newNote = await createNote(learnerId, noteData);
+
+      if (newNote) {
+        setNotes(prev => [...prev, newNote]);
+        toast.success("Note created successfully!");
+        setIsNoteDialogOpen(false);
+      } else {
+        throw new Error("Failed to create note");
+      }
+    } catch (err) {
+      toast.error(`Failed to create note: ${err instanceof Error ? err.message : String(err)}`);
     }
   };
 
-  const handleDeleteNote = (index: number) => {
-    setNotes(notes.filter((_, i) => i !== index));
+  const handleUpdateNote = async (noteId: number, noteData: Partial<Note>) => {
+    try {
+      const updatedNote = await updateNote(learnerId, noteId, noteData);
+
+      if (updatedNote) {
+        setNotes(prev => prev.map(note =>
+          note.id === noteId ? updatedNote : note
+        ));
+        toast.success("Note updated successfully!");
+        setIsNoteDialogOpen(false);
+        setIsEditingNote(false);
+        setEditingNoteId(null);
+      } else {
+        throw new Error("Failed to update note");
+      }
+    } catch (err) {
+      toast.error(`Failed to update note: ${err instanceof Error ? err.message : String(err)}`);
+    }
   };
 
-  const handleEditNote = () => {
-    if (selectedNote) {
-      const updatedNotes = [...notes];
-      updatedNotes[selectedNote.index] = {
-        title: selectedNote.title,
-        description: selectedNote.description
-      };
-      setNotes(updatedNotes);
-      setIsEditNoteDialogOpen(false);
+  const handleDeleteNote = async (noteId: number) => {
+    try {
+      const success = await deleteNote(learnerId, noteId);
+
+      if (success) {
+        setNotes(prev => prev.filter(note => note.id !== noteId));
+        toast.success("Note deleted successfully!");
+      } else {
+        throw new Error("Failed to delete note");
+      }
+    } catch (err) {
+      toast.error(`Failed to delete note: ${err instanceof Error ? err.message : String(err)}`);
     }
+  };
+
+  // Handle edit task
+  const handleEditTask = (task: Task) => {
+    setIsEditingTask(true);
+    setEditingTaskId(task.id);
+    setIsTaskDialogOpen(true);
+  };
+
+  // Handle edit note
+  const handleEditNote = (note: Note) => {
+    setIsEditingNote(true);
+    setEditingNoteId(note.id);
+    setIsNoteDialogOpen(true);
   };
 
   return (
     <div className="flex flex-col h-full w-full mx-auto p-6">
-      
-      {/* Header  */}
+      {/* Header */}
       <div className='fixed top-0 w-[82%] bg-white z-50'>
         <div className='h-16 flex items-center justify-between px-6 shadow-sm'>
-        <h1 className="text-xl font-semibold">{goal?.title}</h1>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon" className="p-2">
-              <MoreHorizontal className="h-5 w-5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-white p-2 rounded-md shadow-lg">
-            <DropdownMenuItem className="cursor-pointer p-2 hover:bg-gray-100 rounded">
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuSeparator className="my-1 h-px bg-gray-200" />
-            <DropdownMenuItem 
-              className="cursor-pointer p-2 hover:bg-gray-100 rounded"
-              onSelect={() => setIsDialogOpen(true)}
-            >
-              Add Task
-            </DropdownMenuItem>
-            <DropdownMenuSeparator className="my-1 h-px bg-gray-200" />
-            <DropdownMenuItem 
-              className="cursor-pointer p-2 hover:bg-gray-100 rounded"
-              onSelect={() => setIsNoteDialogOpen(true)}
-            >
-              Add Note
-            </DropdownMenuItem>
-            <DropdownMenuSeparator className="my-1 h-px bg-gray-200" />
-            <DropdownMenuItem className="cursor-pointer p-2 text-red-600 hover:bg-red-50 rounded">
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+          <h1 className="text-xl font-semibold">
+            {isLoading ? (
+              <span className="animate-pulse">Loading...</span>
+            ) : error ? (
+              <span className="text-red-500">Error: {error}</span>
+            ) : goal ? (
+              goal.title
+            ) : (
+              "Goal not found"
+            )}
+          </h1>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon" className="p-2">
+                <MoreHorizontal className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-white p-2 rounded-md shadow-lg border">
+              <DropdownMenuItem
+                className="p-2 hover:bg-gray-100 rounded cursor-pointer"
+                onSelect={() => {
+                  if (!goal) {
+                    toast.error("Cannot add tasks to a non-existent goal");
+                    return;
+                  }
+                  setIsEditingTask(false);
+                  setEditingTaskId(null);
+                  setIsTaskDialogOpen(true);
+                }}
+              >
+                Add Task
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="my-1 bg-gray-200 h-px" />
+              <DropdownMenuItem
+                className="p-2 hover:bg-gray-100 rounded cursor-pointer"
+                onSelect={() => {
+                  if (!goal) {
+                    toast.error("Cannot add notes to a non-existent goal");
+                    return;
+                  }
+                  setIsEditingNote(false);
+                  setEditingNoteId(null);
+                  setIsNoteDialogOpen(true);
+                }}
+              >
+                Add Note
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
-      {/* Task Section */}
-      <div className="mt-20 p-6 bg-white rounded-lg shadow-md w-full">
-        <h2 className="text-xl font-semibold mb-4">Tasks</h2>
-        <ul className="space-y-3">
-          {tasks.map((task, index) => (
-            <li 
-              key={index}
-              className="flex items-center gap-3 group cursor-pointer p-2 rounded hover:bg-gray-50"
-              onClick={() => handleTaskClick(index)}
-            >
-              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center 
-                ${priorityColors[task.priority]} transition-colors`}>
-                <span className="opacity-0 group-hover:opacity-100 transition-opacity">✓</span>
-              </div>
-              <span className="flex-1">{task.name}</span>
-            </li>
-          ))}
-          <li 
-            className="flex items-center gap-2 text-red-600 cursor-pointer p-2"
-            onClick={() => setIsDialogOpen(true)}
+      {/* Error message */}
+      {error && (
+        <div className="mt-20 mb-4 p-4 bg-red-50 border border-red-200 text-red-600 rounded-lg flex items-center gap-2">
+          <AlertCircle className="h-5 w-5" />
+          <div>
+            <p><strong>Error:</strong> {error}</p>
+            <p className="text-sm mt-1">Please check if the goal exists or try again later.</p>
+          </div>
+        </div>
+      )}
+
+      {/* Tasks Section */}
+      <div className={`${error ? '' : 'mt-20'} p-6 bg-white rounded-lg shadow-md w-full`}>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">Tasks</h2>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-blue-600 flex items-center gap-1"
+            onClick={() => {
+              if (!goal) {
+                toast.error("Cannot add tasks to a non-existent goal");
+                return;
+              }
+              setIsEditingTask(false);
+              setEditingTaskId(null);
+              setIsTaskDialogOpen(true);
+            }}
+            disabled={!goal || isLoading}
           >
-            <span className="text-lg">+</span>
+            <Plus className="h-4 w-4" />
             <span>Add Task</span>
-          </li>
-        </ul>
+          </Button>
+        </div>
+
+        {isLoading ? (
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-12 bg-gray-100 animate-pulse rounded" />
+            ))}
+          </div>
+        ) : error ? (
+          <div className="text-center py-8 text-gray-500">
+            Tasks cannot be displayed due to an error.
+          </div>
+        ) : tasks.length > 0 ? (
+          <ul className="space-y-3">
+            {tasks.map(task => (
+          <TaskItem
+          key={task.id}
+          task={task}
+          onComplete={(taskId) => handleUpdateTask(taskId, { completed: true })}
+          onDelete={handleDeleteTask}
+          onEdit={handleEditTask}
+          priorityColors={priorityColors}
+        />
+            ))}
+          </ul>
+        ) : (
+          <div className="text-center py-8 text-gray-500">
+            No tasks yet. Click "Add Task" to create one.
+          </div>
+        )}
       </div>
 
       {/* Notes Section */}
       <div className="mt-6 p-6 bg-white rounded-lg shadow-md w-full">
-        <h2 className="text-xl font-semibold mb-4">Notes</h2>
-        <ul className="space-y-4">
-          {notes.map((note, index) => (
-            <li 
-              key={index}
-              className="group relative p-3 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors"
-            >
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-semibold mb-1">{note.title}</h3>
-                  <p className="text-gray-600 text-sm">⁘ {note.description}</p>
-                </div>
-                <div className="hidden group-hover:flex gap-2 absolute right-3 top-3">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedNote({ ...note, index });
-                      setIsEditNoteDialogOpen(true);
-                    }}
-                    className="p-1 text-blue-500 hover:bg-blue-50 rounded"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-                    </svg>
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteNote(index);
-                    }}
-                    className="p-1 text-red-500 hover:bg-red-50 rounded"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </li>
-          ))}
-          <li
-            className="flex items-center gap-2 text-red-600 cursor-pointer p-2"
-            onClick={() => setIsNoteDialogOpen(true)}
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">Notes</h2>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-blue-600 flex items-center gap-1"
+            onClick={() => {
+              if (!goal) {
+                toast.error("Cannot add notes to a non-existent goal");
+                return;
+              }
+              setIsEditingNote(false);
+              setEditingNoteId(null);
+              setIsNoteDialogOpen(true);
+            }}
+            disabled={!goal || isLoading}
           >
-            <span className="text-lg">+</span>
+            <Plus className="h-4 w-4" />
             <span>Add Note</span>
-          </li>
-        </ul>
+          </Button>
+        </div>
+
+        {isLoading ? (
+          <div className="space-y-3">
+            {[1, 2].map((i) => (
+              <div key={i} className="h-24 bg-gray-100 animate-pulse rounded" />
+            ))}
+          </div>
+        ) : error ? (
+          <div className="text-center py-8 text-gray-500">
+            Notes cannot be displayed due to an error.
+          </div>
+        ) : notes.length > 0 ? (
+          <ul className="space-y-4">
+            {notes.map(note => (
+              <NoteItem
+                key={note.id}
+                note={note}
+                onDelete={handleDeleteNote}
+                onEdit={handleEditNote}
+              />
+            ))}
+          </ul>
+        ) : (
+          <div className="text-center py-8 text-gray-500">
+            No notes yet. Click "Add Note" to create one.
+          </div>
+        )}
       </div>
 
-      {/* Task Dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>New Task</DialogTitle>
-            <DialogDescription>
-              Create a new task for this goal
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label>Task Name</Label>
-              <Input
-                placeholder="Enter task name"
-                value={taskName}
-                onChange={(e) => setTaskName(e.target.value)}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label>Priority</Label>
-              <Select
-                value={taskPriority}
-                onValueChange={(value) =>
-                  setTaskPriority(value as typeof taskPriority)
-                }
-              >
-                <SelectTrigger>
-                  {taskPriority ? (
-                    <span className="capitalize">{taskPriority}</span>
-                  ) : (
-                    "Select priority"
-                  )}
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="high">🔴 High</SelectItem>
-                  <SelectItem value="medium">🟡 Medium</SelectItem>
-                  <SelectItem value="low">🔵 Low</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2">
-              <Label>Description</Label>
-              <Input
-                placeholder="Enter description"
-                value={taskDescription}
-                onChange={(e) => setTaskDescription(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handleCreateTask}>Create</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Task Form Dialog */}
+      {isTaskDialogOpen && (
+        <TaskForm
+          onClose={() => setIsTaskDialogOpen(false)}
+          isEditing={isEditingTask}
+          taskId={editingTaskId}
+          goalId={goalId}
+          onCreateTask={handleCreateTask}
+          onUpdateTask={handleUpdateTask}
+        />
+      )}
 
-      {/* Note Edit Dialog */}
-      <Dialog open={isEditNoteDialogOpen} onOpenChange={setIsEditNoteDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Edit Note</DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label>Title</Label>
-              <Input
-                value={selectedNote?.title || ''}
-                onChange={(e) =>
-                  setSelectedNote(prev =>
-                    prev ? { ...prev, title: e.target.value } : null
-                  )
-                }
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label>Description</Label>
-              <Input
-                value={selectedNote?.description || ''}
-                onChange={(e) =>
-                  setSelectedNote(prev =>
-                    prev ? { ...prev, description: e.target.value } : null
-                  )
-                }
-              />
-            </div>
-          </div>
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setIsEditNoteDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handleEditNote}>Save</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Note Creation Dialog */}
-      <Dialog open={isNoteDialogOpen} onOpenChange={setIsNoteDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>New Note</DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label>Title</Label>
-              <Input
-                placeholder="Enter note title"
-                value={noteName}
-                onChange={(e) => setNoteName(e.target.value)}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label>Description</Label>
-              <Input
-                placeholder="Enter note description"
-                value={noteDescription}
-                onChange={(e) => setNoteDescription(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="flex justify-end gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setIsNoteDialogOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button onClick={handleCreateNote}>Create</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Note Form Dialog */}
+      {isNoteDialogOpen && (
+        <NoteForm
+          onClose={() => setIsNoteDialogOpen(false)}
+          isEditing={isEditingNote}
+          initialData={editingNoteId ? notes.find(note => note.id === editingNoteId) : undefined}
+          goalId={goalId}
+          onCreateNote={handleCreateNote}
+          onUpdateNote={handleUpdateNote}
+        />
+      )}
     </div>
   );
 }

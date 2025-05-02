@@ -1,3 +1,4 @@
+// app/Sidebare/AppSidebar.tsx
 "use client";
 import {
   Calendar,
@@ -20,6 +21,7 @@ import {
 } from "@/components/ui/sidebar";
 import CategoriesList from "./catygoryList";
 import { useLearner } from "@/lib/context/learnerContext";
+import next from "next";
 
 // Menu items.
 const items = [
@@ -74,8 +76,8 @@ export default function AppSidebar() {
         </SidebarGroup>
         {/* //&------------------------------------------- */}
         {/* We create a collapsible SidebarGroup for each parent. */}
-        <CategoriesList learnerId={learnerId} />
-      </SidebarContent>
+        <CategoriesList learnerId={learnerId ?? 0} />
+       </SidebarContent>
     </Sidebar>
   );
 }
