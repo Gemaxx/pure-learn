@@ -15,6 +15,10 @@ namespace api.Dtos.LearningResource
         [Required(ErrorMessage = "Title is required.")]
         [StringLength(100, ErrorMessage = "Title length can't be more than 100 characters.")]
         public string Title { get; set; } = null!;
+       
+        [RegularExpression("Not-Started|In-Progress|On-Hold|Done|Canceled", ErrorMessage = "Status must be Not-Started, In-Progress, On-Hold, Done, or Canceled.")]
+        public  string? Status { get; set; } = "Not-Started";
+
 
         [Required(ErrorMessage = "TypeId is required.")]
         [ForeignKey("LearningResourceType")]               
