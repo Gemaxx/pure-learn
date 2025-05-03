@@ -35,6 +35,17 @@ namespace api.Repos
                 learningResources = learningResources.Where(lr => lr.Title.Contains(query.Title));
             }
 
+            // Filter Learning Resources by status
+            if (!string.IsNullOrWhiteSpace(query.Status))
+            {
+                learningResources = learningResources.Where(lr => lr.Status == query.Status);
+            }
+            // Filter Learning Resources by type
+            if (query.TypeId.HasValue)
+            {
+                learningResources = learningResources.Where(lr => lr.TypeId == query.TypeId);
+            }
+
             // Filter Learning Resources by goal
             if (query.GoalId.HasValue){
                 learningResources = learningResources.Where(lr => lr.GoalId == query.GoalId);
