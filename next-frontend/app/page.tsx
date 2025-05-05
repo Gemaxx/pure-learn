@@ -1,3 +1,4 @@
+//app/page.tsx
 import  AppSidebar  from "@/components/Sidebare/AppSidebar";
 import {
   NavigationMenu,
