@@ -38,8 +38,10 @@ export default function RootLayout({
         >
           <LearnerProvider>
             <SidebarProvider>
-              <AppSidebar />
-              <main className="w-full">
+              
+              <AppSidebar  />
+              
+              <main className="w-full pl-64  ">
                 <SidebarTrigger />
                 {children}
               </main>

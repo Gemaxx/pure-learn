@@ -9,6 +9,7 @@ import { Play, Plus, Pause, Clock } from 'lucide-react';
 import { Task } from '@/lib/types/task';
 import PomodoroTimer from '@/components/pomodoro/PomodoroTimer';
 import CategoriesList from '@/components/Sidebare/catygoryList';
+import ResourceCards from '@/components/LearningResource/ResoursesCards';
 
 // Main Tasks Page Component
 function TasksPage() {
@@ -90,7 +91,7 @@ function TasksPage() {
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl relative min-h-screen pb-24">
       {/* Always render PomodoroTimer but conditionally show it */}
-      <div className={showPomodoro ? "block" : "hidden"}>
+      <div >
         <PomodoroTimer 
           onClose={handleTimerClose} 
           onStatusChange={handleTimerStatusChange}
@@ -136,7 +137,7 @@ function TasksPage() {
           )}
           
           {/* Add Task Button */}
-          <div className="fixed bottom-16 right-6">
+          <div className="fixed bottom-16 right-6 hidden">
             <button 
               onClick={() => {
                 setEditingTask(null);
@@ -149,7 +150,7 @@ function TasksPage() {
           </div>
           
           {/* Fixed Pomodoro Button - Show with indicator if timer is active but without the white rectangle */}
-          <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2">
+          <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 hidden">
             <button 
               onClick={togglePomodoro}
               className={`text-white rounded-full flex items-center justify-center px-4 py-3 shadow-lg ${
@@ -171,6 +172,7 @@ function TasksPage() {
               </div>
             </button>
           </div>
+          
         </>
       )}
     </div>

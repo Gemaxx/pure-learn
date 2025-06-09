@@ -1,7 +1,13 @@
 // lib/context/learnerContext.tsx
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 // Define your Learner type
 interface Learner {
@@ -21,7 +27,7 @@ interface LearnerContextType {
 
 // Create context with default values
 const LearnerContext = createContext<LearnerContextType>({
-  learnerId: null,
+  learnerId: 1,
   learner: null,
   isLoading: true,
   setLearnerId: () => {},
@@ -44,7 +50,9 @@ export function LearnerProvider({ children }: { children: ReactNode }) {
 
       setIsLoading(true);
       try {
-        const response = await fetch(`http://localhost:5115/api/learners/${learnerId}`);
+        const response = await fetch(
+          `http://localhost:5115/api/learners/${learnerId}`
+        );
         if (!response.ok) throw new Error("Failed to fetch learner");
         const data = await response.json();
         setLearner(data);
@@ -57,12 +65,13 @@ export function LearnerProvider({ children }: { children: ReactNode }) {
     }
 
     // Initialize with learner ID from local storage if available
-    if (typeof window !== 'undefined' && learnerId === null) {
+    if (typeof window !== "undefined" && learnerId === null) {
       const storedLearnerId = localStorage.getItem("learnerId");
       if (storedLearnerId) {
         setLearnerId(parseInt(storedLearnerId, 10));
       } else {
-        setIsLoading(false); // No stored ID, we're not loading
+        // Set default learnerId to 1 when nothing in localStorage
+        setLearnerId(1);
       }
     } else {
       fetchLearner();
@@ -71,13 +80,15 @@ export function LearnerProvider({ children }: { children: ReactNode }) {
 
   // Store learnerId in localStorage when it changes
   useEffect(() => {
-    if (typeof window !== 'undefined' && learnerId !== null) {
+    if (typeof window !== "undefined" && learnerId !== null) {
       localStorage.setItem("learnerId", learnerId.toString());
     }
   }, [learnerId]);
 
   return (
-    <LearnerContext.Provider value={{ learnerId, learner, isLoading, setLearnerId }}>
+    <LearnerContext.Provider
+      value={{ learnerId, learner, isLoading, setLearnerId }}
+    >
       {children}
     </LearnerContext.Provider>
   );
