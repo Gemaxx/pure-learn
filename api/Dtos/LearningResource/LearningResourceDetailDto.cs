@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using api.Dtos.LearningResourceType;
 
 namespace api.Dtos.LearningResource
 {
@@ -15,6 +14,9 @@ namespace api.Dtos.LearningResource
         [StringLength(100, ErrorMessage = "Title length can't be more than 100 characters.")]
         public string Title { get; set; } = null!;
 
+        [RegularExpression("Not-Started|In-Progress|On-Hold|Done|Canceled", ErrorMessage = "Status must be Not-Started, In-Progress, On-Hold, Done, or Canceled.")]
+        public  string? Status { get; set; } = "Not-Started";
+
         // Learning Resource Type {   
         [Required(ErrorMessage = "TypeId is required.")]
         [ForeignKey("LearningResourceType")]
@@ -22,7 +24,6 @@ namespace api.Dtos.LearningResource
 
         public string TypeName { get; set; } = null!; // Store name directly
         public string TypeUnitType { get; set; } = null!; // Store unit type directly
-
         
         [Range(1, int.MaxValue, ErrorMessage = "TotalUnits must be greater than 0.")]
         public int? TotalUnits { get; set; }

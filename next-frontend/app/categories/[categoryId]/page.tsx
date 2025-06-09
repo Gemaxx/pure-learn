@@ -32,14 +32,7 @@ export default function CategoryDetailPage() {
   const router = useRouter();
   const { learnerId, isLoading: learnerLoading } = useLearner();
 
-  const categoryId = parseInt(
-    typeof params.categoryId === 'string'
-      ? params.categoryId
-      : Array.isArray(params.categoryId)
-        ? params.categoryId[0]
-        : '0',
-    10
-  );
+  const categoryId = Number(params.categoryId) || 0;
 
   const [categoryDetail, setCategoryDetail] = useState<Category | null>(null);
   const [goals, setGoals] = useState<Goal[]>([]);

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace api.Models;
+﻿namespace api.Models;
 
 public partial class LearningResource
 {
@@ -9,6 +6,7 @@ public partial class LearningResource
 
     public string Title { get; set; } = null!;
 
+    public string? Status { get; set; }
     public long TypeId { get; set; }    
 
     public int TotalUnits { get; set; }

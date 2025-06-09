@@ -14,6 +14,7 @@ namespace api.Mapper
                 Id = learningResource.Id,
                 GoalId = learningResource.GoalId,
                 Title = learningResource.Title,
+                Status = learningResource.Status,
                 TypeId = learningResource.TypeId,
                 TotalUnits = learningResource.TotalUnits,
                 Progress = learningResource.Progress,
@@ -28,6 +29,7 @@ namespace api.Mapper
                 Id = learningResource.Id,
                 GoalId = learningResource.GoalId,
                 Title = learningResource.Title,
+                Status = learningResource.Status,
                 TypeId = learningResource.TypeId,
                 TypeName = learningResource.Type.Name,
                 TypeUnitType = learningResource.Type.UnitType,
@@ -48,6 +50,7 @@ namespace api.Mapper
             {
                 GoalId = dto.GoalId,
                 Title = dto.Title,
+                Status = dto.Status,
                 TypeId = dto.TypeId,
                 TotalUnits = dto.TotalUnits ?? 1,
                 Progress = dto.Progress ?? 0,
@@ -65,6 +68,9 @@ namespace api.Mapper
 
             if (!string.IsNullOrEmpty(dto.Title))
                 learningResource.Title = dto.Title;
+
+            if (!string.IsNullOrEmpty(dto.Status))
+                learningResource.Status = dto.Status;
 
             if (dto.TypeId.HasValue)
                 learningResource.TypeId = dto.TypeId.Value;

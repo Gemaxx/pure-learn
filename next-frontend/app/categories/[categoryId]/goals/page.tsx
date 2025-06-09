@@ -1,3 +1,4 @@
+// app/categories/[categoryId]/goals/page.tsx
 "use client";
 
 import { useState, useEffect } from 'react';
