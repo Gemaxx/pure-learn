@@ -7,9 +7,11 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { LogOut, User } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth()
+  const router = useRouter()
 
   const getInitials = (name: string) => {
     return name
@@ -17,6 +19,11 @@ export function Navbar() {
       .map((n) => n[0])
       .join("")
       .toUpperCase()
+  }
+
+  const handleLogout = () => {
+    logout()
+    router.push("/")
   }
 
   return (
@@ -44,7 +51,7 @@ export function Navbar() {
                     <span>Profile</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={logout} className="flex items-center">
+                <DropdownMenuItem onClick={handleLogout} className="flex items-center">
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Logout</span>
                 </DropdownMenuItem>

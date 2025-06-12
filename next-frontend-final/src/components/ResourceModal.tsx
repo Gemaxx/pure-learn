@@ -101,7 +101,11 @@ export default function ResourceModal({ open, onClose, onResourceAdded, resource
         progress: Number(form.progress),
         status: form.status,
       };
-      if (goalId) body.goalId = Number(goalId);
+      if (goalId) {
+        console.log("goalId:", goalId);
+        body.goalId = Number(goalId);
+      }
+      console.log("Sending data:", body);
       if (resource) {
         await updateLearningResource(learnerId, resource.id, body);
       } else {
@@ -110,6 +114,7 @@ export default function ResourceModal({ open, onClose, onResourceAdded, resource
       if (onResourceAdded) onResourceAdded();
       onClose();
     } catch (err) {
+      console.error("Error in handleSubmit:", err);
       setError('Failed to save resource');
     } finally {
       setLoading(false);

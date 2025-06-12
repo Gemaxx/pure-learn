@@ -5,21 +5,37 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useParams, useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, MoreVertical } from "lucide-react"
+import { ArrowLeft, MoreVertical, Edit, Trash, PlusCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/contexts/auth-context"
-import { getGoalDetails, type Goal } from "@/services/api-client"
+import { getGoalDetails, type Goal, softDeleteGoal } from "@/services/api-client"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu"
+import { GoalEditModal } from "@/components/goal-edit-modal"
+import ResourceModal from "@/components/ResourceModal"
+import { useToast } from "@/hooks/use-toast"
+import { getLearningResources } from "@/services/learning-resources-service"
 
 export default function GoalLayout({ children }: { children: React.ReactNode }) {
   const [goal, setGoal] = useState<Goal | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [editModalOpen, setEditModalOpen] = useState(false)
+  const [resourceModalOpen, setResourceModalOpen] = useState(false)
+  const { toast } = useToast()
 
   const { user } = useAuth()
   const params = useParams()
   const router = useRouter()
   const pathname = usePathname()
   const goalId = params.id as string
+
+  const [resources, setResources] = useState<LearningResource[]>([])
 
   useEffect(() => {
     const fetchGoalDetails = async () => {
@@ -52,7 +68,18 @@ export default function GoalLayout({ children }: { children: React.ReactNode }) 
       }
     }
 
+    const fetchResources = async () => {
+      if (!user?.id || !goalId) return;
+      try {
+        const data = await getLearningResources(user.id);
+        setResources(data);
+      } catch (err) {
+        console.error("Failed to load resources:", err);
+      }
+    };
+
     fetchGoalDetails()
+    fetchResources()
   }, [user?.id, goalId])
 
   const handleBack = () => {
@@ -79,9 +106,48 @@ export default function GoalLayout({ children }: { children: React.ReactNode }) 
               </Button>
               <h1 className="font-semibold text-lg">{isLoading ? "Loading..." : goal?.title || "Goal Details"}</h1>
             </div>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <MoreVertical className="h-4 w-4" />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => setEditModalOpen(true)}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="text-red-600 focus:text-red-600"
+                  onClick={async () => {
+                    if (!user?.id || !goalId) return;
+                    try {
+                      await softDeleteGoal(user.id, goalId);
+                      toast({ title: "Goal moved to trash", variant: "success" });
+                      router.push("/dashboard");
+                    } catch (err) {
+                      toast({ title: "Failed to delete goal", variant: "destructive" });
+                    }
+                  }}
+                >
+                  <Trash className="mr-2 h-4 w-4" />
+                  Move to trash
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  Add Task
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  Add Note
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setResourceModalOpen(true)}>
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  Add Resource
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Tabs */}
@@ -132,6 +198,34 @@ export default function GoalLayout({ children }: { children: React.ReactNode }) 
 
       {/* Main Content */}
       <div className="container mx-auto p-4">{children}</div>
+
+      {/* المودال الخاص بتعديل الهدف */}
+      {goal && (
+        <GoalEditModal
+          isOpen={editModalOpen}
+          onClose={() => setEditModalOpen(false)}
+          goal={goal}
+          onSuccess={(updatedGoal) => {
+            setGoal(updatedGoal);
+            setEditModalOpen(false);
+            toast({ title: "Goal updated successfully", variant: "success" });
+          }}
+        />
+      )}
+      {/* المودال الخاص بإضافة resource */}
+      {goal && (
+        <ResourceModal
+          open={resourceModalOpen}
+          onClose={() => setResourceModalOpen(false)}
+          goalId={goal.id}
+          onResourceAdded={async () => {
+            setResourceModalOpen(false);
+            toast({ title: "Resource added successfully", variant: "success" });
+            const data = await getLearningResources(user.id);
+            setResources(data);
+          }}
+        />
+      )}
     </div>
   )
 }
