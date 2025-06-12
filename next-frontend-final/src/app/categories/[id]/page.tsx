@@ -69,6 +69,14 @@ export default function CategoryPage() {
   const { toast } = useToast()
   const categoryId = params.id as string
 
+  if (!user?.id) {
+    return (
+      <div className="container mx-auto p-4 sm:p-6 lg:p-8">
+        <div className="bg-destructive/10 p-4 rounded-md text-destructive">You must be logged in to view this page.</div>
+      </div>
+    );
+  }
+
   useEffect(() => {
     const fetchCategoryDetails = async () => {
       if (!user?.id || !categoryId) return

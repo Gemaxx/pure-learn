@@ -3,13 +3,18 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-// Add the missing RefreshCw import
-import { Home, Calendar, Search, Settings, ChevronDown, ChevronRight, Plus, Edit, Trash2, Target } from "lucide-react"
+import { Home, Calendar, Search, Settings, ChevronDown, ChevronRight, Plus, Edit, Trash2, Target, MoreVertical } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
-import { getCategories, softDeleteCategory, type Category } from "@/services/api-client"
+import { getCategories, softDeleteCategory, type Category, getCategoryDetails } from "@/services/api-client"
 import { Button } from "@/components/ui/button"
 import { CategoryFormModal } from "@/components/category-form-modal"
 import { useToast } from "@/hooks/use-toast"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export function Sidebar() {
   const [categories, setCategories] = useState<Category[]>([])
@@ -54,10 +59,23 @@ export function Sidebar() {
     setCategories((prev) => prev.map((cat) => (cat.id === updatedCategory.id ? updatedCategory : cat)))
   }
 
-  const handleEditCategory = (category: Category) => {
-    setSelectedCategory(category)
-    setEditMode("edit")
-    setIsCategoryModalOpen(true)
+  const handleEditCategory = async (category: Category) => {
+    if (!user?.id) return
+
+    try {
+      // Fetch full category details including description
+      const fullCategory = await getCategoryDetails(user.id, category.id)
+      setSelectedCategory(fullCategory)
+      setEditMode("edit")
+      setIsCategoryModalOpen(true)
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to load category details. Please try again.",
+        variant: "destructive",
+      })
+      console.error(err)
+    }
   }
 
   const handleDeleteCategory = async (category: Category) => {
@@ -190,31 +208,40 @@ export function Sidebar() {
                           <span>{category.title}</span>
                         </Link>
 
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 w-8 p-0 ml-1"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleEditCategory(category)
-                          }}
-                        >
-                          <Edit size={14} />
-                          <span className="sr-only">Edit</span>
-                        </Button>
-
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 w-8 p-0"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleDeleteCategory(category)
-                          }}
-                        >
-                          <Trash2 size={14} />
-                          <span className="sr-only">Delete</span>
-                        </Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <MoreVertical size={14} />
+                              <span className="sr-only">More options</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleEditCategory(category)
+                              }}
+                            >
+                              <Edit className="h-4 w-4 mr-2" />
+                              Update
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleDeleteCategory(category)
+                              }}
+                              className="text-destructive"
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </div>
                   ))
