@@ -153,4 +153,10 @@ dependencies {
 
     implementation("org.kohsuke:github-api:1.313")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+
+
+    implementation("com.github.skydoves:colorpicker-compose:1.1.2")
+
+
 }

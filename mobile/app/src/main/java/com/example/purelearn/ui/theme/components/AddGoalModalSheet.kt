@@ -10,10 +10,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -27,6 +30,12 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.SheetState
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.anew.ui.theme.PureLearnTheme
+import com.example.purelearn.R
+import com.example.purelearn.ui.theme.AppColors
+import com.example.purelearn.ui.theme.AppTypography
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,95 +56,131 @@ fun AddGoalModalBottomSheet(
     onSave: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val scrollState = rememberScrollState() // <-- Scroll state
+    val scrollState = rememberScrollState()
 
     if (isOpen) {
         ModalBottomSheet(
             sheetState = sheetState,
             onDismissRequest = { onDismiss() },
-            containerColor = MaterialTheme.colorScheme.background,
-            shape = RoundedCornerShape(16.dp)
+            containerColor = AppColors.background,
+            shape = RoundedCornerShape(8.dp),
+
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
-                    .verticalScroll(scrollState) // <-- Make the content scrollable
+                    .verticalScroll(scrollState)
             ) {
+
                 Column(
                     verticalArrangement = Arrangement.Top
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.TopStart
                     ) {
                         Text(
-                            text = "Cancel",
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.clickable { onDismiss() }
-                        )
-                        Text(
-                            text = "Save",
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.clickable { onSave() }
-                        )
-                    }
+                            text = "Create Goal",
+                            style = AppTypography.large,
+                            color =AppColors.foreground,
 
+                            )
+                    }
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Text(text = "Title", color = MaterialTheme.colorScheme.primary)
-                    AppTextField(
-                        text = title,
-                        placeholder = "Enter goal title",
-                        singleLine = true,
-                        onValueChange = { onTitleChange(it) }
-                    )
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                        TitleTextField(
+                            title = "Title",
+                            value = title,
+                            onValueChange = { onTitleChange(it) },
+                            placeholder = "Title of your Goal",
+                            totalWords = 100
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                    Text(text = "Description", color = MaterialTheme.colorScheme.primary)
-                    AppTextField(
-                        text = description,
-                        placeholder = "Enter goal description",
-                        modifier = Modifier.height(100.dp),
-                        onValueChange = { onDescriptionChange(it) }
-                    )
+                        TitleTextField(
+                            title = "Motivation",
+                            value = motivation,
+                            onValueChange = { onMotivationChange(it) },
+                            placeholder = "Why this goal?",
+                            totalWords = 100
+                        )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
+                        TitleTextField(
+                            title = "Description",
+                            value = description,
+                            onValueChange = { onDescriptionChange(it) },
+                            placeholder = "More about this Goal...",
+                            totalWords = 100
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                    Text(text = "Why do you want to achieve this goal?", color = MaterialTheme.colorScheme.primary)
-                    AppTextField(
-                        text = motivation,
-                        placeholder = "Enter your motivation",
-                        modifier = Modifier.height(100.dp),
-                        onValueChange = { onMotivationChange(it) }
-                    )
+                        Text(
+                            text = "Term",
+                            color = AppColors.foreground,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = "Term Duration",
-                        color = MaterialTheme.colorScheme.primary
-                    )
                     TermDropDownList(selectedTerm = term, onTermChange = onTermChange)
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(32.dp))
 
-                    Text(
-                        text = "Goal Status",
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                        Text(
+                            text = "Status",
+                            color = AppColors.foreground,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
                     GoalStatusDropDownList(selectedStatus = status, onStatusChange = onStatusChange)
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                              //  .padding(top = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            CancelButton(onClick = onDismiss)
+                            CreateButton(
+                                onClick = onSave,
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                    }
+
                 }
             }
         }
     }
 }
+
+//@Preview
+//@Composable
+//fun AddGoalModalBottomSheetPreview(modifier: Modifier = Modifier) {
+//    PureLearnTheme {
+//        AddGoalModalBottomSheet(
+//            isOpen = true,
+//            title = "goal name",
+//            description = "ay 7aga",
+//            onTitleChange = {},
+//            onDescriptionChange = {},
+//            motivation = "mmm",
+//            onMotivationChange = {},
+//            term = "Long-Term",
+//            onTermChange = {},
+//            status = "Not-Started",
+//            onStatusChange = {},
+//            onDismiss = {},
+//            onSave = {}
+//        )
+//    }
+//}

@@ -1,6 +1,8 @@
 package com.example.purelearn.ui.theme.components
 
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +23,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,14 +35,20 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.anew.ui.theme.PureLearnTheme
 import com.example.purelearn.domain.model.Category
 import com.example.purelearn.domain.model.ResourceType
 import com.example.purelearn.domain.model.ResourceTypeResponse
+import com.example.purelearn.ui.theme.AppColors
+import com.example.purelearn.ui.theme.AppTypography
 import com.example.purelearn.ui.theme.ResourceType.ResourceTypeViewModel.ResourceTypeViewModel
 import com.example.purelearn.ui.theme.ResourceType.ResourceTypeViewModel.events.ResourceTypeEvents
 import com.example.purelearn.ui.theme.ResourceType.ResourceTypeViewModel.events.ResourceTypeUiEvents
@@ -169,41 +179,76 @@ fun AddResourceBottomSheet(
                     verticalArrangement = Arrangement.Top
                 ) {
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Cancel",
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.clickable { onDismiss() }
-                        )
-                        Text(
-                            text = "Save",
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.clickable { onSave() }
-                        )
-                    }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.TopStart
+                        ) {
+                            Text(
+                                text = "Create Learning Resources",
+                                style = AppTypography.large,
+                                color = AppColors.foreground,
 
-                    Text(text = "Title", color = MaterialTheme.colorScheme.primary)
-                    AppTextField(
-                        text = title,
-                        placeholder = "Enter learning resource title",
-                        singleLine = true,
-                        onValueChange = { onTitleChange(it) }
-                    )
+                                )
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = "Type", color = MaterialTheme.colorScheme.primary)
-                    
-                    ResourceTypeDropDownList(
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+
+                            TitleTextField(
+                                title = "Title",
+                                value = title,
+                                onValueChange = { onTitleChange(it) },
+                                placeholder = "Title of your Learning Resources",
+                                totalWords = 100
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Text(
+                                text = "Type",
+                                color = AppColors.foreground,
+                                fontSize = 14.sp,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+//                    ResourceTypeDropDownList(
+//                        viewModel,
+//                        onTypeSelected = { selectedType ->
+//                            onTypeIdChange(selectedType.id)
+//                        },
+////                        onEditClicked ={
+////                            type ->
+////                            isUpdateResourceTypeDialogOpen=true
+////                            resourceTypetitle=type.name
+////                            unitType=type.unitType
+////                            resourceTypeId=type.id
+////                            }
+//
+//                        onEditClicked = { type ->
+//                            try {
+//                                isUpdateResourceTypeDialogOpen = true
+//                                resourceTypetitle = type.name
+//                                unitType = type.unitType
+//                                resourceTypeId = type.id
+//                            } catch (e: Exception) {
+//                                Log.e("EditError", "Failed to open edit dialog: ${e.message}")
+//                            }
+//                        }
+//
+//                        ,
+//                        onDeleteClicked={ type ->
+//                            viewModel.onEvent(
+//                                ResourceTypeEvents.DeleteResourceTypeEvent(
+//                                    type.id
+//                                )
+//                            )
+//                        }
+//                    )
+
+
+
+                            ResourceTypeDropDownList(
                         viewModel,
                         onTypeSelected = { selectedType ->
                             onTypeIdChange(selectedType.id)
@@ -247,39 +292,190 @@ fun AddResourceBottomSheet(
                    }
 
 
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = "Total Units", color = MaterialTheme.colorScheme.onSurface)
 
-                    AppTextField(
-                        text = totalUnits.toString(),
-                        placeholder = "Enter total units",
-                        singleLine = true,
-                        onValueChange = { value ->
+                            Spacer(modifier = Modifier.height(8.dp))
+
+
+
+                            TitleTextField(
+                                title = "Total Units",
+                                value = totalUnits.toString(),
+                                onValueChange = { value ->
                             onTotalUnitsChange(value.toIntOrNull() ?: 0)
+                        },
+                                placeholder = "ex. How many hours of the tutorial ?",
+                                totalWords = 100
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            TextField(
+                                value = progress.toString(),
+                                onValueChange = { value ->
+                                    onProgressChange(value.toIntOrNull() ?: 0)
+                                },
+                                placeholder = { Text(text = "ex. How many of them did you finish?", color = AppColors.mutedForeground) },
+                                modifier = Modifier
+                                    //.fillMaxWidth()
+                                    .background(
+                                        AppColors.background,
+                                        shape = RoundedCornerShape(8.dp)
+                                    )
+                                    .border(
+                                        width = 1.dp,
+                                        color = AppColors.input,
+                                        shape = RoundedCornerShape(8.dp)
+                                    ),
+                                colors = TextFieldDefaults.colors(
+                                    unfocusedContainerColor = AppColors.background,
+                                    focusedContainerColor = AppColors.background,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    focusedIndicatorColor = Color.Transparent
+                                ),
+                                shape = RoundedCornerShape(8.dp),
+                                singleLine = true,
+                                textStyle = TextStyle(
+                                    color = AppColors.foreground,
+                                    fontSize = 16.sp
+                                )
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            LinkInputField(
+                                linkText = link,
+                                onLinkTextChange = { onLinkChange(it) }
+                            )
+
+                            Spacer(modifier = Modifier.height(32.dp))
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                //  .padding(top = 8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                CancelButton(onClick = onDismiss)
+                                CreateButton(
+                                    onClick = onSave,
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(32.dp))
+
                         }
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = "Progress", color = MaterialTheme.colorScheme.onSurface)
-                    AppTextField(
-                        text = progress.toString(),
-                        placeholder = "Enter your Progress",
-                        singleLine = true,
-                        onValueChange = { value ->
-                            onProgressChange(value.toIntOrNull() ?: 0)
-                        }
-                    )
 
 
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = "Link", color = MaterialTheme.colorScheme.onSurface)
-                    AppTextField(
-                        text = link,
-                        placeholder = "Enter URL link",
-                        singleLine = true,
-                        onValueChange = { onLinkChange(it) }
-                    )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+
+
+//                    Row(
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        horizontalArrangement = Arrangement.SpaceBetween,
+//                        modifier = Modifier.fillMaxWidth()
+//                    ) {
+//                        Text(
+//                            text = "Cancel",
+//                            fontSize = 16.sp,
+//                            color = MaterialTheme.colorScheme.primary,
+//                            fontWeight = FontWeight.Medium,
+//                            modifier = Modifier.clickable { onDismiss() }
+//                        )
+//                        Text(
+//                            text = "Save",
+//                            fontSize = 16.sp,
+//                            color = MaterialTheme.colorScheme.primary,
+//                            fontWeight = FontWeight.Medium,
+//                            modifier = Modifier.clickable { onSave() }
+//                        )
+//                    }
+//
+//                    Spacer(modifier = Modifier.height(16.dp))
+//
+//                    Text(text = "Title", color = MaterialTheme.colorScheme.primary)
+//                    AppTextField(
+//                        text = title,
+//                        placeholder = "Enter learning resource title",
+//                        singleLine = true,
+//                        onValueChange = { onTitleChange(it) }
+//                    )
+//
+//                    Spacer(modifier = Modifier.height(8.dp))
+//                    Text(text = "Type", color = MaterialTheme.colorScheme.primary)
+//
+//                    ResourceTypeDropDownList(
+//                        viewModel,
+//                        onTypeSelected = { selectedType ->
+//                            onTypeIdChange(selectedType.id)
+//                        },
+//                        onEditClicked ={
+//                            type ->
+//                            isUpdateResourceTypeDialogOpen=true
+//                            resourceTypetitle=type.name
+//                            unitType=type.unitType
+//                            resourceTypeId=type.id
+//                            }
+//                ,
+//                        onDeleteClicked={ type ->
+//                            viewModel.onEvent(
+//                                ResourceTypeEvents.DeleteResourceTypeEvent(
+//                                    type.id
+//                                )
+//                            )
+//                        }
+//                    )
+//                    Spacer(modifier = Modifier.height(8.dp))
+//
+//                    Row(modifier = Modifier.clickable {
+//                        isAddResourceTypeDialogOpen=true
+//                    }) {
+//                       Icon(imageVector = Icons.Default.Add, contentDescription = "add resource type")
+//                        Text(text = "Add  another type")
+//                    }
+//
+//                    Spacer(modifier = Modifier.height(16.dp))
+//
+//                    selectedResourceType?.let {
+//                        AppTextField(
+//                            text = title,
+//                            placeholder = "",
+//                            singleLine = true,
+//                            onValueChange = { onTitleChange(it) }
+//                        )
+//                        onTypeIdChange(it.id)
+//
+//                   }
+//
+//
+//                    Spacer(modifier = Modifier.height(8.dp))
+//                    Text(text = "Total Units", color = MaterialTheme.colorScheme.onSurface)
+//
+//                    AppTextField(
+//                        text = totalUnits.toString(),
+//                        placeholder = "Enter total units",
+//                        singleLine = true,
+//                        onValueChange = { value ->
+//                            onTotalUnitsChange(value.toIntOrNull() ?: 0)
+//                        }
+//                    )
+//                    Spacer(modifier = Modifier.height(8.dp))
+//                    Text(text = "Progress", color = MaterialTheme.colorScheme.onSurface)
+//                    AppTextField(
+//                        text = progress.toString(),
+//                        placeholder = "Enter your Progress",
+//                        singleLine = true,
+//                        onValueChange = { value ->
+//                            onProgressChange(value.toIntOrNull() ?: 0)
+//                        }
+//                    )
+//
+//
+//                    Spacer(modifier = Modifier.height(8.dp))
+//                    Text(text = "Link", color = MaterialTheme.colorScheme.onSurface)
+//                    AppTextField(
+//                        text = link,
+//                        placeholder = "Enter URL link",
+//                        singleLine = true,
+//                        onValueChange = { onLinkChange(it) }
+//                    )
+//
+//                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
         }
@@ -338,7 +534,7 @@ fun AddResourceBottomSheet(
                             )
                         )
                     } else {
-                        context.showToast("Please add title and description")
+                        context.showToast("Please add title and unitType")
                     }
                 }
             )
@@ -347,5 +543,27 @@ fun AddResourceBottomSheet(
     }
 }
 
+@Preview
+@Composable
+fun AddResourceBottomSheetPreview(modifier: Modifier = Modifier) {
+    PureLearnTheme {
+        AddResourceBottomSheet(
+            isOpen = true,
+            title = "resource",
+            onTitleChange = {},
+            typeId = 1,
+            onTypeIdChange = {},
+            totalUnits = 10,
+            onTotalUnitsChange = {},
+            progress = 1,
+            onProgressChange = {},
+            link = "https://www.youtube.com/",
+            onLinkChange = {},
+            onDismiss = {},
+            onSave = {},
+            //  viewModel = TODO()
+        )
+    }
+}
 
 

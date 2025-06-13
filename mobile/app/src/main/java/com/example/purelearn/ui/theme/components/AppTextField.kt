@@ -19,6 +19,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.purelearn.ui.theme.AppColors
 
 @Composable
 fun AppTextField(
@@ -39,7 +40,7 @@ fun AppTextField(
         placeholder = {
             Text(
                 text = placeholder, style = TextStyle(
-                    color = MaterialTheme.colorScheme.secondary, fontSize = 14.sp, fontWeight = FontWeight.Normal
+                    color = AppColors.muted, fontSize = 30.sp, fontWeight = FontWeight.Normal
                 )
             )
         },
@@ -50,7 +51,8 @@ fun AppTextField(
             focusedContainerColor = MaterialTheme.colorScheme.surface,
             unfocusedIndicatorColor = Color.Transparent,  // Hides the underline when not focused
             focusedIndicatorColor = Color.Transparent  // Hides the underline when focused
-        ),
+        )
+        ,
         shape = RoundedCornerShape(12.dp),
 
 

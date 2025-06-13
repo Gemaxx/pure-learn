@@ -10,6 +10,9 @@ sealed class ResourceEvents {
     data class AddResourceEvent(val data: Resource) : ResourceEvents()
     data class DeleteResourceEvent(val id: Int) : ResourceEvents()
     data class UpdateResourceEvent(val id: Int, val resource: Resource) : ResourceEvents()
+    data class GetResourceByIdEvent(val id: Int) : ResourceEvents()
+    data class SoftDeleteResourceEvent(val id: Int) : ResourceEvents()
+    data class RestoreResourceEvent(val id: Int) : ResourceEvents()
     //object ShowResources : ResourceEvents()
     data class ShowResources(
         val goalId: Int

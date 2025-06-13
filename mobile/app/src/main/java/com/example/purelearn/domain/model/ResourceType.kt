@@ -10,3 +10,9 @@ data class ResourceType(
        val name: String,
        val unitType: String
 )
+data class ResourceTypeDetails(
+       val id: Int,
+       val learnerId: Int,
+       val name: String,
+       val unitType: String
+)

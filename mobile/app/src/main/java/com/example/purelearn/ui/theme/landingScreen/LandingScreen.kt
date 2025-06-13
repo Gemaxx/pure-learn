@@ -21,6 +21,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -41,6 +42,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
+import com.example.anew.ui.theme.PureLearnTheme
 
 @Composable
 fun LandingScreen(
@@ -58,7 +60,7 @@ fun LandingScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(color = Color.Black ),
+                .background(MaterialTheme.colorScheme.background ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -66,10 +68,11 @@ fun LandingScreen(
 
             Text(
                 text = "Unlock your\nLearning\nPotential",
-                color = Color.White,
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.displayLarge
+//                fontSize = 32.sp,
+//                fontWeight = FontWeight.Bold,
+                //textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -80,14 +83,14 @@ fun LandingScreen(
                     withStyle(style = SpanStyle(color = Color.White)) {
                         append("PureLearn")
                     }
-                    withStyle(style = SpanStyle(color = Color.Gray)) {
+                    withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onSurfaceVariant)) {
                         append(
                             " is a Learning Framework that provide learners\n" +
                                     "with all tools, utilities and best practices they need to\n" +
                                     "achieve their "
                         )
                     }
-                    withStyle(style = SpanStyle(color = Color.White)) {
+                    withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onBackground)) {
                         append("learning goals")
                     }
                     append(".")
@@ -111,11 +114,11 @@ fun LandingScreen(
                         .height(40.dp),
                     shape = RoundedCornerShape(12.dp),
                     onClick = { /*TODO*/ },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onBackground),
                     border = BorderStroke(1.dp, Color(0xFFE4E4E7))
 
                 ) {
-                    Text("Get Started", color = Color.Black, fontSize = 13.sp)
+                    Text("Get Started", color = MaterialTheme.colorScheme.background, fontSize = 13.sp)
                 }
 
                 Spacer(modifier = Modifier.width(16.dp))
@@ -126,10 +129,10 @@ fun LandingScreen(
                         .height(40.dp),
                     shape = RoundedCornerShape(12.dp),
                     onClick = { /*TODO*/ },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF18181B)),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
                     border = BorderStroke(1.dp, Color(0xFF2A2A2A))
                 ) {
-                    Text("Explore Features", color = Color.White, fontSize = 13.sp)
+                    Text("Explore Features", color = MaterialTheme.colorScheme.onBackground, fontSize = 13.sp)
                 }
             }
         }
@@ -160,14 +163,14 @@ fun LandingScreenTopAppBar(onMenuClick: () -> Unit, height: Dp = 56.dp) {
                     Icon(
                         imageVector = Icons.Default.Menu,
                         contentDescription = "Menu",
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.onBackground
                     )
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Black,
-                navigationIconContentColor = Color.White,
-                actionIconContentColor = Color.White
+                containerColor = MaterialTheme.colorScheme.background,
+                navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
+                actionIconContentColor = MaterialTheme.colorScheme.onBackground
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -180,6 +183,9 @@ fun LandingScreenTopAppBar(onMenuClick: () -> Unit, height: Dp = 56.dp) {
 @Preview
 @Composable
 private fun LandingScreenPreview() {
-    LandingScreen()
+    PureLearnTheme {
+
+        LandingScreen()
+    }
 
 }

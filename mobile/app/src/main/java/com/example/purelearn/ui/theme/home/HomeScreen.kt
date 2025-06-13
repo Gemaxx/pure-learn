@@ -89,7 +89,7 @@ data class NavigationItem(
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: CategoryViewModel = hiltViewModel()
+    viewModel2: CategoryViewModel = hiltViewModel()
 ) {
 
 
@@ -99,7 +99,7 @@ fun HomeScreen(
     val isVisible = rememberSaveable { mutableStateOf(true) }
 
 
-    val response = viewModel.categoryResponseEvent.value
+    val response = viewModel2.categoryResponseEvent.value
     val categories = response.data ?: emptyList()  // Fallback to empty list if null
 
     val context = LocalContext.current
@@ -133,20 +133,25 @@ fun HomeScreen(
             selectedIcon = R.drawable.mobile,
             unselectedIcon = R.drawable.mobile,
         ),
+        NavigationItem(
+            title = "Goals",
+            selectedIcon = R.drawable.goals,
+            unselectedIcon = R.drawable.goals,
+        ),
     )
 
 
 
     LaunchedEffect(key1 = true) {
-        viewModel.onEvent(CategoryEvents.ShowCategories)
+        viewModel2.onEvent(CategoryEvents.ShowCategories)
     }
 
     LaunchedEffect(key1 = true) {
-        viewModel.updateCategoryEvent.collectLatest {
+        viewModel2.updateCategoryEvent.collectLatest {
             isLoading = when (it) {
                 is CategoryUiEvents.Success -> {
                     context.showToast("Category Updated!")
-                    viewModel.onEvent(CategoryEvents.ShowCategories)
+                    viewModel2.onEvent(CategoryEvents.ShowCategories)
                     isAddCategoryDialogOpen = false
                     false
                 }
@@ -163,17 +168,17 @@ fun HomeScreen(
     }
 
     LaunchedEffect(key1 = true) {
-        viewModel.deleteCategoryEvent.collectLatest {
+        viewModel2.deleteCategoryEvent.collectLatest {
             isLoading = when (it) {
                 is CategoryUiEvents.Success -> {
                     context.showToast("Category Deleted")
-                    viewModel.onEvent(CategoryEvents.ShowCategories)
+                    viewModel2.onEvent(CategoryEvents.ShowCategories)
                     false
                 }
 
                 is CategoryUiEvents.Failure -> {
                     context.showToast("Category Deleted")
-                    viewModel.onEvent(CategoryEvents.ShowCategories)
+                    viewModel2.onEvent(CategoryEvents.ShowCategories)
                     false
                 }
 
@@ -184,14 +189,14 @@ fun HomeScreen(
     }
 
     LaunchedEffect(key1 = true) {
-        viewModel.addCategoryEvent.collectLatest {
+        viewModel2.addCategoryEvent.collectLatest {
             isLoading = when (it) {
                 is CategoryUiEvents.Success -> {
                     title = ""
                     description = ""
                     context.showToast("Category Added")
                     isAddCategoryDialogOpen = false
-                    viewModel.onEvent(CategoryEvents.ShowCategories)
+                    viewModel2.onEvent(CategoryEvents.ShowCategories)
                     false
                 }
 
@@ -270,7 +275,7 @@ fun HomeScreen(
                                         2 -> navController.navigate("TimerScreen/1500/300/900/4")
 
                                         3 -> navController.navigate("ScreenTimeScreen")  // Example: TimerScreen navigation
-
+                                        4->navController.navigate("GoalScreen")
 
                                     }
                                     scope.launch {
@@ -465,7 +470,9 @@ fun HomeScreen(
                                 .padding(horizontal = 20.dp, vertical = 10.dp)
                         )
 
-                        if (response.data.isNotEmpty()) LazyColumn(
+                        if (!response.data.isNullOrEmpty(
+
+                        )) LazyColumn(
                             modifier = Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.spacedBy(1.dp),
                             contentPadding = PaddingValues(1.dp),
@@ -478,7 +485,7 @@ fun HomeScreen(
                                 SwipeToDeleteContainer(
                                     item = category,
                                     onDelete = {
-                                        viewModel.onEvent(
+                                        viewModel2.onEvent(
                                             CategoryEvents.DeleteCategoryEvent(
                                                 category.id
                                             )
@@ -539,13 +546,14 @@ fun HomeScreen(
 
                 onSave = {
                     if (title.isNotEmpty() && description.isNotEmpty()) {
-                        viewModel.onEvent(
+                        viewModel2.onEvent(
                             CategoryEvents.UpdateCategoryEvent(
                                 category = Category(
                                     id = categoryId,
                                     title = title,
                                     color = "#FF33A1",
-                                    //  description = description
+                                    description = description,
+
                                 ),
                                 id = categoryId
                             )
@@ -553,7 +561,9 @@ fun HomeScreen(
                     } else {
                         context.showToast("Please add title and description")
                     }
-                }
+                },
+                onDismissColor = {},
+                onSaveColor = {}
             )
         }
 
@@ -569,20 +579,22 @@ fun HomeScreen(
                 onDismiss = { isAddCategoryDialogOpen = false },
                 onSave = {
                     if (title.isNotEmpty() && description.isNotEmpty()) {
-                        viewModel.onEvent(
+                        viewModel2.onEvent(
                             CategoryEvents.AddCategoryEvent(
                                 Category(
                                     id = 2,
                                     title = title,
                                     color = "#FF33A1",
-                                    //description = description
+                                   description = description
                                 )
                             )
                         )
                     } else {
                         context.showToast("Please add title and description")
                     }
-                }
+                },
+                onDismissColor = {},
+                onSaveColor = {}
             )
 
         }

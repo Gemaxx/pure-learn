@@ -4,7 +4,13 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.purelearn.domain.model.ResourceDetails
+import com.example.purelearn.domain.model.ResourceResponse
+import com.example.purelearn.domain.model.ResourceTypeDetails
+import com.example.purelearn.domain.model.ResourceTypeResponse
 import com.example.purelearn.repository.ResourceTypeRepository
+import com.example.purelearn.ui.theme.Resource.Resourceviewmodel.events.ResourceEvents
+import com.example.purelearn.ui.theme.Resource.Resourceviewmodel.status.ResourceState
 import com.example.purelearn.ui.theme.ResourceType.ResourceTypeViewModel.events.ResourceTypeEvents
 import com.example.purelearn.ui.theme.ResourceType.ResourceTypeViewModel.events.ResourceTypeUiEvents
 import com.example.purelearn.ui.theme.ResourceType.ResourceTypeViewModel.status.ResourceTypeState
@@ -23,9 +29,20 @@ import javax.inject.Inject
 class ResourceTypeViewModel @Inject constructor(
     private val repository: ResourceTypeRepository
 ): ViewModel(){
-    private val _resourceTypeResponseEvent= mutableStateOf(ResourceTypeState())
-    var resourceTypeResponseEvent: State<ResourceTypeState> = _resourceTypeResponseEvent
-        private set
+//    private val _resourceTypeResponseEvent= mutableStateOf(ResourceTypeState())
+//    var resourceTypeResponseEvent: State<ResourceTypeState> = _resourceTypeResponseEvent
+//        private set
+
+
+    private val _resourceTypes = mutableStateOf<List<ResourceTypeDetails>>(emptyList())
+    val resourceTypes: State<List<ResourceTypeDetails>> = _resourceTypes
+
+
+
+    private val _resourceTypeResponseEvent = mutableStateOf(ResourceTypeState<List<ResourceTypeResponse>>())
+    val resourceTypeResponseEvent: State<ResourceTypeState<List<ResourceTypeResponse>>> = _resourceTypeResponseEvent
+
+
 
     private val _addResourceTypeEvent: MutableSharedFlow<ResourceTypeUiEvents> = MutableSharedFlow()
     var addResourceTypeEvent = _addResourceTypeEvent.asSharedFlow()
@@ -41,10 +58,14 @@ class ResourceTypeViewModel @Inject constructor(
         private set
 
 
+    private val _getResourceTypeByIdResponseEvent = mutableStateOf(ResourceTypeState<ResourceTypeDetails>())
+    val getResourceTypeByIdResponseEvent: State<ResourceTypeState<ResourceTypeDetails>> = _getResourceTypeByIdResponseEvent
+
+
+
+
     fun onEvent(events: ResourceTypeEvents){
         when (events){
-
-
 
             is ResourceTypeEvents.AddResourceTypeEvent->{
                 viewModelScope.launch {
@@ -126,6 +147,30 @@ class ResourceTypeViewModel @Inject constructor(
             }
 
 
+
+            is  ResourceTypeEvents.GetResourceTypeByIdEvent -> {
+                viewModelScope.launch {
+                    repository.getResourceTypeById(
+                        id = events.id
+                    )
+                        .onStart {
+                            _getResourceTypeByIdResponseEvent.value = ResourceTypeState(
+                                isLoading = true
+                            )
+                        }.catch {
+                            _getResourceTypeByIdResponseEvent.value = ResourceTypeState(
+                                error = it.message ?: "Something went wrong"
+                            )
+                        }.collect {
+                            _getResourceTypeByIdResponseEvent.value = ResourceTypeState(
+                                data = it
+                            )
+                        }
+                }
+            }
+
+
         }
     }
 }
+

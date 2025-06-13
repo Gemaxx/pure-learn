@@ -2,16 +2,20 @@ package com.example.purelearn.ui.theme.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,8 +25,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.purelearn.R
+import com.example.purelearn.ui.theme.AppColors
 
 @Composable
 fun TermDropDownList(
@@ -41,27 +47,42 @@ fun TermDropDownList(
     val usernames = listOf("Long-Term", "Short-Term", "Medium-Term")
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(start = 17.dp),
+        modifier = Modifier
+            .fillMaxSize()
+           // .padding(start = 17.dp)
+            .border(
+                width = 1.dp,
+                color = AppColors.input,
+                shape = RoundedCornerShape(8.dp)
+            ),
         // horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
 
         Box (modifier = Modifier
-            .background(MaterialTheme  .colorScheme.surface, RoundedCornerShape(12.dp))
+            .background(AppColors.background, RoundedCornerShape(8.dp))
             .padding(17.dp)
             //.fillMaxWidth()
         ){
             Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(start = 17.dp).clickable {
-                    isDropDownExpanded.value = true
-                }
+                horizontalArrangement = Arrangement.SpaceBetween,                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(start = 17.dp)
+                    .clickable {
+                        isDropDownExpanded.value = true
+                    }
+                    .fillMaxWidth()
             ) {
-                Text(text = usernames[itemPosition.value])
-                Image(
-                    painter = painterResource(id = R.drawable.drop_down_ic),
-                    contentDescription = "DropDown Icon"
+                Text(text =selectedTerm,
+               // usernames[itemPosition.value],
+                    color = AppColors.foreground,
+                )
+
+                Icon(
+                    painter = painterResource(id = R.drawable.chevrondown),
+                    contentDescription = "dropdown",
+                    tint = AppColors.mutedForeground,
+                    modifier = Modifier.size(16.dp)
                 )
             }
             DropdownMenu(
@@ -84,3 +105,12 @@ fun TermDropDownList(
 
     }
 }
+//
+//@Preview
+//@Composable
+//fun TermDropDownListPreview(modifier: Modifier = Modifier) {
+//    TermDropDownList(
+//        selectedTerm = "Long-Term",
+//        onTermChange ={}
+//    )
+//}

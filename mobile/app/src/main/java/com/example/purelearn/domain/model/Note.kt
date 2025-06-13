@@ -14,7 +14,7 @@ data class Note(
 )
 
 data class NoteResponse(
-    val id: Long,
+    val id: Int,
     val goalId: Int?,
     val title: String,
     val body: String

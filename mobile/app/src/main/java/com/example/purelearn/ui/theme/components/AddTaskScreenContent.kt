@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.purelearn.R
+import com.example.purelearn.ui.theme.AppColors
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.Calendar
@@ -322,7 +323,7 @@ fun CustomTextField(
             },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             textStyle = LocalTextStyle.current.copy(
-
+                color = AppColors.foreground,
                 fontWeight = FontWeight.Normal,
                 fontSize = 15.sp,
                 textAlign = TextAlign.Start

@@ -1,11 +1,13 @@
 package com.example.purelearn.ui.theme.note
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,22 +21,29 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.purelearn.R
 import com.example.purelearn.domain.model.NoteRequest
+import com.example.purelearn.ui.theme.AppColors
+import com.example.purelearn.ui.theme.AppTypography
+import com.example.purelearn.ui.theme.components.AppTextField
+import com.example.purelearn.ui.theme.components.BottomNavigationBar
 import com.example.purelearn.ui.theme.components.LoadingBar
 import com.example.purelearn.ui.theme.components.showToast
 import com.example.purelearn.ui.theme.home.homeviewmodel.events.NoteEvents
@@ -130,48 +139,83 @@ fun AddNoteScreen(navController: NavController,
                     containerColor = MaterialTheme.colorScheme.background
                 )
             )
-        }
-    ){ paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .padding(16.dp)
-                .fillMaxSize()
-        ) {
+        },
+        bottomBar = { BottomNavigationBar() },
+
+        ){ paddingValues ->
+        Column(modifier = Modifier.fillMaxWidth().padding(paddingValues)) {
+
+
             TextField(
                 value = title,
-                onValueChange = { title = it },
+                onValueChange = {title=it},
                 textStyle = TextStyle(
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    fontSize   = 30.sp,
+                    fontWeight = FontWeight.Normal,
+                    color      = AppColors.foreground
                 ),
-                placeholder = { Text("Input Title", color = Color.Gray) },
-                colors = TextFieldDefaults.textFieldColors(
-                 //   backgroundColor = Color.Transparent,
-                    cursorColor = Color.White
-                ),
+                placeholder = {
+                    Text(
+                        text = "Title", style = TextStyle(
+                            color = AppColors.mutedForeground, fontSize = 30.sp, fontWeight = FontWeight.Normal
+                        )
+                    )
+                },
                 modifier = Modifier.fillMaxWidth()
-            )
+                    .padding(vertical = 4.dp),
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedIndicatorColor = Color.Transparent,  // Hides the underline when not focused
+                    focusedIndicatorColor = Color.Transparent  // Hides the underline when focused
+                )
+                ,
+                shape = RoundedCornerShape(12.dp),
+
+
+                singleLine = true,
+
+                )
+
 
             Spacer(modifier = Modifier.height(8.dp))
 
+
             TextField(
                 value = body,
-                onValueChange = { body = it },
-                textStyle = TextStyle(
-                    fontSize = 16.sp,
-                    color = Color.White
-                ),
-                placeholder = { Text("Start typing...", color = Color.Gray) },
-                colors = TextFieldDefaults.textFieldColors(
-                 //   backgroundColor = Color.Transparent,
-                    cursorColor = Color.White
-                ),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f)
+                onValueChange = {body=it},
+                placeholder = {
+                    Text(
+                        text = "note", style = TextStyle(
+                            color = AppColors.mutedForeground, fontSize = 18.sp, fontWeight = FontWeight.Normal
+                        )
+                    )
+                },
+                modifier = Modifier.fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedIndicatorColor = Color.Transparent,  // Hides the underline when not focused
+                    focusedIndicatorColor = Color.Transparent  // Hides the underline when focused
+                )
+                ,
+                shape = RoundedCornerShape(12.dp),
+
+
+                singleLine = false,
+
             )
         }
+
     }
 }
+
+
+
+
+
+
+
+
+

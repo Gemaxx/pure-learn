@@ -4,6 +4,7 @@ import com.example.purelearn.domain.model.Goal
 import com.example.purelearn.domain.model.GoalResponse
 import com.example.purelearn.domain.model.NoteRequest
 import com.example.purelearn.domain.model.NoteResponse
+import com.example.purelearn.domain.model.ResourceResponse
 import com.example.purelearn.domain.network.KtorService
 import com.example.purelearn.domain.network.RetrofitService
 import com.example.purelearn.repository.NoteRepository
@@ -25,18 +26,6 @@ class NoteRepositoryImpl @Inject constructor(
             isDeleted = false
         ))
     }.flowOn(Dispatchers.IO)
-//
-//    override suspend fun addNote(note: NoteResponse): Flow<NoteResponse> {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override suspend fun deleteNote(id: Int): Flow<NoteResponse> {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override suspend fun updateNote(id: Int, note: NoteResponse): Flow<NoteResponse> {
-//        TODO("Not yet implemented")
-//    }
 
 
 
@@ -48,18 +37,13 @@ class NoteRepositoryImpl @Inject constructor(
         ))
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun deleteNote(id: Int): Flow<NoteResponse> = flow {
+        emit(retrofitService.deleteNote(
+            learnerId = 1,
+            noteId = id,
+        ))
+    }.flowOn(Dispatchers.IO)
 
-
-
-
-//    override suspend fun deleteNote(id: Int): Flow<NoteResponse> = flow {
-//        emit(retrofitService.deleteNote(
-//            learnerId = 1,
-//            noteId = id,
-//        ))
-//    }.flowOn(Dispatchers.IO)
-//
-//
     override suspend fun updateNote(id: Int, note: NoteRequest): Flow<NoteRequest> = flow {
         emit(retrofitService.updateNote(
             learnerId = 1,

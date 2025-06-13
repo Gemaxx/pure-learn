@@ -1,0 +1,38 @@
+package com.example.purelearn.ui.theme
+
+import androidx.compose.ui.graphics.Color
+
+object AppColors {
+    val background = Color(0xFF09090B)
+    val foreground = Color(0xFFFAFAFA)
+    val blurBackground = Color(0x8009090B)
+    val card = Color(0xFF09090B)
+    val cardForeground = Color(0xFFFAFAFA)
+    val popover = Color(0xFF09090B)
+    val popoverForeground = Color(0xFFFAFAFA)
+    val primary = Color(0xFFFAFAFA)
+    val primaryForeground = Color(0xFF18181B)
+    val secondary = Color(0xFF27272A)
+    val secondaryForeground = Color(0xFFFAFAFA)
+    val muted = Color(0xFF27272A)
+    val mutedForeground = Color(0xFFA1A1AA)
+    val accent = Color(0xFF27272A)
+    val accentForeground = Color(0xFFFAFAFA)
+    val destructive = Color(0xFF8F3030)
+    val destructiveForeground = Color(0xFFFAFAFA)
+    val input = Color(0xFF27272A)
+    val border = Color(0xFF27272A)
+    val ring = Color(0xFFD4D4D8)
+    val chart1 = Color(0xFF2662D9)
+    val chart2 = Color(0xFFE23670)
+    val chart3 = Color(0xFFE88C30)
+    val chart4 = Color(0xFFAF57DB)
+    val chart5 = Color(0xFF2EB88A)
+    val sidebarForeground = Color(0xFFF4F4F5)
+    val sidebarPrimary = Color(0xFF1D4ED8)
+    val sidebarPrimaryForeground = Color(0xFFD4D4D8)
+    val sidebarAccent = Color(0xFF27272A)
+    val sidebarAccentForeground = Color(0xFFF4F4F5)
+    val sidebarBorder = Color(0xFF27272A)
+    val sidebarRing = Color(0xFF3B82F6)
+}

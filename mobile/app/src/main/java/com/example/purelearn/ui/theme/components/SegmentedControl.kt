@@ -1,5 +1,6 @@
 package com.example.purelearn.ui.theme.components
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,7 +26,7 @@ import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SegmentedControl(navController: NavController, goalId: Int) {
+fun SegmentedControl(navController: NavController, goalId: Int,goalName:String) {
     val options = listOf("Tasks", "Resources", "Notes")
 
     val routes = mapOf(
@@ -45,8 +46,10 @@ fun SegmentedControl(navController: NavController, goalId: Int) {
             SegmentedButton(
                 selected = selectedOption == option,
                 onClick = {
-                    if (selectedOption != option) { // Prevent unnecessary navigation
-                        navController.navigate("${routes[option]}/$goalId")
+                    if (selectedOption != option) {
+                        val encodedGoalName = Uri.encode(goalName)  // This will encode spaces and special characters
+
+                        navController.navigate("${routes[option]}/$goalId/$encodedGoalName")
                     }
                 },
                 shape = when (index) {
@@ -74,7 +77,7 @@ fun SegmentedControl(navController: NavController, goalId: Int) {
 
 
 @Composable
-fun SegmentedControlScreen(navController: NavController, goalId: Int) {
+fun SegmentedControlScreen(navController: NavController, goalId: Int,goalName:String) {
     var selectedOption by remember { mutableStateOf("Tasks") }
     Column(
         modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
@@ -86,6 +89,7 @@ fun SegmentedControlScreen(navController: NavController, goalId: Int) {
 //            selectedOption = selectedOption,
 //            onOptionSelected = { selectedOption = it },
             navController = navController,
-            goalId = goalId
+            goalId = goalId,
+            goalName = goalName
         )    }
 }

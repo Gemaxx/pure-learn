@@ -5,6 +5,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.purelearn.domain.model.NoteResponse
+import com.example.purelearn.domain.model.ResourceResponse
 import com.example.purelearn.repository.NoteRepository
 import com.example.purelearn.ui.theme.Resource.Resourceviewmodel.events.ResourceEvents
 import com.example.purelearn.ui.theme.Resource.Resourceviewmodel.events.ResourceUiEvents
@@ -86,46 +88,6 @@ class NoteViewModel @Inject constructor(
                 }
             }
 
-
-
-//            is NoteEvents.DeleteNotesEvent->{
-//                viewModelScope.launch {
-//                    repository.deleteNote(events.id)
-//                        .onStart {
-//                            _deleteNoteEvent.emit(
-//                                NoteUiEvents.Loading
-//                            )
-//                        }.catch {
-//                            _deleteNoteEvent.emit(
-//                                NoteUiEvents.Failure(it.message?:"Something went wrong")
-//                            )
-//                        }.collect{
-//                            _deleteNoteEvent.emit(
-//                                NoteUiEvents.Success(it)
-//                            )
-//                        }
-//                }
-//            }
-
-//            is NoteEvents.UpdateNotesEvent->{
-//                viewModelScope.launch {
-//                    repository.updateNote(events.id,events.note)
-//                        .onStart {
-//                            _updateNoteEvent.emit(
-//                                NoteUiEvents.Loading
-//                            )
-//                        }.catch {
-//                            _updateNoteEvent.emit(
-//                                NoteUiEvents.Failure(it.message?:"Something went wrong")
-//                            )
-//                        }.collect{
-//                            _updateNoteEvent.emit(
-//                                NoteUiEvents.Success(it)
-//                            )
-//                        }
-//                }
-//            }
-
             is NoteEvents.UpdateNotesEvent->{
                 viewModelScope.launch {
                     repository.updateNote(events.id,events.note)
@@ -144,6 +106,38 @@ class NoteViewModel @Inject constructor(
                         }
                 }
             }
+
+
+            is NoteEvents.DeleteNotesEvent->{
+                viewModelScope.launch {
+                    repository.deleteNote(events.id)
+                        .onStart {
+                            _deleteNoteEvent.emit(
+                                NoteUiEvents.Loading
+                            )
+                        }.catch {
+                            _deleteNoteEvent.emit(
+                                NoteUiEvents.Failure(it.message?:"Something went wrong")
+                            )
+                        }
+                        .collect {
+                            val dummyResource = NoteResponse(
+                                id = -1,
+                                goalId = -1,
+                                title = "",
+                                body = ""
+                            )
+                          //  _softDeleteResourceEvent.emit(ResourceUiEvents.Success(dummyResource))
+                        }
+//                        .collect{
+//                            _deleteNoteEvent.emit(
+//                                NoteUiEvents.Success(it)
+//                            )
+//                        }
+                }
+            }
+
+
 
             else -> {}
         }

@@ -137,9 +137,9 @@ private fun GoalProgress(
         modifier = Modifier.size(50.dp)
     ) {
         CircularProgressIndicator(
-            progress = progress,  // Use Material3 instead of Wear OS
+            progress = progress,
             modifier = Modifier.size(40.dp),
-            color = Color.White,  // Corrected property
+            color = Color.White,
             strokeWidth = 4.dp
         )
         Text(

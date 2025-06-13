@@ -12,7 +12,7 @@ interface NoteRepository{
     suspend fun addNote(note: NoteRequest): Flow<NoteRequest>
 
 
-   // suspend fun deleteNote(id: Int): Flow<NoteResponse>
+    suspend fun deleteNote(id: Int): Flow<NoteResponse>
 
     suspend fun updateNote(id: Int, note: NoteRequest): Flow<NoteRequest>
 }
