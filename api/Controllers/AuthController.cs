@@ -1,43 +1,45 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using api.Dtos;
-using api.Interfaces;
-using api.Dtos.Learner; 
+using api.Data;
+using api.Dtos.Learner;
 using api.Models;
-using api.Repos;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class AuthController : ControllerBase
-    
+    [ApiController]
+    public class AccountController : ControllerBase
     {
-        private readonly IAuthRepository _authRepo;
+        private readonly PureLearnDbContext _context;
 
-        public AuthController(IAuthRepository authRepo)
+        public AccountController(PureLearnDbContext context)
         {
-            _authRepo = authRepo;
+            _context = context;
         }
 
+        // POST: /api/account/register
         [HttpPost("register")]
-        public async Task<IActionResult> Register(LearnerRegistrationRequestDto  dto) 
+        public async Task<IActionResult> Register(LearnerDto learnerDto)
         {
-            var learner = await _authRepo.RegisterAsync(dto);
-            return Ok(learner);
-        }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(LearnerLoginRequestDto dto) 
-        {
-            var learner = await _authRepo.LoginAsync(dto);
-            if (learner == null)
-                return Unauthorized("البريد الإلكتروني أو كلمة السر غير صحيحة");
+            var learner = new Learner
+            {
+                Name = learnerDto.Name,
+                ProfilePicture = learnerDto.ProfilePicture,
+                Bio = learnerDto.Bio,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                IsDeleted = false
+            };
 
-            return Ok(learner);
+            _context.Learners.Add(learner);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "Registration successful" });
         }
     }
 }

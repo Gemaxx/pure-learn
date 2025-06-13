@@ -1,17 +1,15 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 
 namespace api.Models;
 
-public partial class Learner
-{
-    public long Id { get; set; }
+public class Learner
+{ 
+    public new long Id { get; set; }
 
     public string Name { get; set; } = null!;
-
-    public string Email { get; set; } = null!;
-
-    public string PasswordHash { get; set; } = null!;
 
     public string? ProfilePicture { get; set; }
 
@@ -26,6 +24,9 @@ public partial class Learner
     public DateTime? DeletedAt { get; set; }
 
     public bool IsDeleted { get; set; }
+
+    // Add this to enable the one-to-one relationship
+    
 
     public virtual ICollection<Category> Categories { get; set; } = new List<Category>();
 

@@ -1,45 +1,32 @@
-using System.Text.Json.Serialization;
-using api.Data;
-using api.Interfaces;
-using api.Repos;
-using api.Repository;
-using api.Services;
+﻿using System.Text.Json.Serialization;
+using api.Data; // PureLearnDbContext
+using api.Models; // ApplicationUser
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
-ConfigureServices(builder.Services, builder.Configuration);
-
-// Configure logging
-builder.Logging.AddConsole();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline
-ConfigureMiddleware(app);
-
-app.Run();
-
-void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+// Add services to the container.
 {
-    // Add controllers with JSON serialization options
-    services.AddControllers()
+    // Controllers with JSON settings
+    builder.Services.AddControllers()
         .AddJsonOptions(options =>
         {
             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         });
 
-    // Add Swagger/OpenAPI
-    services.AddEndpointsApiExplorer();
-    services.AddSwaggerGen();
+    // Swagger
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen(options =>
+    {
+        options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "PureLearn API", Version = "v1" });
+    });
 
-    // Add CORS policy
-    services.AddCors(options =>
+    // CORS
+    builder.Services.AddCors(options =>
     {
         options.AddPolicy("AllowSpecificOrigin", policy =>
             policy.AllowAnyOrigin()
@@ -47,10 +34,15 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
                   .AllowAnyHeader());
     });
 
-    // Add DbContext with retry logic
-    services.AddDbContext<PureLearnDbContext>(options =>
+    // Identity (optional, can be kept if you're using it later)
+    builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+        .AddEntityFrameworkStores<PureLearnDbContext>()
+        .AddDefaultTokenProviders();
+
+    // DbContext
+    builder.Services.AddDbContext<PureLearnDbContext>(options =>
         options.UseSqlServer(
-            configuration.GetConnectionString("DefaultConnection"),
+            builder.Configuration.GetConnectionString("DefaultConnection"),
             sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
                 maxRetryCount: 5,
                 maxRetryDelay: TimeSpan.FromSeconds(30),
@@ -58,65 +50,27 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
             )
         )
     );
-
-    // Register repositories
-    RegisterRepositories(services);
-
-    // Register services
-    services.AddSingleton<JwtService>();
-
-    // Configure authentication
-    ConfigureAuthentication(services, configuration);
-
-    // Add authorization
-    services.AddAuthorization();
 }
 
-void RegisterRepositories(IServiceCollection services)
-{
-    services.AddScoped<ICategoryRepository, CategoryRepository>();
-    services.AddScoped<ILearnerRepository, LearnerRepository>();
-    services.AddScoped<IGoalRepository, GoalRepository>();
-    services.AddScoped<ILearningResourceRepository, LearningResourceRepository>();
-    services.AddScoped<ILearningResourceTypeRepository, LearningResourceTypeRepository>();
-    services.AddScoped<INoteRepository, NoteRepository>();
-    services.AddScoped<ITaskRepository, TaskRepository>();
-    services.AddScoped<ISubtaskRepository, SubtaskRepository>();
-    services.AddScoped<ITaskTypeRepository, TaskTypeRepository>();
-    services.AddScoped<IKanbanStatusRepository, KanbanStatusRepository>();
-    services.AddScoped<IAuthRepository, AuthRepository>();
-}
+var app = builder.Build();
 
-void ConfigureAuthentication(IServiceCollection services, IConfiguration configuration)
+// Configure the HTTP request pipeline
 {
-    var key = configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not configured.");
-    var keyBytes = Encoding.UTF8.GetBytes(key);
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
 
-    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = configuration["Jwt:Issuer"],
-                ValidAudience = configuration["Jwt:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
-            };
-        });
-}
+    app.UseHttpsRedirection();
 
-void ConfigureMiddleware(WebApplication app)
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseRouting();
 
     app.UseCors("AllowSpecificOrigin");
 
-    app.UseAuthentication();
-    app.UseAuthorization();
+    
 
     app.MapControllers();
 }
+
+app.Run();

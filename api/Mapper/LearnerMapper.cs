@@ -15,7 +15,6 @@ namespace api.Mapper
             {
                 Id = learner.Id,
                 Name = learner.Name,
-                Email = learner.Email,
                 ProfilePicture = learner.ProfilePicture,
                 Bio = learner.Bio
             };

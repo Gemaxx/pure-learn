@@ -6,11 +6,14 @@ using api.Dtos.Category;
 using api.Helpers;
 using api.Interfaces;
 using api.Mapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
+  
     [Route("api/learners/{learnerId}/categories")]
+    
     [ApiController]
     public class CategoriesController : ControllerBase
     {

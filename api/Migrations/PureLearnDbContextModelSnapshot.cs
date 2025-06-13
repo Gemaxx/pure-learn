@@ -23,6 +23,204 @@ namespace api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("api.Models.ApplicationUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
             modelBuilder.Entity("api.Models.Category", b =>
                 {
                     b.Property<long>("Id")
@@ -78,12 +276,11 @@ namespace api.Migrations
                         .HasColumnName("updated_at")
                         .HasDefaultValueSql("(sysdatetime())");
 
-                    b.HasKey("Id")
-                        .HasName("PK__Category__3213E83F6B2F1F4A");
+                    b.HasKey("Id");
 
-                    b.HasIndex(new[] { "LearnerId" }, "idx_category_learner_id");
+                    b.HasIndex("LearnerId");
 
-                    b.HasIndex(new[] { "ParentCategoryId" }, "idx_category_parent_category_id");
+                    b.HasIndex("ParentCategoryId");
 
                     b.ToTable("Category", null, t =>
                         {
@@ -166,12 +363,11 @@ namespace api.Migrations
                         .HasColumnName("updated_at")
                         .HasDefaultValueSql("(sysdatetime())");
 
-                    b.HasKey("Id")
-                        .HasName("PK__Goal__3213E83F4B8AC773");
+                    b.HasKey("Id");
 
-                    b.HasIndex(new[] { "CategoryId" }, "idx_goal_category_id");
+                    b.HasIndex("CategoryId");
 
-                    b.HasIndex(new[] { "LearnerId" }, "idx_goal_learner_id");
+                    b.HasIndex("LearnerId");
 
                     b.ToTable("Goal", null, t =>
                         {
@@ -196,15 +392,15 @@ namespace api.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("deleted_at");
 
+                    b.Property<long?>("GoalId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("goal_id");
+
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
-
-                    b.Property<long>("LearnerId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("learner_id");
 
                     b.Property<int?>("MaxTasks")
                         .HasColumnType("int")
@@ -216,13 +412,12 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("name");
 
-                    b.HasKey("Id")
-                        .HasName("PK__KanbanSt__3213E83F57FA3597");
+                    b.HasKey("Id");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__KanbanSt__72E12F1B5B560D7E")
+                    b.HasIndex("GoalId");
+
+                    b.HasIndex("Name")
                         .IsUnique();
-
-                    b.HasIndex(new[] { "LearnerId" }, "idx_kanbanstatus_learner_id");
 
                     b.ToTable("KanbanStatus", (string)null);
                 });
@@ -250,12 +445,6 @@ namespace api.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("deleted_at");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("email");
-
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -272,12 +461,6 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("name");
 
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("password_hash");
-
                     b.Property<string>("ProfilePicture")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("profile_picture");
@@ -288,11 +471,7 @@ namespace api.Migrations
                         .HasColumnName("updated_at")
                         .HasDefaultValueSql("(sysdatetime())");
 
-                    b.HasKey("Id")
-                        .HasName("PK__Learner__3213E83F78F21700");
-
-                    b.HasIndex(new[] { "Email" }, "UQ__Learner__AB6E6164FBEEBA46")
-                        .IsUnique();
+                    b.HasKey("Id");
 
                     b.ToTable("Learner", null, t =>
                         {
@@ -312,18 +491,16 @@ namespace api.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<long?>("CategoryId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("category_id");
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasColumnName("CREATEd_at")
+                        .HasColumnName("created_at")
                         .HasDefaultValueSql("(sysdatetime())");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("deleted_at");
+                        .HasColumnType("datetime2");
 
                     b.Property<long?>("GoalId")
                         .HasColumnType("bigint")
@@ -336,20 +513,19 @@ namespace api.Migrations
                         .HasColumnName("is_deleted");
 
                     b.Property<long>("LearnerId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("learner_id");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Link")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("link");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Progress")
-                        .HasColumnType("int")
-                        .HasColumnName("progress");
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("SubgoalId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("subgoal_id");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -358,8 +534,7 @@ namespace api.Migrations
                         .HasColumnName("title");
 
                     b.Property<int>("TotalUnits")
-                        .HasColumnType("int")
-                        .HasColumnName("total_units");
+                        .HasColumnType("int");
 
                     b.Property<long>("TypeId")
                         .HasColumnType("bigint")
@@ -371,518 +546,344 @@ namespace api.Migrations
                         .HasColumnName("updated_at")
                         .HasDefaultValueSql("(sysdatetime())");
 
-                    b.HasKey("Id")
-                        .HasName("PK__Learning__3213E83F012A92B3");
+                    b.HasKey("Id");
 
-                    b.HasIndex(new[] { "CategoryId" }, "idx_learningresource_category_id");
+                    b.HasIndex("CategoryId");
 
-                    b.HasIndex(new[] { "GoalId" }, "idx_learningresource_goal_id");
+                    b.HasIndex("GoalId");
 
-                    b.HasIndex(new[] { "LearnerId" }, "idx_learningresource_learner_id");
+                    b.HasIndex("LearnerId");
 
-                    b.HasIndex(new[] { "SubgoalId" }, "idx_learningresource_subgoal_id");
+                    b.HasIndex("SubgoalId");
 
-                    b.HasIndex(new[] { "TypeId" }, "idx_learningresource_type_id");
+                    b.HasIndex("TypeId");
 
-                    b.ToTable("LearningResource", null, t =>
-                        {
-                            t.HasTrigger("trg_update_learningresource_updated_at");
-                        });
-
-                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                    b.ToTable("LearningResource", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.LearningResourceType", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
+                        .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("deleted_at");
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("is_deleted");
+                        .HasColumnType("bit");
 
                     b.Property<long>("LearnerId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("learner_id");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("name");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UnitType")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("unit_type");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id")
-                        .HasName("PK__Learning__3213E83FD14E54DB");
+                    b.HasKey("Id");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__Learning__72E12F1BA472CB30")
-                        .IsUnique();
+                    b.HasIndex("LearnerId");
 
-                    b.HasIndex(new[] { "UnitType" }, "UQ__Learning__978BEDD53942A437")
-                        .IsUnique();
-
-                    b.HasIndex(new[] { "LearnerId" }, "idx_learningresourcetype_learner_id");
-
-                    b.ToTable("LearningResourceType", (string)null);
+                    b.ToTable("LearningResourceTypes");
                 });
 
             modelBuilder.Entity("api.Models.Note", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
+                        .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Body")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("body");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("CategoryId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("category_id");
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CREATEd_at")
-                        .HasDefaultValueSql("(sysdatetime())");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("deleted_at");
+                        .HasColumnType("datetime2");
 
                     b.Property<long?>("GoalId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("goal_id");
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("is_deleted");
+                        .HasColumnType("bit");
 
                     b.Property<long>("LearnerId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("learner_id");
+                        .HasColumnType("bigint");
 
                     b.Property<long?>("SubgoalId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("subgoal_id");
+                        .HasColumnType("bigint");
 
                     b.Property<long?>("TaskId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("task_id");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("title");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("updated_at")
-                        .HasDefaultValueSql("(sysdatetime())");
+                        .HasColumnType("datetime2");
 
-                    b.HasKey("Id")
-                        .HasName("PK__Note__3213E83F92F5C8DD");
+                    b.HasKey("Id");
 
-                    b.HasIndex(new[] { "CategoryId" }, "idx_note_category_id");
+                    b.HasIndex("CategoryId");
 
-                    b.HasIndex(new[] { "GoalId" }, "idx_note_goal_id");
+                    b.HasIndex("GoalId");
 
-                    b.HasIndex(new[] { "LearnerId" }, "idx_note_learner_id");
+                    b.HasIndex("LearnerId");
 
-                    b.HasIndex(new[] { "SubgoalId" }, "idx_note_subgoal_id");
+                    b.HasIndex("SubgoalId");
 
-                    b.HasIndex(new[] { "TaskId" }, "idx_note_task_id");
+                    b.HasIndex("TaskId");
 
-                    b.ToTable("Note", null, t =>
-                        {
-                            t.HasTrigger("trg_update_note_updated_at");
-                        });
-
-                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                    b.ToTable("Notes");
                 });
 
             modelBuilder.Entity("api.Models.Subgoal", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
+                        .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime?>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CREATEd_at")
-                        .HasDefaultValueSql("(sysdatetime())");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("deleted_at");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("description");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("GoalId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("goal_id");
+                        .HasColumnType("bigint");
 
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("is_deleted");
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("status");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("title");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("updated_at")
-                        .HasDefaultValueSql("(sysdatetime())");
+                        .HasColumnType("datetime2");
 
-                    b.HasKey("Id")
-                        .HasName("PK__Subgoal__3213E83F5F751E7D");
+                    b.HasKey("Id");
 
-                    b.HasIndex(new[] { "GoalId" }, "idx_subgoal_goal_id");
+                    b.HasIndex("GoalId");
 
-                    b.ToTable("Subgoal", null, t =>
-                        {
-                            t.HasTrigger("trg_update_subgoal_updated_at");
-                        });
-
-                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                    b.ToTable("Subgoals");
                 });
 
             modelBuilder.Entity("api.Models.Subtask", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
+                        .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime?>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CREATEd_at")
-                        .HasDefaultValueSql("(sysdatetime())");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("deleted_at");
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("is_deleted");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("status");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("TaskId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("task_id");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("title");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("updated_at")
-                        .HasDefaultValueSql("(sysdatetime())");
+                        .HasColumnType("datetime2");
 
-                    b.HasKey("Id")
-                        .HasName("PK__Subtask__3213E83F63A2F46B");
+                    b.HasKey("Id");
 
-                    b.HasIndex(new[] { "TaskId" }, "idx_subtask_task_id");
+                    b.HasIndex("TaskId");
 
-                    b.ToTable("Subtask", null, t =>
-                        {
-                            t.HasTrigger("trg_update_subtask_updated_at");
-                        });
-
-                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                    b.ToTable("Subtasks");
                 });
 
             modelBuilder.Entity("api.Models.Task", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
+                        .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<long?>("CategoryId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("category_id");
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CREATEd_at")
-                        .HasDefaultValueSql("(sysdatetime())");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("deleted_at");
-
-                    b.Property<DateOnly?>("DueDate")
-                        .HasColumnType("date")
-                        .HasColumnName("due_date");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("EisenhowerStatus")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("eisenhower_status");
-
-                    b.Property<TimeOnly?>("EstimatedTime")
-                        .HasColumnType("time")
-                        .HasColumnName("estimated_time");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("GoalId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("goal_id");
+                        .HasColumnType("bigint");
+
+                    b.Property<bool?>("IsCompleted")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("is_deleted");
+                        .HasColumnType("bit");
 
-                    b.Property<long>("KanbanStatusId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("kanban_status_id");
+                    b.Property<long?>("KanbanStatusId")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("LearnerId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("learner_id");
+                        .HasColumnType("bigint");
 
                     b.Property<long?>("LearningResourceId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("learning_resource_id");
-
-                    b.Property<DateOnly?>("RepeatEndDate")
-                        .HasColumnType("date")
-                        .HasColumnName("repeat_end_date");
-
-                    b.Property<int?>("RepeatEndOccurrences")
-                        .HasColumnType("int")
-                        .HasColumnName("repeat_end_occurrences");
-
-                    b.Property<string>("RepeatEnds")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("repeat_ends");
-
-                    b.Property<string>("RepeatFrequency")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasDefaultValue("None")
-                        .HasColumnName("repeat_frequency");
-
-                    b.Property<int?>("RepeatInterval")
-                        .HasColumnType("int")
-                        .HasColumnName("repeat_interval");
-
-                    b.Property<bool?>("RepeatOnFriday")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("repeat_on_friday");
-
-                    b.Property<bool?>("RepeatOnMonday")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("repeat_on_monday");
-
-                    b.Property<bool?>("RepeatOnSaturday")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("repeat_on_saturday");
-
-                    b.Property<bool?>("RepeatOnSunday")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("repeat_on_sunday");
-
-                    b.Property<bool?>("RepeatOnThursday")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("repeat_on_thursday");
-
-                    b.Property<bool?>("RepeatOnTuesday")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("repeat_on_tuesday");
-
-                    b.Property<bool?>("RepeatOnWednesday")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("repeat_on_wednesday");
+                        .HasColumnType("bigint");
 
                     b.Property<long?>("SubgoalId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("subgoal_id");
-
-                    b.Property<TimeOnly?>("TimeSpent")
-                        .HasColumnType("time")
-                        .HasColumnName("time_spent");
-
-                    b.Property<string>("TimeTaskRelated")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("time_task_related");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("title");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("TypeId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("type_id");
+                    b.Property<long?>("TypeId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("updated_at")
-                        .HasDefaultValueSql("(sysdatetime())");
+                        .HasColumnType("datetime2");
 
-                    b.HasKey("Id")
-                        .HasName("PK__Task__3213E83F69BC2DC8");
+                    b.HasKey("Id");
 
-                    b.HasIndex(new[] { "CategoryId" }, "idx_task_category_id");
+                    b.HasIndex("CategoryId");
 
-                    b.HasIndex(new[] { "GoalId" }, "idx_task_goal_id");
+                    b.HasIndex("GoalId");
 
-                    b.HasIndex(new[] { "KanbanStatusId" }, "idx_task_kanban_status_id");
+                    b.HasIndex("KanbanStatusId");
 
-                    b.HasIndex(new[] { "LearnerId" }, "idx_task_learner_id");
+                    b.HasIndex("LearnerId");
 
-                    b.HasIndex(new[] { "LearningResourceId" }, "idx_task_learning_resource_id");
+                    b.HasIndex("LearningResourceId");
 
-                    b.HasIndex(new[] { "SubgoalId" }, "idx_task_subgoal_id");
+                    b.HasIndex("SubgoalId");
 
-                    b.HasIndex(new[] { "TypeId" }, "idx_task_type_id");
+                    b.HasIndex("TypeId");
 
-                    b.ToTable("Task", null, t =>
-                        {
-                            t.HasTrigger("trg_soft_delete_task");
-
-                            t.HasTrigger("trg_update_task_updated_at");
-
-                            t.HasTrigger("trg_validate_task_repeat_end_date");
-
-                            t.HasTrigger("trg_validate_task_time_spent");
-                        });
-
-                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("api.Models.TaskType", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
+                        .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("deleted_at");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)")
-                        .HasColumnName("description");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("Icon")
-                        .HasColumnType("varbinary(max)")
-                        .HasColumnName("icon");
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("is_deleted");
+                        .HasColumnType("bit");
 
                     b.Property<long>("LearnerId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("learner_id");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("name");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id")
-                        .HasName("PK__TaskType__3213E83FBD5F41F1");
+                    b.HasKey("Id");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__TaskType__72E12F1BF080C4B8")
-                        .IsUnique();
+                    b.HasIndex("LearnerId");
 
-                    b.HasIndex(new[] { "LearnerId" }, "idx_tasktype_learner_id");
+                    b.ToTable("TaskTypes");
+                });
 
-                    b.ToTable("TaskType", (string)null);
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("api.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("api.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("api.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("api.Models.Category", b =>
@@ -925,45 +926,42 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.KanbanStatus", b =>
                 {
-                    b.HasOne("api.Models.Learner", "Learner")
+                    b.HasOne("api.Models.Goal", "Goal")
                         .WithMany("KanbanStatuses")
-                        .HasForeignKey("LearnerId")
-                        .IsRequired()
-                        .HasConstraintName("FK__KanbanSta__learn__04E4BC85");
+                        .HasForeignKey("GoalId")
+                        .HasConstraintName("FK_KanbanStatus_Goal");
 
-                    b.Navigation("Learner");
+                    b.Navigation("Goal");
                 });
 
             modelBuilder.Entity("api.Models.LearningResource", b =>
                 {
                     b.HasOne("api.Models.Category", "Category")
                         .WithMany("LearningResources")
-                        .HasForeignKey("CategoryId")
-                        .HasConstraintName("FK__LearningR__categ__7D439ABD");
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("api.Models.Goal", "Goal")
                         .WithMany("LearningResources")
                         .HasForeignKey("GoalId")
-                        .HasConstraintName("FK__LearningR__goal___7E37BEF6");
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("FK_LearningResources_Goals_GoalId");
 
                     b.HasOne("api.Models.Learner", "Learner")
                         .WithMany("LearningResources")
                         .HasForeignKey("LearnerId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK__LearningR__learn__7C4F7684");
+                        .IsRequired();
 
                     b.HasOne("api.Models.Subgoal", "Subgoal")
                         .WithMany("LearningResources")
-                        .HasForeignKey("SubgoalId")
-                        .HasConstraintName("FK__LearningR__subgo__7F2BE32F");
+                        .HasForeignKey("SubgoalId");
 
                     b.HasOne("api.Models.LearningResourceType", "Type")
                         .WithMany("LearningResources")
                         .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("FK__LearningR__type___787EE5A0");
+                        .HasConstraintName("FK_LearningResources_LearningResourceTypes_TypeId");
 
                     b.Navigation("Category");
 
@@ -981,8 +979,8 @@ namespace api.Migrations
                     b.HasOne("api.Models.Learner", "Learner")
                         .WithMany("LearningResourceTypes")
                         .HasForeignKey("LearnerId")
-                        .IsRequired()
-                        .HasConstraintName("FK__LearningR__learn__75A278F5");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Learner");
                 });
@@ -991,30 +989,25 @@ namespace api.Migrations
                 {
                     b.HasOne("api.Models.Category", "Category")
                         .WithMany("Notes")
-                        .HasForeignKey("CategoryId")
-                        .HasConstraintName("FK__Note__category_i__29221CFB");
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("api.Models.Goal", "Goal")
                         .WithMany("Notes")
-                        .HasForeignKey("GoalId")
-                        .HasConstraintName("FK__Note__goal_id__2A164134");
+                        .HasForeignKey("GoalId");
 
                     b.HasOne("api.Models.Learner", "Learner")
                         .WithMany("Notes")
                         .HasForeignKey("LearnerId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK__Note__learner_id__2CF2ADDF");
+                        .IsRequired();
 
                     b.HasOne("api.Models.Subgoal", "Subgoal")
                         .WithMany("Notes")
-                        .HasForeignKey("SubgoalId")
-                        .HasConstraintName("FK__Note__subgoal_id__2B0A656D");
+                        .HasForeignKey("SubgoalId");
 
                     b.HasOne("api.Models.Task", "Task")
                         .WithMany("Notes")
-                        .HasForeignKey("TaskId")
-                        .HasConstraintName("FK__Note__task_id__2BFE89A6");
+                        .HasForeignKey("TaskId");
 
                     b.Navigation("Category");
 
@@ -1033,8 +1026,7 @@ namespace api.Migrations
                         .WithMany("Subgoals")
                         .HasForeignKey("GoalId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK__Subgoal__goal_id__70DDC3D8");
+                        .IsRequired();
 
                     b.Navigation("Goal");
                 });
@@ -1045,8 +1037,7 @@ namespace api.Migrations
                         .WithMany("Subtasks")
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK__Subtask__task_id__245D67DE");
+                        .IsRequired();
 
                     b.Navigation("Task");
                 });
@@ -1055,44 +1046,33 @@ namespace api.Migrations
                 {
                     b.HasOne("api.Models.Category", "Category")
                         .WithMany("Tasks")
-                        .HasForeignKey("CategoryId")
-                        .HasConstraintName("FK__Task__category_i__1BC821DD");
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("api.Models.Goal", "Goal")
                         .WithMany("Tasks")
-                        .HasForeignKey("GoalId")
-                        .HasConstraintName("FK__Task__goal_id__1CBC4616");
+                        .HasForeignKey("GoalId");
 
                     b.HasOne("api.Models.KanbanStatus", "KanbanStatus")
                         .WithMany("Tasks")
-                        .HasForeignKey("KanbanStatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK__Task__kanban_sta__0C85DE4D");
+                        .HasForeignKey("KanbanStatusId");
 
                     b.HasOne("api.Models.Learner", "Learner")
                         .WithMany("Tasks")
                         .HasForeignKey("LearnerId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK__Task__learner_id__1AD3FDA4");
+                        .IsRequired();
 
                     b.HasOne("api.Models.LearningResource", "LearningResource")
                         .WithMany("Tasks")
-                        .HasForeignKey("LearningResourceId")
-                        .HasConstraintName("FK__Task__learning_r__1EA48E88");
+                        .HasForeignKey("LearningResourceId");
 
                     b.HasOne("api.Models.Subgoal", "Subgoal")
                         .WithMany("Tasks")
-                        .HasForeignKey("SubgoalId")
-                        .HasConstraintName("FK__Task__subgoal_id__1DB06A4F");
+                        .HasForeignKey("SubgoalId");
 
                     b.HasOne("api.Models.TaskType", "Type")
                         .WithMany("Tasks")
-                        .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK__Task__type_id__0B91BA14");
+                        .HasForeignKey("TypeId");
 
                     b.Navigation("Category");
 
@@ -1114,8 +1094,8 @@ namespace api.Migrations
                     b.HasOne("api.Models.Learner", "Learner")
                         .WithMany("TaskTypes")
                         .HasForeignKey("LearnerId")
-                        .IsRequired()
-                        .HasConstraintName("FK__TaskType__learne__08B54D69");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Learner");
                 });
@@ -1135,6 +1115,8 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Goal", b =>
                 {
+                    b.Navigation("KanbanStatuses");
+
                     b.Navigation("LearningResources");
 
                     b.Navigation("Notes");
@@ -1154,8 +1136,6 @@ namespace api.Migrations
                     b.Navigation("Categories");
 
                     b.Navigation("Goals");
-
-                    b.Navigation("KanbanStatuses");
 
                     b.Navigation("LearningResourceTypes");
 
