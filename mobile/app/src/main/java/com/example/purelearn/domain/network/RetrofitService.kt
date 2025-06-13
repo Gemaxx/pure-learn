@@ -31,7 +31,7 @@ interface RetrofitService {
     //physical device  "http://192.168.1.6:5115/api/"
     //emulator  "http://10.0.2.2:5115/api/"
     companion object {
-        const val baseUrl = "http://192.168.1.9:5115/api/"
+        const val baseUrl = "http://192.168.1.13:5115/api/"
     }
 
     @GET("learners/{learnerId}/categories")
@@ -289,4 +289,7 @@ interface RetrofitService {
         @Path("statusId") statusId : Int
     ): Response<Unit>
             //KanbanStatusResponse
+
+
+
 }
