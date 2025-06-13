@@ -1,6 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 using api.Data; // PureLearnDbContext
 using api.Models; // ApplicationUser
+using api.Interfaces; // ICategoryRepository
+using api.Repository; // CategoryRepository
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,20 +11,24 @@ using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services to the container
 {
-    // Controllers with JSON settings
+    // Controllers with JSON settings to avoid reference loops
     builder.Services.AddControllers()
         .AddJsonOptions(options =>
         {
             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         });
 
-    // Swagger
+    // Swagger (OpenAPI)
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(options =>
     {
-        options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "PureLearn API", Version = "v1" });
+        options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+        {
+            Title = "PureLearn API",
+            Version = "v1"
+        });
     });
 
     // CORS
@@ -34,12 +40,12 @@ var builder = WebApplication.CreateBuilder(args);
                   .AllowAnyHeader());
     });
 
-    // Identity (optional, can be kept if you're using it later)
+    // Identity (for authentication/authorization)
     builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
         .AddEntityFrameworkStores<PureLearnDbContext>()
         .AddDefaultTokenProviders();
 
-    // DbContext
+    // DbContext (Entity Framework + SQL Server)
     builder.Services.AddDbContext<PureLearnDbContext>(options =>
         options.UseSqlServer(
             builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -50,6 +56,12 @@ var builder = WebApplication.CreateBuilder(args);
             )
         )
     );
+
+    // ✅ Register custom repositories
+    builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+    // Add other repositories similarly if needed
+    // builder.Services.AddScoped<IOtherRepo, OtherRepo>();
 }
 
 var app = builder.Build();
@@ -68,7 +80,8 @@ var app = builder.Build();
 
     app.UseCors("AllowSpecificOrigin");
 
-    
+    app.UseAuthentication(); // needed if you use Identity
+    app.UseAuthorization();
 
     app.MapControllers();
 }
