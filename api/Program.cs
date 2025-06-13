@@ -1,34 +1,26 @@
 ﻿using System.Text.Json.Serialization;
 using api.Data; // PureLearnDbContext
-using api.Models; // ApplicationUser
-using api.Interfaces; // ICategoryRepository
-using api.Repository; // CategoryRepository
+using api.Interfaces; // Interfaces for repositories
+using api.Repos;
+using api.Repository; // Repository implementations
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 {
-    // Controllers with JSON settings to avoid reference loops
+    // Add Controllers and configure JSON options
     builder.Services.AddControllers()
         .AddJsonOptions(options =>
         {
             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         });
 
-    // Swagger (OpenAPI)
+    // Swagger
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(options =>
     {
-        options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
-        {
-            Title = "PureLearn API",
-            Version = "v1"
-        });
+        options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "PureLearn API", Version = "v1" });
     });
 
     // CORS
@@ -40,12 +32,7 @@ var builder = WebApplication.CreateBuilder(args);
                   .AllowAnyHeader());
     });
 
-    // Identity (for authentication/authorization)
-    builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-        .AddEntityFrameworkStores<PureLearnDbContext>()
-        .AddDefaultTokenProviders();
-
-    // DbContext (Entity Framework + SQL Server)
+    // DbContext
     builder.Services.AddDbContext<PureLearnDbContext>(options =>
         options.UseSqlServer(
             builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -57,11 +44,17 @@ var builder = WebApplication.CreateBuilder(args);
         )
     );
 
-    // ✅ Register custom repositories
+    // Dependency Injection: Register all repositories
     builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-
-    // Add other repositories similarly if needed
-    // builder.Services.AddScoped<IOtherRepo, OtherRepo>();
+    builder.Services.AddScoped<IGoalRepository, GoalRepository>();
+    builder.Services.AddScoped<IKanbanStatusRepository, KanbanStatusRepository>();
+    builder.Services.AddScoped<ILearnerRepository, LearnerRepository>();
+    builder.Services.AddScoped<ILearningResourceRepository, LearningResourceRepository>();
+    builder.Services.AddScoped<ILearningResourceTypeRepository, LearningResourceTypeRepository>();
+    builder.Services.AddScoped<INoteRepository, NoteRepository>();
+    builder.Services.AddScoped<ISubtaskRepository, SubtaskRepository>();
+    builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+    builder.Services.AddScoped<ITaskTypeRepository, TaskTypeRepository>();
 }
 
 var app = builder.Build();
@@ -80,7 +73,6 @@ var app = builder.Build();
 
     app.UseCors("AllowSpecificOrigin");
 
-    app.UseAuthentication(); // needed if you use Identity
     app.UseAuthorization();
 
     app.MapControllers();
