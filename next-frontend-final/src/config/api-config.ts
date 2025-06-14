@@ -1,6 +1,6 @@
 // API configuration
-export const API_BASE_URL = "https://purelearn-api-ccbgcxgreygqe4dh.uaenorth-01.azurewebsites.net"
-
+// export const API_BASE_URL = "https://purelearn-api-ccbgcxgreygqe4dh.uaenorth-01.azurewebsites.net"
+export const API_BASE_URL = "http://localhost:5115";
 // API endpoints
 export const API_ENDPOINTS = {
   AUTH: {

@@ -1,7 +1,8 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/auth-context";
+import { API_BASE_URL } from "@/config/api-config";
 
 let debounceTimeout: NodeJS.Timeout;
 
@@ -26,7 +27,11 @@ export default function SearchPage() {
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/learners/${user.id}/search?Term=${encodeURIComponent(query)}`);
+        const res = await fetch(
+          `${API_BASE_URL}/api/learners/${
+            user.id
+          }/search?Term=${encodeURIComponent(query)}`
+        );
         if (!res.ok) throw new Error("Failed to search");
         const data = await res.json();
         setResults(Array.isArray(data) ? data : []);
@@ -49,7 +54,7 @@ export default function SearchPage() {
           className="w-full rounded-lg border border-border bg-background text-foreground px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
           placeholder="Search for anything..."
           value={query}
-          onChange={e => setQuery(e.target.value)}
+          onChange={(e) => setQuery(e.target.value)}
         />
       </div>
       {/* {loading && <div className="text-muted-foreground">Loading...</div>} */}
@@ -59,10 +64,19 @@ export default function SearchPage() {
       )}
       <div className="space-y-4">
         {results.map((item, idx) => (
-          <div key={idx} className="rounded-lg border border-border bg-card p-4 flex flex-col gap-1">
-            <div className="text-xs uppercase text-muted-foreground font-semibold tracking-widest">{item.entityType}</div>
+          <div
+            key={idx}
+            className="rounded-lg border border-border bg-card p-4 flex flex-col gap-1"
+          >
+            <div className="text-xs uppercase text-muted-foreground font-semibold tracking-widest">
+              {item.entityType}
+            </div>
             <div className="font-bold text-lg">{item.title}</div>
-            {item.description && <div className="text-sm text-muted-foreground">{item.description}</div>}
+            {item.description && (
+              <div className="text-sm text-muted-foreground">
+                {item.description}
+              </div>
+            )}
           </div>
         ))}
       </div>
