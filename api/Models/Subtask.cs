@@ -9,7 +9,7 @@ public partial class Subtask
 
     public string Title { get; set; } = null!;
 
-    public string Status { get; set; } = null!;
+    public bool IsCompleted { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 

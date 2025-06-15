@@ -19,9 +19,5 @@ namespace api.Dtos.TaskType
 
         // Optionally expose additional fields, e.g., an icon (base64 string or URL)
         public byte[]? Icon { get; set; }
-
-        // Audit fields (if needed)
-        public DateTime? CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
     }
 }

@@ -73,9 +73,12 @@ namespace api.Controllers
             var learningResourceType = learningResourceTypeDto.ToLearningResourceType();
             await _learningResourceTypeRepo.CreateLearningResourceTypeAsync(learnerId, learningResourceType);
 
+            // Map the entity back to a DTO to return
+            var resultDto = learningResourceType.ToLearningResourceTypeDto();
+
             return CreatedAtAction(nameof(GetLearningResourceType), 
-                new { learnerId = learnerId, learningResourceTypeId = learningResourceType.Id }, 
-                learningResourceType);
+            new { learnerId = learnerId, learningResourceTypeId = learningResourceType.Id }, 
+            resultDto);
         }
 
         // Update

@@ -17,9 +17,5 @@ namespace api.Dtos.KanbanStatus
         // Maximum number of tasks allowed for this status.
         [Range(1, int.MaxValue, ErrorMessage = "MaxTasks must be a positive number.")]
         public int? MaxTasks { get; set; }
-
-        // Optionally include audit fields if needed.
-        public DateTime? CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
     }
 }

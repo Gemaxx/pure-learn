@@ -16,9 +16,9 @@ namespace api.Mapper
             {
                 Id = subtaskModel.Id,
                 Title = subtaskModel.Title,
-                Status = subtaskModel.Status,
                 CreatedAt = subtaskModel.CreatedAt,
-                UpdatedAt = subtaskModel.UpdatedAt
+                UpdatedAt = subtaskModel.UpdatedAt,
+                IsCompleted = subtaskModel.IsCompleted
             };
         }
 
@@ -28,7 +28,6 @@ namespace api.Mapper
             return new Subtask
             {
                 Title = createDto.Title,
-                // Audit fields will be set in the repository or automatically.
             };
         }
 
@@ -37,8 +36,8 @@ namespace api.Mapper
         {
             if (!string.IsNullOrEmpty(patchDto.Title))
                 subtask.Title = patchDto.Title;
-            if (!string.IsNullOrEmpty(patchDto.Status))
-                subtask.Status = patchDto.Status;
+            if (patchDto.IsCompleted.HasValue)
+                subtask.IsCompleted = patchDto.IsCompleted.Value;
         }
     }
 }

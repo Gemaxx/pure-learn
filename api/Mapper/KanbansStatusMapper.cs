@@ -26,7 +26,6 @@ namespace api.Mapper
             {
                 Name = createDto.Name,
                 MaxTasks = createDto.MaxTasks
-                // Audit fields (CreatedAt, UpdatedAt) are set in the repository or by the database.
             };
         }
 

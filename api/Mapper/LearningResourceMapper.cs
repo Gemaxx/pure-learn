@@ -18,7 +18,8 @@ namespace api.Mapper
                 TypeId = learningResource.TypeId,
                 TotalUnits = learningResource.TotalUnits,
                 Progress = learningResource.Progress,
-                ProgressPercentage = learningResource.ProgressPercentage
+                ProgressPercentage = learningResource.ProgressPercentage,
+                Link = learningResource.Link
             };
         }
 

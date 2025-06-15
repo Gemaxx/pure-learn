@@ -18,7 +18,6 @@ namespace api.Mapper
                 Name = taskTypeModel.Name,
                 Description = taskTypeModel.Description,
                 Icon = taskTypeModel.Icon
-                // Removed CreatedAt and UpdatedAt mapping.
             };
         }
 
@@ -30,7 +29,6 @@ namespace api.Mapper
                 Name = createDto.Name,
                 Description = createDto.Description,
                 Icon = createDto.Icon
-                // Audit fields can be set in repository if needed.
             };
         }
 
