@@ -39,4 +39,5 @@ public class StudySession
     // Navigation properties
     public virtual Learner Learner { get; set; } = null!;
     public virtual Task? Task { get; set; }
+    public virtual ICollection<PomodoroCycle> PomodoroCycles { get; set; } = new List<PomodoroCycle>();
 } 

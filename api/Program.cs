@@ -1,10 +1,9 @@
-﻿using api.Data;
-using api.Models;
+﻿using api.Interfaces;
 using api.Repos;
-
-using System.Text.Json.Serialization;
-using api.Interfaces;
 using api.Mapper;
+using api.Data;
+using api.Models;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
@@ -68,6 +67,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<ITaskRepository, TaskRepository>();
     builder.Services.AddScoped<ITaskTypeRepository, TaskTypeRepository>();
     builder.Services.AddScoped<IStudySessionRepository, StudySessionRepository>();
+    builder.Services.AddScoped<IPomodoroCycleRepository, PomodoroCycleRepository>();
 }
 
 var app = builder.Build();

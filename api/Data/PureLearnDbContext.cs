@@ -23,6 +23,7 @@ namespace api.Data
         public virtual DbSet<Models.Task> Tasks { get; set; } = null!;
         public virtual DbSet<TaskType> TaskTypes { get; set; } = null!;
         public virtual DbSet<StudySession> StudySessions { get; set; } = null!;
+        public virtual DbSet<PomodoroCycle> PomodoroCycles { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -221,6 +222,28 @@ namespace api.Data
                       .HasForeignKey(d => d.TaskId)
                       .OnDelete(DeleteBehavior.Restrict)
                       .HasConstraintName("FK_StudySession_Task");
+            });
+
+            modelBuilder.Entity<PomodoroCycle>(entity =>
+            {
+                entity.ToTable("PomodoroCycle");
+
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => e.StudySessionId);
+
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.StudySessionId).HasColumnName("study_session_id");
+                entity.Property(e => e.IsCompleted).HasColumnName("is_completed");
+                entity.Property(e => e.StartTime).HasColumnName("start_time");
+                entity.Property(e => e.EndTime).HasColumnName("end_time");
+                entity.Property(e => e.BreakType).HasColumnName("break_type");
+                entity.Property(e => e.BreakStart).HasColumnName("break_start");
+                entity.Property(e => e.BreakEnd).HasColumnName("break_end");
+
+                entity.HasOne(e => e.StudySession)
+                      .WithMany(s => s.PomodoroCycles)
+                      .HasForeignKey(e => e.StudySessionId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             OnModelCreatingPartial(modelBuilder);
