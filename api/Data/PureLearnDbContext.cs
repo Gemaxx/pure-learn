@@ -22,6 +22,7 @@ namespace api.Data
         public virtual DbSet<Subtask> Subtasks { get; set; } = null!;
         public virtual DbSet<Models.Task> Tasks { get; set; } = null!;
         public virtual DbSet<TaskType> TaskTypes { get; set; } = null!;
+        public virtual DbSet<StudySession> StudySessions { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -156,6 +157,70 @@ namespace api.Data
                     .HasForeignKey(d => d.GoalId)
                     .OnDelete(DeleteBehavior.Restrict) // ⛔️ بدل Cascade لحل المشكلة
                     .HasConstraintName("FK_LearningResources_Goals_GoalId");
+            });
+
+            modelBuilder.Entity<StudySession>(entity =>
+            {
+                entity.ToTable("StudySession", tb =>
+                {
+                    tb.HasTrigger("trg_soft_delete_study_session");
+                    tb.HasTrigger("trg_update_study_session_updated_at");
+                });
+
+                // Soft‐delete filter (ignores rows where IsDeleted == true)
+                entity.HasQueryFilter(s => !s.IsDeleted);
+
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => e.LearnerId);
+                entity.HasIndex(e => e.TaskId);
+
+                entity.Property(e => e.Id)
+                      .HasColumnName("id");
+
+                entity.Property(e => e.LearnerId)
+                      .HasColumnName("learner_id");
+
+                entity.Property(e => e.TaskId)
+                      .HasColumnName("task_id");
+
+                entity.Property(e => e.StartTime)
+                      .HasColumnName("start_time");
+
+                entity.Property(e => e.EndTime)
+                      .HasColumnName("end_time");
+
+                entity.Property(e => e.CycleCount)
+                      .HasColumnName("cycle_count");
+
+                entity.Property(e => e.IsCompleted)
+                      .HasColumnName("is_completed");
+
+                entity.Property(e => e.CreatedAt)
+                      .HasColumnName("created_at")
+                      .HasDefaultValueSql("sysdatetime()");
+
+                entity.Property(e => e.UpdatedAt)
+                      .HasColumnName("updated_at")
+                      .HasDefaultValueSql("sysdatetime()");
+
+                entity.Property(e => e.DeletedAt)
+                      .HasColumnName("deleted_at");
+
+                entity.Property(e => e.IsDeleted)
+                      .HasColumnName("is_deleted")
+                      .HasDefaultValue(false);
+
+                entity.HasOne(d => d.Learner)
+                      .WithMany(l => l.StudySessions)
+                      .HasForeignKey(d => d.LearnerId)
+                      .OnDelete(DeleteBehavior.Restrict)
+                      .HasConstraintName("FK_StudySession_Learner");
+
+                entity.HasOne(d => d.Task)
+                      .WithMany(t => t.StudySessions)
+                      .HasForeignKey(d => d.TaskId)
+                      .OnDelete(DeleteBehavior.Restrict)
+                      .HasConstraintName("FK_StudySession_Task");
             });
 
             OnModelCreatingPartial(modelBuilder);

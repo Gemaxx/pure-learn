@@ -13,7 +13,7 @@ namespace api.Migrations
 {
     [DbContext(typeof(PureLearnDbContext))]
     [Migration("20250613151537_all")]
-    partial class all
+    partial class AddStudySession
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

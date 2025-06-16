@@ -651,6 +651,77 @@ namespace api.Migrations
                     b.ToTable("Notes");
                 });
 
+            modelBuilder.Entity("api.Models.StudySession", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("sysdatetime()");
+
+                    b.Property<int>("CycleCount")
+                        .HasColumnType("int")
+                        .HasColumnName("cycle_count");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("end_time");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_completed");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_deleted");
+
+                    b.Property<long>("LearnerId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("learner_id");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("start_time");
+
+                    b.Property<long?>("TaskId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("task_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("sysdatetime()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LearnerId");
+
+                    b.HasIndex("TaskId");
+
+                    b.ToTable("StudySession", null, t =>
+                        {
+                            t.HasTrigger("trg_soft_delete_study_session");
+
+                            t.HasTrigger("trg_update_study_session_updated_at");
+                        });
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                });
+
             modelBuilder.Entity("api.Models.Subgoal", b =>
                 {
                     b.Property<long>("Id")
@@ -1020,6 +1091,26 @@ namespace api.Migrations
                     b.Navigation("Task");
                 });
 
+            modelBuilder.Entity("api.Models.StudySession", b =>
+                {
+                    b.HasOne("api.Models.Learner", "Learner")
+                        .WithMany("StudySessions")
+                        .HasForeignKey("LearnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_StudySession_Learner");
+
+                    b.HasOne("api.Models.Task", "Task")
+                        .WithMany("StudySessions")
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("FK_StudySession_Task");
+
+                    b.Navigation("Learner");
+
+                    b.Navigation("Task");
+                });
+
             modelBuilder.Entity("api.Models.Subgoal", b =>
                 {
                     b.HasOne("api.Models.Goal", "Goal")
@@ -1143,6 +1234,8 @@ namespace api.Migrations
 
                     b.Navigation("Notes");
 
+                    b.Navigation("StudySessions");
+
                     b.Navigation("TaskTypes");
 
                     b.Navigation("Tasks");
@@ -1170,6 +1263,8 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Task", b =>
                 {
                     b.Navigation("Notes");
+
+                    b.Navigation("StudySessions");
 
                     b.Navigation("Subtasks");
                 });

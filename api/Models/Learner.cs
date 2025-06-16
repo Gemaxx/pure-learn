@@ -7,7 +7,9 @@ namespace api.Models;
 
 public class Learner
 { 
-    public new long Id { get; set; }
+    public long Id { get; set; }
+
+    public string IdentityId { get; set; } = null!;
 
     public string Name { get; set; } = null!;
 
@@ -41,4 +43,6 @@ public class Learner
     public virtual ICollection<TaskType> TaskTypes { get; set; } = new List<TaskType>();
 
     public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
+
+    public virtual ICollection<StudySession> StudySessions { get; set; } = new List<StudySession>();
 }

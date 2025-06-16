@@ -1,9 +1,13 @@
-﻿using System.Text.Json.Serialization;
-using api.Data; // PureLearnDbContext
-using api.Interfaces; // Interfaces for repositories
+﻿using api.Data;
+using api.Models;
 using api.Repos;
-using api.Repository; // Repository implementations
+
+using System.Text.Json.Serialization;
+using api.Interfaces;
+using api.Mapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +48,14 @@ var builder = WebApplication.CreateBuilder(args);
         )
     );
 
+    // Identity
+    builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+        .AddEntityFrameworkStores<PureLearnDbContext>()
+        .AddDefaultTokenProviders();
+
+    // AutoMapper
+    builder.Services.AddAutoMapper(typeof(StudySessionMapper));
+
     // Dependency Injection: Register all repositories
     builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
     builder.Services.AddScoped<IGoalRepository, GoalRepository>();
@@ -55,6 +67,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<ISubtaskRepository, SubtaskRepository>();
     builder.Services.AddScoped<ITaskRepository, TaskRepository>();
     builder.Services.AddScoped<ITaskTypeRepository, TaskTypeRepository>();
+    builder.Services.AddScoped<IStudySessionRepository, StudySessionRepository>();
 }
 
 var app = builder.Build();
@@ -73,6 +86,7 @@ var app = builder.Build();
 
     app.UseCors("AllowSpecificOrigin");
 
+    app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapControllers();

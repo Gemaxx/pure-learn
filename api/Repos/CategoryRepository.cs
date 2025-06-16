@@ -11,7 +11,7 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Repository
+namespace api.Repos
 {
 public class CategoryRepository : ICategoryRepository
 {
