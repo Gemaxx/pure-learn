@@ -96,6 +96,8 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<IPomodoroCycleRepository, PomodoroCycleRepository>();
     builder.Services.AddScoped<ITimerSettingsRepository, TimerSettingsRepository>();
     builder.Services.AddScoped<ITokenService, TokenService>();
+    builder.Services.AddScoped<IPomodoroInsightRepository, PomodoroInsightRepository>();
+    builder.Services.AddAutoMapper(typeof(PomodoroInsightMapper));
 }
 
 var app = builder.Build();

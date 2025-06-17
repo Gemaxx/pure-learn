@@ -26,6 +26,7 @@ namespace api.Data
         public virtual DbSet<StudySession> StudySessions { get; set; } = null!;
         public virtual DbSet<PomodoroCycle> PomodoroCycles { get; set; } = null!;
         public virtual DbSet<TimerSettings> TimerSettings { get; set; } = null!;
+        public virtual DbSet<PomodoroInsight> PomodoroInsights { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -275,6 +276,28 @@ namespace api.Data
                     .WithOne()
                     .HasForeignKey<TimerSettings>(e => e.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<PomodoroInsight>(entity =>
+            {
+                entity.ToTable("PomodoroInsight");
+
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => e.LearnerId);
+
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.LearnerId).HasColumnName("learner_id");
+                entity.Property(e => e.TotalPomodoros).HasColumnName("total_pomodoros");
+                entity.Property(e => e.TotalFocusTime).HasColumnName("total_focus_time");
+                entity.Property(e => e.WeeklyPomodoros).HasColumnName("weekly_pomodoros");
+                entity.Property(e => e.WeeklyFocusTime).HasColumnName("weekly_focus_time");
+                entity.Property(e => e.WeekOf).HasColumnName("week_of");
+
+                entity.HasOne(d => d.Learner)
+                    .WithMany()
+                    .HasForeignKey(d => d.LearnerId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_PomodoroInsight_Learner");
             });
 
             OnModelCreatingPartial(modelBuilder);
