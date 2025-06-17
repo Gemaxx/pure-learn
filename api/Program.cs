@@ -94,6 +94,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<ITaskTypeRepository, TaskTypeRepository>();
     builder.Services.AddScoped<IStudySessionRepository, StudySessionRepository>();
     builder.Services.AddScoped<IPomodoroCycleRepository, PomodoroCycleRepository>();
+    builder.Services.AddScoped<ITimerSettingsRepository, TimerSettingsRepository>();
     builder.Services.AddScoped<ITokenService, TokenService>();
 }
 

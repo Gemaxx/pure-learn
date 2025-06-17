@@ -25,6 +25,7 @@ namespace api.Data
         public virtual DbSet<TaskType> TaskTypes { get; set; } = null!;
         public virtual DbSet<StudySession> StudySessions { get; set; } = null!;
         public virtual DbSet<PomodoroCycle> PomodoroCycles { get; set; } = null!;
+        public virtual DbSet<TimerSettings> TimerSettings { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -256,6 +257,24 @@ namespace api.Data
                       .HasForeignKey(e => e.StudySessionId)
                       .OnDelete(DeleteBehavior.Cascade)
                       .IsRequired(false);
+            });
+
+            modelBuilder.Entity<TimerSettings>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.ToTable("TimerSettings");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.FocusMinutes).HasColumnName("focus_minutes");
+                entity.Property(e => e.ShortBreakMin).HasColumnName("short_break_min");
+                entity.Property(e => e.LongBreakMin).HasColumnName("long_break_min");
+                entity.Property(e => e.CyclesBeforeLongBreak).HasColumnName("cycles_before_long_break");
+
+                entity.HasOne<ApplicationUser>()
+                    .WithOne()
+                    .HasForeignKey<TimerSettings>(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             OnModelCreatingPartial(modelBuilder);

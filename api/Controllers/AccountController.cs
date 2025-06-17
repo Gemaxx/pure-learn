@@ -3,6 +3,7 @@ using api.Interfaces;
 using api.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using api.Data;
 
 namespace api.Controllers;
 
@@ -13,15 +14,18 @@ public class AccountController : ControllerBase
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly ITokenService _tokenService;
+    private readonly PureLearnDbContext _context;
 
     public AccountController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
-        ITokenService tokenService)
+        ITokenService tokenService,
+        PureLearnDbContext context)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _tokenService = tokenService;
+        _context = context;
     }
 
     [HttpPost("register")]
@@ -43,6 +47,17 @@ public class AccountController : ControllerBase
 
         if (!result.Succeeded)
             return BadRequest(result.Errors);
+
+        // Create default timer settings for the new user
+        await _context.TimerSettings.AddAsync(new TimerSettings
+        {
+            UserId = user.Id,
+            FocusMinutes = 25,
+            ShortBreakMin = 5,
+            LongBreakMin = 15,
+            CyclesBeforeLongBreak = 4
+        });
+        await _context.SaveChangesAsync();
 
         return new UserDto
         {
