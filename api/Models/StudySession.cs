@@ -40,4 +40,10 @@ public class StudySession
     public virtual Learner Learner { get; set; } = null!;
     public virtual Task? Task { get; set; }
     public virtual ICollection<PomodoroCycle> PomodoroCycles { get; set; } = new List<PomodoroCycle>();
+
+    [NotMapped]
+    public TimeSpan Duration => (EndTime ?? DateTime.UtcNow) - StartTime;
+
+    [NotMapped]
+    public DateTime LastCycleTime => EndTime ?? StartTime;
 } 

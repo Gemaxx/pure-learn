@@ -13,6 +13,6 @@ namespace api.Models
         public DateTime? BreakStart { get; set; }
         public DateTime? BreakEnd { get; set; }
 
-        public virtual StudySession StudySession { get; set; } = null!;
+        public virtual StudySession? StudySession { get; set; }
     }
 } 

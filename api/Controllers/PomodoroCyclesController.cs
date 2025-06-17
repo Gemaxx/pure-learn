@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using api.Dtos.PomodoroCycle;
 using api.Interfaces;
 using api.Models;
+using api.Data;
 
 namespace api.Controllers
 {
@@ -12,11 +13,16 @@ namespace api.Controllers
     {
         private readonly IPomodoroCycleRepository _repo;
         private readonly IMapper _mapper;
+        private readonly PureLearnDbContext _context;
 
-        public PomodoroCyclesController(IPomodoroCycleRepository repo, IMapper mapper)
+        public PomodoroCyclesController(
+            IPomodoroCycleRepository repo, 
+            IMapper mapper,
+            PureLearnDbContext context)
         {
             _repo = repo;
             _mapper = mapper;
+            _context = context;
         }
 
         [HttpGet("session/{sessionId}")]
@@ -29,6 +35,10 @@ namespace api.Controllers
         [HttpPost]
         public async Task<ActionResult<PomodoroCycleDto>> Create(CreatePomodoroCycleRequestDto dto)
         {
+            var session = await _context.StudySessions.FindAsync(dto.StudySessionId);
+            if (session == null)
+                return BadRequest("Invalid studySessionId");
+
             var entity = _mapper.Map<PomodoroCycle>(dto);
             var created = await _repo.CreateAsync(entity);
             return CreatedAtAction(nameof(GetBySession), new { sessionId = created.StudySessionId }, _mapper.Map<PomodoroCycleDto>(created));

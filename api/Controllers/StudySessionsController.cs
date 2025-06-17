@@ -36,102 +36,65 @@ public class StudySessionsController : ControllerBase
         _ctx = ctx;
     }
 
-    private async Task<long> GetLearnerId()
+    private async System.Threading.Tasks.Task<long> GetCurrentLearnerId()
     {
-        var user = await _userManager.GetUserAsync(User);
-        if (user == null) throw new UnauthorizedAccessException("User not found");
+        var username = User.Identity?.Name;
+        if (string.IsNullOrEmpty(username)) throw new UnauthorizedAccessException();
 
-        var learner = await _ctx.Learners
-            .SingleOrDefaultAsync(l => l.IdentityId == user.Id);
-        if (learner == null) throw new UnauthorizedAccessException("Learner not found");
-
-        return learner.Id;
+        var user = await _userManager.FindByNameAsync(username);
+        if (user == null)
+            throw new UnauthorizedAccessException("User not found");
+            
+        return long.Parse(user.Id);
     }
 
-    private async Task<bool> VerifyTaskOwnership(long learnerId, long? taskId)
-    {
-        if (!taskId.HasValue) return true;
-        return await _ctx.Tasks
-            .AnyAsync(t => t.Id == taskId.Value && t.LearnerId == learnerId);
-    }
-
+    [Authorize]
     [HttpGet]
     [ProducesResponseType(typeof(List<StudySessionDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<List<StudySessionDto>>> Get([FromQuery] StudySessionQueryObject query)
+    public async System.Threading.Tasks.Task<ActionResult<List<StudySessionDto>>> GetMySessions()
     {
-        var learnerId = await GetLearnerId();
-        var sessions = await _repo.GetByLearnerAsync(learnerId, query);
+        var learnerId = await GetCurrentLearnerId();
+        var sessions = await _repo.GetByLearnerIdAsync(learnerId);
         return Ok(_mapper.Map<List<StudySessionDto>>(sessions));
     }
 
+    [Authorize]
     [HttpPost]
     [ProducesResponseType(typeof(StudySessionDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<StudySessionDto>> Create(CreateStudySessionRequestDto dto)
+    public async System.Threading.Tasks.Task<ActionResult<StudySessionDto>> Create([FromBody] CreateStudySessionRequestDto dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var learnerId = await GetLearnerId();
-        
-        if (!await VerifyTaskOwnership(learnerId, dto.TaskId))
-            return Forbid("Task does not belong to the learner");
+        var learnerId = await GetCurrentLearnerId();
+        var entity = _mapper.Map<StudySession>(dto);
+        entity.LearnerId = learnerId;
 
-        var session = _mapper.Map<StudySession>(dto);
-        session.LearnerId = learnerId;
-        
-        var created = await _repo.CreateAsync(session);
-        return CreatedAtAction(nameof(Get), new { id = created.Id }, _mapper.Map<StudySessionDto>(created));
+        var created = await _repo.CreateAsync(entity);
+        return CreatedAtAction(nameof(Create), null, _mapper.Map<StudySessionDto>(created));
     }
 
-    [HttpPatch("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> Patch(long id, PatchStudySessionRequestDto dto)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        var existing = await _repo.GetByIdAsync(id);
-        if (existing == null) return NotFound();
-
-        var learnerId = await GetLearnerId();
-        if (existing.LearnerId != learnerId)
-            return Forbid("Study session does not belong to the learner");
-
-        try
-        {
-            _mapper.Map(dto, existing);
-            await _repo.UpdateAsync(existing);
-            return NoContent();
-        }
-        catch (ConcurrencyException)
-        {
-            return Conflict("The record was modified by another user.");
-        }
-    }
-
+    [Authorize]
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(long id)
+    public async System.Threading.Tasks.Task<IActionResult> Delete(long id)
     {
-        var existing = await _repo.GetByIdAsync(id);
-        if (existing == null) return NotFound();
+        var deleted = await _repo.DeleteAsync(id);
+        return deleted ? NoContent() : NotFound();
+    }
 
-        var learnerId = await GetLearnerId();
-        if (existing.LearnerId != learnerId)
-            return Forbid("Study session does not belong to the learner");
-
-        await _repo.DeleteAsync(id);
-        return NoContent();
+    [Authorize]
+    [HttpPost("{id}/increment-cycle")]
+    public async System.Threading.Tasks.Task<IActionResult> IncrementCycle(long id)
+    {
+        var incremented = await _repo.IncrementCycleCountAsync(id);
+        return incremented ? NoContent() : NotFound();
     }
 } 

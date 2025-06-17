@@ -243,7 +243,8 @@ namespace api.Data
                 entity.HasOne(e => e.StudySession)
                       .WithMany(s => s.PomodoroCycles)
                       .HasForeignKey(e => e.StudySessionId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.Cascade)
+                      .IsRequired(false);
             });
 
             OnModelCreatingPartial(modelBuilder);

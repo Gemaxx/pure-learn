@@ -9,24 +9,21 @@ namespace api.Repos;
 
 public class StudySessionRepository : IStudySessionRepository
 {
-    private readonly PureLearnDbContext _ctx;
+    private readonly PureLearnDbContext _context;
 
-    public StudySessionRepository(PureLearnDbContext ctx)
-    {
-        _ctx = ctx;
-    }
+    public StudySessionRepository(PureLearnDbContext context) => _context = context;
 
-    public async Task<List<StudySession>> GetByLearnerAsync(long learnerId)
+    public async System.Threading.Tasks.Task<List<StudySession>> GetByLearnerIdAsync(long learnerId)
     {
-        return await _ctx.StudySessions
-            .AsNoTracking()
-            .Where(s => s.LearnerId == learnerId && !s.IsDeleted)
+        return await _context.StudySessions
+            .Where(s => s.LearnerId == learnerId)
+            .OrderByDescending(s => s.StartTime)
             .ToListAsync();
     }
 
-    public async Task<List<StudySession>> GetByLearnerAsync(long learnerId, StudySessionQueryObject query)
+    public async System.Threading.Tasks.Task<List<StudySession>> GetByLearnerAsync(long learnerId, StudySessionQueryObject query)
     {
-        var sessions = _ctx.StudySessions
+        var sessions = _context.StudySessions
             .AsNoTracking()
             .Where(s => s.LearnerId == learnerId && !s.IsDeleted);
 
@@ -48,37 +45,47 @@ public class StudySessionRepository : IStudySessionRepository
         return await sessions.ToListAsync();
     }
 
-    public async Task<StudySession?> GetByIdAsync(long id)
+    public async System.Threading.Tasks.Task<StudySession?> GetByIdAsync(long id)
     {
-        return await _ctx.StudySessions
-            .AsNoTracking()
-            .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted);
+        return await _context.StudySessions.FindAsync(id);
     }
 
-    public async Task<StudySession> CreateAsync(StudySession session)
+    public async System.Threading.Tasks.Task<StudySession> CreateAsync(StudySession session)
     {
-        await _ctx.StudySessions.AddAsync(session);
-        await _ctx.SaveChangesAsync();
+        await _context.StudySessions.AddAsync(session);
+        await _context.SaveChangesAsync();
         return session;
     }
 
-    public async Task<StudySession> UpdateAsync(StudySession session)
+    public async System.Threading.Tasks.Task<bool> UpdateAsync(StudySession session)
     {
-        _ctx.StudySessions.Update(session);
-        await _ctx.SaveChangesAsync();
-        return session;
+        var existingSession = await _context.StudySessions.FindAsync(session.Id);
+        if (existingSession == null)
+            return false;
+
+        existingSession.EndTime = session.EndTime;
+        await _context.SaveChangesAsync();
+        return true;
     }
 
-    public async Task<bool> DeleteAsync(long id)
+    public async System.Threading.Tasks.Task<bool> IncrementCycleCountAsync(long studySessionId)
     {
-        var session = await _ctx.StudySessions.FindAsync(id);
-        if (session is not null)
-        {
-            session.IsDeleted = true;
-            session.DeletedAt = DateTime.UtcNow;
-            await _ctx.SaveChangesAsync();
-            return true;
-        }
-        return false;
+        var session = await _context.StudySessions.FindAsync(studySessionId);
+        if (session == null) return false;
+
+        session.CycleCount++;
+        session.UpdatedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async System.Threading.Tasks.Task<bool> DeleteAsync(long id)
+    {
+        var session = await _context.StudySessions.FindAsync(id);
+        if (session == null) return false;
+
+        _context.StudySessions.Remove(session);
+        await _context.SaveChangesAsync();
+        return true;
     }
 } 
