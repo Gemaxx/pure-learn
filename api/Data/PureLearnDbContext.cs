@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using api.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace api.Data
 {
-    public partial class PureLearnDbContext : IdentityDbContext<ApplicationUser>
+    public partial class PureLearnDbContext : IdentityDbContext<ApplicationUser, IdentityRole<long>, long>
     {
         public PureLearnDbContext() : base() { }
 
@@ -28,6 +29,16 @@ namespace api.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // Configure Identity tables
+            modelBuilder.Entity<ApplicationUser>().ToTable("AspNetUsers");
+            modelBuilder.Entity<IdentityRole<long>>().ToTable("AspNetRoles");
+            modelBuilder.Entity<IdentityUserRole<long>>().ToTable("AspNetUserRoles");
+            modelBuilder.Entity<IdentityUserClaim<long>>().ToTable("AspNetUserClaims");
+            modelBuilder.Entity<IdentityUserLogin<long>>().ToTable("AspNetUserLogins");
+            modelBuilder.Entity<IdentityRoleClaim<long>>().ToTable("AspNetRoleClaims");
+            modelBuilder.Entity<IdentityUserToken<long>>().ToTable("AspNetUserTokens");
+
             modelBuilder.UseCollation("Arabic_CI_AS");
 
             modelBuilder.Entity<Category>(entity =>

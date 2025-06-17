@@ -3,9 +3,13 @@ using api.Repos;
 using api.Mapper;
 using api.Data;
 using api.Models;
+using api.Services;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,14 +52,36 @@ var builder = WebApplication.CreateBuilder(args);
     );
 
     // Identity
-    builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    builder.Services.AddIdentity<ApplicationUser, IdentityRole<long>>()
         .AddEntityFrameworkStores<PureLearnDbContext>()
         .AddDefaultTokenProviders();
+
+    // JWT Authentication
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT:Key not found in configuration"))
+            ),
+            ValidateLifetime = true
+        };
+    });
 
     // AutoMapper
     builder.Services.AddAutoMapper(typeof(StudySessionMapper));
 
-    // Dependency Injection: Register all repositories
+    // Dependency Injection: Register all repositories and services
     builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
     builder.Services.AddScoped<IGoalRepository, GoalRepository>();
     builder.Services.AddScoped<IKanbanStatusRepository, KanbanStatusRepository>();
@@ -68,6 +94,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<ITaskTypeRepository, TaskTypeRepository>();
     builder.Services.AddScoped<IStudySessionRepository, StudySessionRepository>();
     builder.Services.AddScoped<IPomodoroCycleRepository, PomodoroCycleRepository>();
+    builder.Services.AddScoped<ITokenService, TokenService>();
 }
 
 var app = builder.Build();

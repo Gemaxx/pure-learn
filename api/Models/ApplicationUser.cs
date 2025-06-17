@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
-namespace api.Models
+
+namespace api.Models;
+
+public class ApplicationUser : IdentityUser<long>
 {
-    public class ApplicationUser : IdentityUser
-    {
-
-
-
-    }
+    // Add any additional user properties here
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? LastLoginAt { get; set; }
 }

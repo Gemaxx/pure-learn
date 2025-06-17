@@ -36,16 +36,17 @@ public class StudySessionsController : ControllerBase
         _ctx = ctx;
     }
 
-    private async System.Threading.Tasks.Task<long> GetCurrentLearnerId()
+    private async Task<long> GetCurrentLearnerId()
     {
         var username = User.Identity?.Name;
-        if (string.IsNullOrEmpty(username)) throw new UnauthorizedAccessException();
+        if (string.IsNullOrEmpty(username)) 
+            throw new UnauthorizedAccessException();
 
         var user = await _userManager.FindByNameAsync(username);
         if (user == null)
             throw new UnauthorizedAccessException("User not found");
             
-        return long.Parse(user.Id);
+        return user.Id;
     }
 
     [Authorize]
