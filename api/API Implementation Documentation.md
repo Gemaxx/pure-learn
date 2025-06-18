@@ -134,6 +134,7 @@ This section describes the database structure and how models are represented in 
 - The ERD provides a visual overview of the tables and their relationships.
 - You can find the simplified ERD in the [`database/DBModeling/Simplified ERD Diagram.url`](../database/DBModeling/Simplified%20ERD%20Diagram.url) file.
 
+
 ### 4.3 Model Generation
 
 - Models are generated using Entity Framework Core scaffolding, which creates C# classes based on the database schema.
@@ -171,11 +172,35 @@ public class Learner
     ```sh
     dotnet ef database update
     ```
+ 
+---
+### Comparison: Code-First vs Database-First Approaches in Entity Framework
+
+| Aspect                | Code-First Approach                                   | Database-First Approach                                 |
+|-----------------------|-------------------------------------------------------|---------------------------------------------------------|
+| **Definition**        | Define models/classes in code, then generate DB schema| Start with an existing database, generate models from it |
+| **Workflow**          | 1. Create C# classes (models)<br>2. Configure DbContext<br>3. Use migrations to create/update DB | 1. Use EF tools to scaffold models from DB<br>2. Work with generated classes |
+| **Best For**          | New projects where you control the schema             | Existing databases or when DB is managed externally      |
+| **Schema Changes**    | Change models, then add migrations and update DB      | Change DB, then re-scaffold/update models               |
+| **Migrations**        | Fully supported; easy to track and apply changes      | Limited; manual intervention may be needed              |
+| **Customization**     | High; full control over model classes and relationships| May require manual edits after scaffolding              |
+| **Tooling**           | Visual Studio, CLI (`dotnet ef migrations add/update`)| Visual Studio, CLI (`dotnet ef dbcontext scaffold`)     |
+| **Reverse Engineering**| When you have code and don't have DB              | When you have DB and don't have Code                  |
+| **Typical Command**   | `dotnet ef migrations add InitialCreate`<br>`dotnet ef database update` | `dotnet ef dbcontext scaffold "connection-string" Microsoft.EntityFrameworkCore.SqlServer -o Models` |
 
 ---
 
-*The next section will cover API endpoints and
+**Why We Chose Database-First for a New Project**
 
+Although Code-First is commonly used for new projects, we chose the **Database-First** approach for these reasons:
+
+- **Team Collaboration:** Our team includes members with strong SQL/database backgrounds, making it easier to design and agree on the schema visually and collaboratively before coding.
+- **Clear Data Model:** Designing the database first ensures that the data structure is well-defined and normalized from the start, reducing the risk of future refactoring.
+- **Rapid Prototyping:** We could quickly set up the database and use scaffolding to generate models, speeding up the initial development phase.
+- **Consistency:** Using a single source of truth (the database) helps maintain consistency, especially when multiple services or tools may interact with the same data.
+- **Future Integration:** If we need to integrate with other systems or migrate data, having a robust database schema up front is beneficial.
+
+In summary, Database-First allowed us to leverage our team's strengths, ensure a solid foundation, and accelerate the early stages of development—even though the project was new.
 ## 5. API Endpoints: e.g. Goals endpoints
 
 This section details the endpoints for managing goals in the PureLearn API, including filtering, sorting, and pagination using the `GoalQueryObject`.
@@ -192,7 +217,7 @@ This section details the endpoints for managing goals in the PureLearn API, incl
 
 - **Query Parameters (from `GoalQueryObject`):**
   - `Title` (string): Filter by goal title (contains).
-  - `IsDeleted` (bool): Include deleted goals.
+  - `IsDeleted` (bool): Show deleted goals.
   - `CategoryId` (long): Filter by category.
   - `Status` (string): Filter by status (`Not-Started`, `In-Progress`, `On-Hold`, `Done`, `Canceled`).
   - `Term` (string): Filter by term (`Short-Term`, `Medium-Term`, `Long-Term`).
@@ -343,12 +368,6 @@ We use PATCH for updating goals and similar resources to allow partial, efficien
       "motivation": "Improve code quality",
       "term": "Short-Term",
       "status": "Done",
-      "completionDate": "2024-06-20",
-      "createdAt": "2024-06-17T12:00:00Z",
-      "updatedAt": "2024-06-20T15:00:00Z",
-      "tasks": [],
-      "learningResources": [],
-      "notes": []
     }
     ```
 
@@ -378,15 +397,12 @@ We use PATCH for updating goals and similar resources to allow partial, efficien
 - [`GoalQueryObject`](Helpers/GoalQueryObject.cs)
 
 ---
-
-*This section demonstrates all operations available for goals, including advanced querying and the actual data structures used in requests and responses.*
-
 ## 6. Data Transfer Objects (DTOs) 
 
 ### Purpose of DTOs
 
 DTOs (Data Transfer Objects) are simple objects used to transfer data between the API and clients. They help:
-- Control what data is exposed to the client (hiding sensitive/internal fields).
+- Control what data is exposed to the client (hiding sensitive/internal fields/ irrelevant Data).
 - Validate incoming data for create/update operations.
 - Shape responses for different views (summary vs. details).
 - Decouple the API contract from the internal database models.
@@ -721,9 +737,6 @@ This section describes how services and repositories are registered for dependen
     builder.Services.AddScoped<ITaskRepository, TaskRepository>();
     builder.Services.AddScoped<INoteRepository, NoteRepository>();
     // ...register other repositories and services
-
-    // Register AutoMapper for DTO mapping
-    builder.Services.AddAutoMapper(typeof(Program));
     ```
 
 ---
