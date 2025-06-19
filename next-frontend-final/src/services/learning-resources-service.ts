@@ -90,3 +90,32 @@ export async function addResourceType(learnerId: string, data: any) {
   }
   return JSON.parse(errorText);
 }
+
+export async function restoreLearningResource(learnerId: string, id: string) {
+  const res = await fetch(
+    `${API_BASE_URL}/api/learners/${learnerId}/LearningResources/${id}/restore`,
+    {
+      method: "PATCH",
+    }
+  );
+  if (!res.ok) throw new Error("Failed to restore resource");
+  return res.json();
+}
+
+export async function hardDeleteLearningResource(learnerId: string, id: string) {
+  const res = await fetch(
+    `${API_BASE_URL}/api/learners/${learnerId}/LearningResources/${id}/hard-delete`,
+    {
+      method: "DELETE",
+    }
+  );
+  if (!res.ok) throw new Error("Failed to hard delete resource");
+}
+
+export async function getDeletedLearningResources(learnerId: string) {
+  const res = await fetch(
+    `${API_BASE_URL}/api/learners/${learnerId}/LearningResources?IsDeleted=true`
+  );
+  if (!res.ok) return [];
+  return res.json();
+}

@@ -77,3 +77,16 @@ export async function restoreNote(learnerId: string, noteId: string): Promise<No
     method: "PATCH",
   })
 }
+
+// جلب الملاحظات المحذوفة
+export async function getDeletedNotes(learnerId: string): Promise<Note[]> {
+  try {
+    const response = await fetchWithAuth(`/api/learners/${learnerId}/Notes?IsDeleted=true`)
+    return Array.isArray(response) ? response : []
+  } catch (error) {
+    const allNotes = await fetchWithAuth(`/api/learners/${learnerId}/Notes`)
+    return Array.isArray(allNotes)
+      ? allNotes.filter((note) => note.isDeleted || note.deletedAt)
+      : []
+  }
+}

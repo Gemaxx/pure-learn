@@ -129,13 +129,16 @@ export async function getDeletedCategories(learnerId: string): Promise<Category[
   try {
     // First try the specific deleted categories endpoint
     return await fetchWithAuth(`/api/learners/${learnerId}/categories/deleted`)
-  } catch (error) {
-    console.warn("Failed to fetch deleted categories with specific endpoint, falling back to main endpoint with filter")
-    // Fallback: If the specific endpoint doesn't exist, we'll get all categories and filter them client-side
-    // This is a temporary solution until the API supports the deleted endpoint
-    const allCategories = await fetchWithAuth(`/api/learners/${learnerId}/categories`)
-    // Return an empty array if the API doesn't support soft-deleted categories yet
-    return []
+  } catch (error: any) {
+    // fallback: filter deleted from all categories
+    try {
+      const allCategories = await fetchWithAuth(`/api/learners/${learnerId}/categories`)
+      return Array.isArray(allCategories)
+        ? allCategories.filter((cat) => cat.isDeleted || cat.deletedAt)
+        : []
+    } catch {
+      return []
+    }
   }
 }
 
@@ -214,5 +217,26 @@ export async function softDeleteGoal(learnerId: string, goalId: string): Promise
 export async function hardDeleteGoal(learnerId: string, goalId: string): Promise<void> {
   return fetchWithAuth(`/api/learners/${learnerId}/goals/${goalId}/hard-delete`, {
     method: "DELETE",
+  })
+}
+
+// جلب الأهداف المحذوفة
+export async function getDeletedGoals(learnerId: string): Promise<Goal[]> {
+  try {
+    // جرب endpoint خاص إن وجد
+    return await fetchWithAuth(`/api/learners/${learnerId}/goals?IsDeleted=true`)
+  } catch (error: any) {
+    // fallback: filter deleted from all goals
+    const allGoals = await fetchWithAuth(`/api/learners/${learnerId}/goals`)
+    return Array.isArray(allGoals)
+      ? allGoals.filter((goal) => goal.isDeleted || goal.deletedAt)
+      : []
+  }
+}
+
+// استرجاع هدف
+export async function restoreGoal(learnerId: string, goalId: string): Promise<Goal> {
+  return fetchWithAuth(`/api/learners/${learnerId}/goals/${goalId}/restore`, {
+    method: "PATCH",
   })
 }
