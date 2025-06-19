@@ -24,7 +24,8 @@ namespace api.Repos
         public async Task<List<Models.Task>> GetTasksAsync(long learnerId, TaskQueryObjects query)
         {
             var tasksQuery = _context.Tasks
-            .Where(t => t.LearnerId == learnerId && !t.IsDeleted);
+                .Include(t => t.Type) // Include TaskType navigation property
+                .Where(t => t.LearnerId == learnerId && !t.IsDeleted);
 
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
@@ -54,6 +55,7 @@ namespace api.Repos
         {   
             
             return await _context.Tasks
+                .Include(t => t.Type) // Include TaskType navigation property
                 .FirstOrDefaultAsync(t => t.Id == taskId 
                                           && t.LearnerId == learnerId 
                                           && !t.IsDeleted);

@@ -10,12 +10,12 @@ namespace api.Dtos.TaskType
     {
         [Required]
         [StringLength(255, ErrorMessage = "Name must be provided and cannot exceed 255 characters.")]
-        public string Name { get; set; } = "Default Task Type";
+        public string Name { get; set; } = string.Empty;
 
         [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters.")]
         public string? Description { get; set; }
 
-        // You can include Icon as base64 encoded string or leave it out if handling files differently.
-        public byte[]? Icon { get; set; }
+        // Accept base64 encoded string for icon
+        public string? Icon { get; set; }
     }
 }

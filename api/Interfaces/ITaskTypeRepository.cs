@@ -28,6 +28,12 @@ namespace api.Interfaces
         Task<bool> SoftDeleteTaskTypeAsync(long learnerId, long taskTypeId);
         Task<bool> RestoreTaskTypeAsync(long learnerId, long taskTypeId);
         
+        // Create default task type for new learners
+        Task<Models.TaskType> CreateDefaultTaskTypeAsync(long learnerId);
+        
+        // Get or create default task type for a learner
+        Task<Models.TaskType> GetOrCreateDefaultTaskTypeAsync(long learnerId);
+        
 
     }
 }

@@ -13,11 +13,13 @@ namespace api.Controllers
         private readonly ITaskRepository _taskRepo;
         // Assume ILearnerRepository is available to validate learner existence.
         private readonly ILearnerRepository _learnerRepo;
+        private readonly ITaskTypeRepository _taskTypeRepo;
 
-        public TasksController(ITaskRepository taskRepo, ILearnerRepository learnerRepo)
+        public TasksController(ITaskRepository taskRepo, ILearnerRepository learnerRepo, ITaskTypeRepository taskTypeRepo)
         {
             _taskRepo = taskRepo;
             _learnerRepo = learnerRepo;
+            _taskTypeRepo = taskTypeRepo;
         }
 
         // GET: api/learners/{learnerId}/tasks
@@ -52,6 +54,14 @@ namespace api.Controllers
             if (learner == null) return NotFound(new { Message = "Learner not found." });
 
             var task = createTaskDto.ToTaskEntity();
+            
+            // If no TypeId is provided, use default task type
+            if (task.TypeId == null || task.TypeId == 0)
+            {
+                var defaultTaskType = await _taskTypeRepo.GetOrCreateDefaultTaskTypeAsync(learnerId);
+                task.TypeId = defaultTaskType.Id;
+            }
+            
             var createdTask = await _taskRepo.CreateTaskAsync(learnerId, task);
 
             return CreatedAtAction(nameof(GetTask),

@@ -17,7 +17,7 @@ namespace api.Mapper
                 Id = taskTypeModel.Id,
                 Name = taskTypeModel.Name,
                 Description = taskTypeModel.Description,
-                Icon = taskTypeModel.Icon
+                Icon = taskTypeModel.Icon != null ? Convert.ToBase64String(taskTypeModel.Icon) : null
             };
         }
 
@@ -28,7 +28,7 @@ namespace api.Mapper
             {
                 Name = createDto.Name,
                 Description = createDto.Description,
-                Icon = createDto.Icon
+                Icon = !string.IsNullOrEmpty(createDto.Icon) ? Convert.FromBase64String(createDto.Icon) : null
             };
         }
 
@@ -39,8 +39,8 @@ namespace api.Mapper
                 taskType.Name = patchDto.Name;
             if (!string.IsNullOrEmpty(patchDto.Description))
                 taskType.Description = patchDto.Description;
-            if (patchDto.Icon != null)
-                taskType.Icon = patchDto.Icon;
+            if (!string.IsNullOrEmpty(patchDto.Icon))
+                taskType.Icon = Convert.FromBase64String(patchDto.Icon);
         }
     }
 }
