@@ -1,253 +1,245 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Plus, Kanban } from "lucide-react";
 import {
-  Tag,
-  MoreVertical,
-  ChevronDown,
-  ChevronUp,
-  Plus,
-  PlusCircle,
-} from "lucide-react";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
+import { KanbanBoardModal } from "@/components/ui/kanban-board-modal";
+import { KanbanStatusEditModal } from "@/components/ui/kanban-status-edit-modal";
+import { KanbanColumn } from "@/components/ui/kanban-column";
+import {
+  getKanbanStatuses,
+  deleteKanbanStatus,
+  type KanbanStatus,
+} from "@/services/kanban-service";
 
-// Task types and mock data
-const TAGS = [
-  "Research",
-  "Priority",
-  "DB Task",
-  "Urgent & Important",
-  "Task Type",
-];
+export default function TasksPage() {
+  const [kanbanStatuses, setKanbanStatuses] = useState<KanbanStatus[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [statusToEdit, setStatusToEdit] = useState<KanbanStatus | null>(null);
+  const [statusToDelete, setStatusToDelete] = useState<KanbanStatus | null>(
+    null
+  );
 
-const mockTasks = [
-  {
-    id: "1",
-    title: "Do Research about AI",
-    tags: ["Research", "Priority"],
-    status: "todo",
-    completed: false,
-  },
-  {
-    id: "2",
-    title: "Work on Task Entity",
-    tags: ["DB Task", "Urgent & Important"],
-    status: "todo",
-    completed: true,
-  },
-  {
-    id: "3",
-    title: "Do Research about AI",
-    tags: ["Task Type", "Priority"],
-    status: "todo",
-    completed: true,
-  },
-  {
-    id: "4",
-    title: "Do Research about AI",
-    tags: ["Task Type", "Priority"],
-    status: "in-progress",
-    completed: false,
-  },
-  {
-    id: "5",
-    title: "Do Research about AI",
-    tags: ["Task Type", "Priority"],
-    status: "in-progress",
-    completed: false,
-  },
-  {
-    id: "6",
-    title: "Do Research about AI",
-    tags: ["Task Type", "Priority"],
-    status: "in-progress",
-    completed: false,
-  },
-  {
-    id: "7",
-    title: "Do Research about AI",
-    tags: ["Task Type", "Priority"],
-    status: "done",
-    completed: false,
-  },
-  {
-    id: "8",
-    title: "Finish the first 2 videos",
-    tags: ["Task Type", "Priority"],
-    status: "done",
-    completed: false,
-  },
-  {
-    id: "9",
-    title: "Do Research about AI",
-    tags: ["Task Type", "Priority"],
-    status: "done",
-    completed: false,
-  },
-  {
-    id: "10",
-    title: "Do Research about AI",
-    tags: ["Task Type", "Priority"],
-    status: "done",
-    completed: false,
-  },
-];
+  const params = useParams();
+  const { toast } = useToast();
+  const goalId = params.id as string;
 
-function TaskCard({ task }: { task: any }) {
-  return (
-    <div className="bg-card rounded-md border border-border hover:bg-accent/50 transition-colors mb-2">
-      <div className="p-3 flex flex-col gap-2">
-        <div className="flex items-start justify-between">
-          <span className="font-medium text-sm leading-tight pr-2">
-            {task.title}
-          </span>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-6 w-6 text-muted-foreground"
-          >
-            <MoreVertical className="h-4 w-4" />
-          </Button>
+  useEffect(() => {
+    const fetchKanbanStatuses = async () => {
+      if (!goalId) return;
+
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const data = await getKanbanStatuses(goalId);
+        setKanbanStatuses(data);
+      } catch (err) {
+        console.error("Failed to load kanban statuses:", err);
+        setError("Failed to load kanban boards");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchKanbanStatuses();
+  }, [goalId]);
+
+  const handleAddStatus = (newStatus: KanbanStatus) => {
+    setKanbanStatuses((prev) => [...prev, newStatus]);
+  };
+
+  const handleUpdateStatus = (updatedStatus: KanbanStatus) => {
+    setKanbanStatuses((prev) =>
+      prev.map((status) =>
+        status.id === updatedStatus.id ? updatedStatus : status
+      )
+    );
+  };
+
+  const handleEditStatus = (status: KanbanStatus) => {
+    setStatusToEdit(status);
+    setIsEditModalOpen(true);
+  };
+
+  const handleDeleteStatus = (status: KanbanStatus) => {
+    setStatusToDelete(status);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDeleteStatus = async () => {
+    if (!statusToDelete) return;
+
+    try {
+      await deleteKanbanStatus(goalId, statusToDelete.id.toString());
+      setKanbanStatuses((prev) =>
+        prev.filter((status) => status.id !== statusToDelete.id)
+      );
+      toast({
+        title: "Success",
+        description: "Kanban board deleted successfully",
+        variant: "success",
+      });
+      setDeleteDialogOpen(false);
+      setStatusToDelete(null);
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to delete kanban board",
+        variant: "destructive",
+      });
+      console.error(err);
+    }
+  };
+
+  const handleAddTask = (status: KanbanStatus) => {
+    // Placeholder for future task creation functionality
+    toast({
+      title: "Coming Soon",
+      description: "Task creation will be implemented in the next update",
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="animate-pulse space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="h-6 w-32 bg-secondary rounded"></div>
+          <div className="h-8 w-24 bg-secondary rounded"></div>
         </div>
-        <div className="flex flex-wrap gap-1">
-          {task.tags.map((tag: string) => (
-            <span
-              key={tag}
-              className="bg-secondary text-xs px-2 py-0.5 rounded-md"
-            >
-              {tag}
-            </span>
+        <div className="flex gap-4 overflow-x-auto pb-4">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="min-w-[280px] h-64 bg-secondary rounded-lg"
+            ></div>
           ))}
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-function ColumnHeader({
-  title,
-  count,
-  max,
-  onMenu,
-}: {
-  title: string;
-  count: number;
-  max: number;
-  onMenu?: () => void;
-}) {
-  return (
-    <div className="flex items-center justify-between mb-2">
-      <div className="flex items-center gap-1">
-        <span className="font-semibold text-base">{title}</span>
-        <span className="text-xs text-muted-foreground align-top">{count}</span>
-      </div>
-      <div className="flex items-center gap-1">
-        <span className="text-xs bg-secondary px-1.5 py-0.5 rounded-md">
-          MAX: {max}
-        </span>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-6 w-6 text-muted-foreground"
-          onClick={onMenu}
-        >
-          <MoreVertical className="h-4 w-4" />
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-export default function TasksPage() {
-  const [showCompleted, setShowCompleted] = useState(true);
-
-  const todoTasks = mockTasks.filter(
-    (t) => t.status === "todo" && !t.completed
-  );
-  const completedTasks = mockTasks.filter(
-    (t) => t.status === "todo" && t.completed
-  );
-  const inProgressTasks = mockTasks.filter((t) => t.status === "in-progress");
-  const doneTasks = mockTasks.filter((t) => t.status === "done");
-
-  return (
-    <div className="flex gap-4 w-full">
-      {/* To-DO Column */}
-      <div className="flex-1 min-w-[260px] max-w-xs bg-muted/40 rounded-lg p-3 flex flex-col">
-        <ColumnHeader title="To-DO" count={todoTasks.length} max={5} />
-        <Button
-          variant="outline"
-          className="w-full justify-start text-muted-foreground border-dashed h-8 text-xs bg-transparent hover:bg-accent mb-2"
-        >
-          <Plus className="h-4 w-4 mr-1" /> Add Task
-        </Button>
-        {todoTasks.map((task) => (
-          <TaskCard key={task.id} task={task} />
-        ))}
-        {/* Completed Task Section */}
-        <div className="mt-2">
-          <button
-            className="flex items-center gap-1 text-xs text-muted-foreground mb-1"
-            onClick={() => setShowCompleted((v) => !v)}
-          >
-            {showCompleted ? (
-              <ChevronDown className="h-4 w-4" />
-            ) : (
-              <ChevronUp className="h-4 w-4" />
-            )}
-            Completed Task
-          </button>
-          {showCompleted && (
-            <div className="flex flex-col gap-2">
-              {completedTasks.map((task) => (
-                <TaskCard key={task.id} task={task} />
-              ))}
-            </div>
-          )}
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <div className="bg-destructive/10 p-4 rounded-md text-destructive">
+          {error}
         </div>
+        <Button onClick={() => window.location.reload()} variant="outline">
+          Try Again
+        </Button>
       </div>
-      {/* In-Progress Column */}
-      <div className="flex-1 min-w-[260px] max-w-xs bg-muted/40 rounded-lg p-3 flex flex-col">
-        <ColumnHeader
-          title="In-Progress"
-          count={inProgressTasks.length}
-          max={5}
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <h2 className="text-lg font-medium">Tasks</h2>
+        
+      </div>
+
+      {kanbanStatuses.length === 0 ? (
+        <div className="text-center py-12">
+          <Kanban className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+          <h3 className="text-lg font-medium mb-2">No Kanban boards yet</h3>
+          <p className="text-muted-foreground mb-4">
+            Create your first Kanban board to start organizing your tasks.
+          </p>
+          <Button
+            onClick={() => setIsCreateModalOpen(true)}
+            variant="outline"
+            className="w-full sm:w-auto"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Create Your First Board
+          </Button>
+        </div>
+      ) : (
+        <div className="flex gap-4 overflow-x-auto pb-4">
+          {kanbanStatuses.map((status) => (
+            <KanbanColumn
+              key={status.id}
+              status={status}
+              taskCount={0} // Placeholder - will be replaced with actual task count
+              onEdit={handleEditStatus}
+              onDelete={handleDeleteStatus}
+              onAddTask={handleAddTask}
+            />
+          ))}
+
+          {/* Add List Button */}
+          <div className="min-w-[280px] flex-shrink-0">
+            <Button
+              variant="outline"
+              className="w-full h-12 border-dashed text-muted-foreground bg-transparent hover:bg-accent"
+              onClick={() => setIsCreateModalOpen(true)}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add List
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Modals */}
+      <KanbanBoardModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSuccess={handleAddStatus}
+        goalId={goalId}
+      />
+
+      {statusToEdit && (
+        <KanbanStatusEditModal
+          isOpen={isEditModalOpen}
+          onClose={() => {
+            setIsEditModalOpen(false);
+            setStatusToEdit(null);
+          }}
+          onSuccess={handleUpdateStatus}
+          goalId={goalId}
+          status={statusToEdit}
         />
-        <Button
-          variant="outline"
-          className="w-full justify-start text-muted-foreground border-dashed h-8 text-xs bg-transparent hover:bg-accent mb-2"
-        >
-          <Plus className="h-4 w-4 mr-1" /> Add Task
-        </Button>
-        {inProgressTasks.map((task) => (
-          <TaskCard key={task.id} task={task} />
-        ))}
-      </div>
-      {/* Done Column */}
-      <div className="flex-1 min-w-[260px] max-w-xs bg-muted/40 rounded-lg p-3 flex flex-col">
-        <ColumnHeader title="Done" count={doneTasks.length} max={5} />
-        <Button
-          variant="outline"
-          className="w-full justify-start text-muted-foreground border-dashed h-8 text-xs bg-transparent hover:bg-accent mb-2"
-        >
-          <Plus className="h-4 w-4 mr-1" /> Add Task
-        </Button>
-        {doneTasks.map((task) => (
-          <TaskCard key={task.id} task={task} />
-        ))}
-      </div>
-      {/* Add List Column */}
-      <div className="flex-1 min-w-[180px] max-w-xs bg-muted/40 rounded-lg p-3 flex flex-col items-center justify-start">
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-muted-foreground h-8 text-xs bg-transparent hover:bg-accent mb-2"
-        >
-          <PlusCircle className="h-4 w-4 mr-1" /> Add List
-        </Button>
-        <span className="text-xs text-muted-foreground mt-2">
-          Max Tasks: ex. 1
-        </span>
-      </div>
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Kanban Board</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{statusToDelete?.name}"? This
+              action cannot be undone and will remove all tasks in this board.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDeleteStatus}
+              className="bg-destructive hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
