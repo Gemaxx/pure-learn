@@ -31,8 +31,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   // Mock user data for temporary access
   const mockUser: User = {
-    id: "1",
-    name: "Temporary User",
+    id: "4",
+    name: "Alaa",
     email: "temp@example.com",
   };
 

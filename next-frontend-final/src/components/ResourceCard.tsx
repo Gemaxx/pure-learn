@@ -41,7 +41,7 @@ export default function ResourceCard({ resource, onEdit, onDelete }: ResourceCar
           </DropdownMenu>
         </div>
         <div className="flex items-center gap-2 mb-3 text-xs text-muted-foreground">
-          <span className="capitalize">{resource.typeName || resource.typeId}</span>
+          <span className="capitalize">{resource.typeName }</span>
         </div>
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs text-muted-foreground">

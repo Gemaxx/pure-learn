@@ -8,8 +8,11 @@ import "./globals.css"
 export const metadata = {
   title: "PureLearn",
   description: "A Learning Framework",
-    generator: 'v0.dev'
-}
+  generator: "v0.dev",
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
 
 export default function RootLayout({
   children,
