@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace api.Models;
 
@@ -9,7 +10,10 @@ public class Learner
 { 
     public long Id { get; set; }
 
+    [Required]
     public string IdentityId { get; set; } = null!;
+
+    public virtual ApplicationUser IdentityUser { get; set; } = null!;
 
     public string Name { get; set; } = null!;
 

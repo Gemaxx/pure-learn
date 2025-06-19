@@ -30,7 +30,7 @@ public class PomodoroInsightRepository : IPomodoroInsightRepository
     {
         var cycles = await _context.PomodoroCycles
             .Include(c => c.StudySession)
-            .Where(c => c.StudySession.LearnerId == learnerId && c.IsCompleted)
+            .Where(c => c.StudySession != null && c.StudySession.LearnerId == learnerId && c.IsCompleted)
             .ToListAsync();
 
         var grouped = cycles

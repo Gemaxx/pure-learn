@@ -116,6 +116,25 @@ var app = builder.Build();
 
     app.UseCors("AllowSpecificOrigin");
 
+    // Global Exception Handler
+    app.UseExceptionHandler(errorApp =>
+    {
+        errorApp.Run(async context =>
+        {
+            context.Response.StatusCode = 500;
+            context.Response.ContentType = "application/json";
+            
+            var errorMessage = app.Environment.IsDevelopment() 
+                ? "An unexpected error occurred. Please try again later." 
+                : "An unexpected error occurred. Please try again later.";
+                
+            await context.Response.WriteAsJsonAsync(new { 
+                error = errorMessage,
+                statusCode = 500
+            });
+        });
+    });
+
     app.UseAuthentication();
     app.UseAuthorization();
 

@@ -4,6 +4,7 @@ using api.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using api.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers;
 
@@ -29,63 +30,86 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("register")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
     {
-        if (await _userManager.FindByEmailAsync(registerDto.Email) != null)
-            return BadRequest("Email already exists");
+        // FIRST: cheap uniqueness checks (no DB write yet)
+        if (await _userManager.FindByEmailAsync(registerDto.Email) is not null)
+            return Conflict(new { error = "Email is already registered." });
 
-        if (await _userManager.FindByNameAsync(registerDto.Username) != null)
-            return BadRequest("Username already exists");
+        await using var tx = await _context.Database.BeginTransactionAsync();
 
-        var user = new ApplicationUser
+        // 1) Create the identity user
+        var user = new ApplicationUser { UserName = registerDto.Username, Email = registerDto.Email };
+        IdentityResult userResult = await _userManager.CreateAsync(user, registerDto.Password);
+        if (!userResult.Succeeded)
+            return BadRequest(userResult.Errors);
+
+        // 2) Idempotency guard – maybe a retry?
+        var learner = await _context.Learners
+            .FirstOrDefaultAsync(l => l.IdentityId == user.Id.ToString());
+
+        if (learner is null)
         {
-            UserName = registerDto.Username,
-            Email = registerDto.Email
-        };
+            learner = new Learner
+            {
+                IdentityId = user.Id.ToString(),
+                Name       = registerDto.Username,
+                CreatedAt  = DateTime.UtcNow
+            };
+            _context.Learners.Add(learner);
+            await _context.SaveChangesAsync();          // still inside tx
+        }
 
-        var result = await _userManager.CreateAsync(user, registerDto.Password);
+        await tx.CommitAsync();
 
-        if (!result.Succeeded)
-            return BadRequest(result.Errors);
+        // 3) Build JWT that includes learner_id
+        string access = _tokenService.CreateToken(user, learner.Id); // You may need to update CreateToken to accept learnerId
+        // string refresh = await _tokenService.GenerateAndStoreRefreshTokenAsync(user); // If you use refresh tokens
 
-        // Create default timer settings for the new user
-        await _context.TimerSettings.AddAsync(new TimerSettings
+        return CreatedAtAction(nameof(Register), new { }, new UserDto
         {
-            UserId = user.Id,
-            FocusMinutes = 25,
-            ShortBreakMin = 5,
-            LongBreakMin = 15,
-            CyclesBeforeLongBreak = 4
-        });
-        await _context.SaveChangesAsync();
-
-        return new UserDto
-        {
-            Username = user.UserName ?? string.Empty,
+            Username = learner.Name,
             Email = user.Email ?? string.Empty,
-            Token = _tokenService.CreateToken(user)
-        };
+            Token = access
+            // Add LearnerId or other fields if needed
+        });
     }
 
     [HttpPost("login")]
     public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
     {
-        var user = await _userManager.FindByNameAsync(loginDto.Username);
-        if (user == null)
-            return Unauthorized("Invalid username");
-
-        var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
-        if (!result.Succeeded)
-            return Unauthorized("Invalid password");
-
-        user.LastLoginAt = DateTime.UtcNow;
-        await _userManager.UpdateAsync(user);
-
-        return new UserDto
+        try
         {
-            Username = user.UserName ?? string.Empty,
-            Email = user.Email ?? string.Empty,
-            Token = _tokenService.CreateToken(user)
-        };
+            var user = await _userManager.FindByNameAsync(loginDto.Username);
+            if (user == null)
+                return Unauthorized("Invalid username");
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+            if (!result.Succeeded)
+                return Unauthorized("Invalid password");
+
+            user.LastLoginAt = DateTime.UtcNow;
+            await _userManager.UpdateAsync(user);
+
+            var learner = await _context.Learners.FirstOrDefaultAsync(l => l.IdentityId == user.Id.ToString());
+            if (learner == null)
+                return StatusCode(500, new { error = "Learner profile not found for this user." });
+
+            string token = _tokenService.CreateToken(user, learner.Id);
+
+            return new UserDto
+            {
+                Username = user.UserName ?? string.Empty,
+                Email = user.Email ?? string.Empty,
+                Token = token
+            };
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { error = "An unexpected error occurred during login. Please try again later." });
+        }
     }
 } 

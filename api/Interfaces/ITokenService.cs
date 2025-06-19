@@ -4,5 +4,5 @@ namespace api.Interfaces;
 
 public interface ITokenService
 {
-    string CreateToken(ApplicationUser user);
+    string CreateToken(ApplicationUser user, long learnerId);
 } 

@@ -144,6 +144,15 @@ namespace api.Data
                 entity.Property(e => e.Name).HasMaxLength(255).HasColumnName("name");
                 entity.Property(e => e.ProfilePicture).HasColumnName("profile_picture");
                 entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysdatetime())").HasColumnName("updated_at");
+
+                entity.HasOne(l => l.IdentityUser)
+                    .WithOne(u => u.LearnerProfile)
+                    .HasForeignKey<Learner>(l => l.IdentityId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasIndex(l => l.IdentityId)
+                    .IsUnique();
             });
 
             modelBuilder.Entity<LearningResource>(entity =>
