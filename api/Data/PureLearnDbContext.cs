@@ -101,18 +101,18 @@ namespace api.Data
                 entity.HasKey(e => e.Id);
                 entity.ToTable("KanbanStatus");
                 entity.HasIndex(e => e.Name).IsUnique();
-                entity.HasIndex(e => e.GoalId);
+                entity.HasIndex(e => e.LearnerId);
 
                 entity.Property(e => e.Id).HasColumnName("id");
                 entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
-                entity.Property(e => e.GoalId).HasColumnName("goal_id");
+                entity.Property(e => e.LearnerId).HasColumnName("learner_id");
                 entity.Property(e => e.IsDeleted).HasDefaultValue(false).HasColumnName("is_deleted");
                 entity.Property(e => e.MaxTasks).HasColumnName("max_tasks");
                 entity.Property(e => e.Name).HasMaxLength(255).HasColumnName("name");
 
-                entity.HasOne(d => d.Goal).WithMany(p => p.KanbanStatuses)
-                      .HasForeignKey(d => d.GoalId)
-                      .HasConstraintName("FK_KanbanStatus_Goal");
+                entity.HasOne(d => d.Learner).WithMany()
+                      .HasForeignKey(d => d.LearnerId)
+                      .HasConstraintName("FK_KanbanStatus_Learner");
             });
 
             modelBuilder.Entity<Learner>(entity =>

@@ -17,7 +17,7 @@ namespace api.Mapper
                 Id = taskTypeModel.Id,
                 Name = taskTypeModel.Name,
                 Description = taskTypeModel.Description,
-                Icon = taskTypeModel.Icon != null ? Convert.ToBase64String(taskTypeModel.Icon) : null
+                Icon = taskTypeModel.Icon != null && taskTypeModel.Icon.Length > 0 ? Convert.ToBase64String(taskTypeModel.Icon) : null
             };
         }
 
