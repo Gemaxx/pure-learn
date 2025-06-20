@@ -14,7 +14,7 @@ namespace api.Dtos.Task
         // public long? SubgoalId { get; set; }
         // public long? LearningResourceId { get; set; }
 
-        public long? TypeId { get; set; }
+        public long TypeId { get; set; }
 
         public long KanbanStatusId { get; set; }
 
