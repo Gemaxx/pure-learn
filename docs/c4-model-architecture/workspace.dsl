@@ -11,15 +11,21 @@ workspace "Pure-Learn App" "This workspace represents the architecture of the Pu
             
             # Front-end
             spa = container "Single Page Application" "Provides an interface for learners to interact with their learning goals." "React" "Web Browser" {
-                 login = component "Login" "Any Describtion""React Components"
+                 login = component "Login" "Handles user authentication UI." "React Component"
+                 goalsComponent = component "Goals UI" "Displays the list of goals and lets the user create new goals." "React Component"
             }
 
             mobileApp = container "Mobile App" "Allows learners to access their learning goals on mobile devices." "Jetpack Compose" "Mobile App" {
-                
+                # (could mirror Goals UI component here)
             }
 
             # Back-end
             apiApp = container "API App" "Serves data to the front-end applications, built using .NET, and connects to the SQL database for data persistence." ".NET" {
+                goalController = component "GoalsController" "Handles HTTP requests for goal operations (list, create, update, delete)." ".NET Controller"
+                goalService    = component "GoalService"    "Contains business logic and validation for goals."     ".NET Service"
+                goalRepository = component "GoalRepository" "Performs CRUD operations on Goal entities in the database." ".NET Repository"
+                goalMapper     = component "GoalMapper"     "Maps between GoalDto and Goal entity objects."      ".NET Mapper"
+                goalDto        = component "GoalDto"        "Data Transfer Object for Goal payloads."           ".NET DTO"
             }
 
             sqlDatabase = container "SQL Database" "Stores user data, learning goals, and progress tracking information." "SQL Server" "Database" {
@@ -46,29 +52,52 @@ workspace "Pure-Learn App" "This workspace represents the architecture of the Pu
         spa -> apiApp "Makes API calls to" "JSON/HTTPS"
         apiApp -> sqlDatabase "Reads from and writes to" "SQL/TCP"
         apiApp -> aiContainer "Calls for AI-driven recommendations and tracking" "gRPC/JSON"
+        apiApp -> firebaseAuthentication "Uses for authentication" "JSON/HTTPS"
+        apiApp -> firebaseCloudMessaging "Uses to send notifications" "JSON/HTTPS"
 
         # Internal Container relationships
         aiContainer -> sqlDatabase "Reads training data from" "SQL/TCP"
         aiContainer -> apiApp "Sends learning insights and recommendations to" "gRPC/JSON"
-        apiApp -> firebaseAuthentication "Uses for authentication" "JSON/HTTPS"
-        apiApp -> firebaseCloudMessaging "Uses to send notifications" "JSON/HTTPS"
         apiApp -> mobileApp "Sends notifications via" "JSON/HTTPS"
         apiApp -> spa "Sends notifications via" "JSON/HTTPS"
+
+        # Component relationships for Goals Workflow
+        goalsComponent -> goalController "Sends requests to" "HTTP"
+        goalController -> goalService "Calls" "Method Calls"
+        goalService -> goalRepository "Uses" "Method Calls"
+        goalRepository -> sqlDatabase "Reads and writes Goal data to" "SQL/TCP"
+        goalMapper -> goalDto "Maps Goal entity to GoalDto" "Method Calls"
+        goalDto -> goalController "Used as request/response payload" "Data Transfer"
+        goalController -> goalsComponent "Returns Goal data to" "HTTP Response"
+        
+
     }
 
     views {
-        # Define System Context View
+        # System Context View
         systemContext "pureLearnApp" "System-Context-Diagram" {
             include *
             description "The system context diagram showing how the learner interacts with the Pure-Learn App and the external systems like Firebase Authentication and Cloud Messaging."
         }
 
-        # Define Container View
+        # Container View
         container "pureLearnApp" "Container-Diagram" {
             include *
             description "The container diagram showing the different components of the Pure-Learn App, including the front-end web and mobile apps, API backend, SQL Database, and AI Container for advanced features."
         }
-      
+
+        # Component View for Goals Workflow
+        component "apiApp" "Component-Diagram" {
+            include goalsComponent
+            include goalController
+            include goalService
+            include goalRepository
+            include goalMapper
+            include goalDto
+            include sqlDatabase
+
+            description "Component-level view of how the SPA’s Goals UI requests the list of goals and how it flows through the API into the SQL Database and back."
+        }
 
         styles {
             element "Person" {
