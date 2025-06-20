@@ -3,7 +3,8 @@
   "description" : "This workspace represents the architecture of the Pure-Learn App, a self-learning management system. It includes both mobile and web front-end interfaces, a back-end API, and an AI Container for advanced personalized features.",
   "documentation" : { },
   "id" : 1,
-  "lastModifiedDate" : "2024-12-09T02:47:35Z",
+  "lastModifiedAgent" : "structurizr-ui",
+  "lastModifiedDate" : "2025-06-20T18:38:44Z",
   "model" : {
     "people" : [ {
       "description" : "A person who uses the Pure-Learn App to manage and track their self-learning goals.",
@@ -16,20 +17,20 @@
       "relationships" : [ {
         "description" : "Uses",
         "destinationId" : "2",
-        "id" : "11",
+        "id" : "17",
         "sourceId" : "1",
         "tags" : "Relationship"
       }, {
         "description" : "Interacts with via Mobile App",
-        "destinationId" : "5",
-        "id" : "14",
+        "destinationId" : "6",
+        "id" : "20",
         "sourceId" : "1",
         "tags" : "Relationship",
         "technology" : "Interacts"
       }, {
         "description" : "Interacts with via Web Browser",
         "destinationId" : "3",
-        "id" : "15",
+        "id" : "21",
         "sourceId" : "1",
         "tags" : "Relationship",
         "technology" : "Interacts"
@@ -39,7 +40,7 @@
     "softwareSystems" : [ {
       "containers" : [ {
         "components" : [ {
-          "description" : "Any Describtion",
+          "description" : "Handles user authentication UI.",
           "documentation" : { },
           "id" : "4",
           "name" : "Login",
@@ -47,7 +48,32 @@
             "structurizr.dsl.identifier" : "login"
           },
           "tags" : "Element,Component",
-          "technology" : "React Components"
+          "technology" : "React Component"
+        }, {
+          "description" : "Displays the list of goals and lets the user create new goals.",
+          "documentation" : { },
+          "id" : "5",
+          "name" : "Goals UI",
+          "properties" : {
+            "structurizr.dsl.identifier" : "goalscomponent"
+          },
+          "relationships" : [ {
+            "description" : "Sends requests to",
+            "destinationId" : "8",
+            "id" : "32",
+            "sourceId" : "5",
+            "tags" : "Relationship",
+            "technology" : "HTTP"
+          }, {
+            "description" : "Sends requests to",
+            "destinationId" : "7",
+            "id" : "33",
+            "linkedRelationshipId" : "32",
+            "sourceId" : "5",
+            "technology" : "HTTP"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "React Component"
         } ],
         "description" : "Provides an interface for learners to interact with their learning goals.",
         "documentation" : { },
@@ -58,89 +84,208 @@
         },
         "relationships" : [ {
           "description" : "Makes API calls to",
-          "destinationId" : "6",
-          "id" : "17",
+          "destinationId" : "7",
+          "id" : "23",
           "sourceId" : "3",
           "tags" : "Relationship",
           "technology" : "JSON/HTTPS"
+        }, {
+          "description" : "Sends requests to",
+          "destinationId" : "8",
+          "id" : "34",
+          "linkedRelationshipId" : "32",
+          "sourceId" : "3",
+          "technology" : "HTTP"
         } ],
         "tags" : "Element,Container,Web Browser",
         "technology" : "React"
       }, {
         "description" : "Allows learners to access their learning goals on mobile devices.",
         "documentation" : { },
-        "id" : "5",
+        "id" : "6",
         "name" : "Mobile App",
         "properties" : {
           "structurizr.dsl.identifier" : "mobileapp"
         },
         "relationships" : [ {
           "description" : "Makes API calls to",
-          "destinationId" : "6",
-          "id" : "16",
-          "sourceId" : "5",
+          "destinationId" : "7",
+          "id" : "22",
+          "sourceId" : "6",
           "tags" : "Relationship",
           "technology" : "JSON/HTTPS"
         } ],
         "tags" : "Element,Container,Mobile App",
         "technology" : "Jetpack Compose"
       }, {
+        "components" : [ {
+          "description" : "Handles HTTP requests for goal operations (list, create, update, delete).",
+          "documentation" : { },
+          "id" : "8",
+          "name" : "GoalsController",
+          "properties" : {
+            "structurizr.dsl.identifier" : "goalcontroller"
+          },
+          "relationships" : [ {
+            "description" : "Calls",
+            "destinationId" : "9",
+            "id" : "35",
+            "sourceId" : "8",
+            "tags" : "Relationship",
+            "technology" : "Method Calls"
+          }, {
+            "description" : "Returns Goal data to",
+            "destinationId" : "5",
+            "id" : "40",
+            "sourceId" : "8",
+            "tags" : "Relationship",
+            "technology" : "HTTP Response"
+          }, {
+            "description" : "Returns Goal data to",
+            "destinationId" : "3",
+            "id" : "41",
+            "linkedRelationshipId" : "40",
+            "sourceId" : "8",
+            "technology" : "HTTP Response"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : ".NET Controller"
+        }, {
+          "description" : "Contains business logic and validation for goals.",
+          "documentation" : { },
+          "id" : "9",
+          "name" : "GoalService",
+          "properties" : {
+            "structurizr.dsl.identifier" : "goalservice"
+          },
+          "relationships" : [ {
+            "description" : "Uses",
+            "destinationId" : "10",
+            "id" : "36",
+            "sourceId" : "9",
+            "tags" : "Relationship",
+            "technology" : "Method Calls"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : ".NET Service"
+        }, {
+          "description" : "Performs CRUD operations on Goal entities in the database.",
+          "documentation" : { },
+          "id" : "10",
+          "name" : "GoalRepository",
+          "properties" : {
+            "structurizr.dsl.identifier" : "goalrepository"
+          },
+          "relationships" : [ {
+            "description" : "Reads and writes Goal data to",
+            "destinationId" : "13",
+            "id" : "37",
+            "sourceId" : "10",
+            "tags" : "Relationship",
+            "technology" : "SQL/TCP"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : ".NET Repository"
+        }, {
+          "description" : "Maps between GoalDto and Goal entity objects.",
+          "documentation" : { },
+          "id" : "11",
+          "name" : "GoalMapper",
+          "properties" : {
+            "structurizr.dsl.identifier" : "goalmapper"
+          },
+          "relationships" : [ {
+            "description" : "Maps Goal entity to GoalDto",
+            "destinationId" : "12",
+            "id" : "38",
+            "sourceId" : "11",
+            "tags" : "Relationship",
+            "technology" : "Method Calls"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : ".NET Mapper"
+        }, {
+          "description" : "Data Transfer Object for Goal payloads.",
+          "documentation" : { },
+          "id" : "12",
+          "name" : "GoalDto",
+          "properties" : {
+            "structurizr.dsl.identifier" : "goaldto"
+          },
+          "relationships" : [ {
+            "description" : "Used as request/response payload",
+            "destinationId" : "8",
+            "id" : "39",
+            "sourceId" : "12",
+            "tags" : "Relationship",
+            "technology" : "Data Transfer"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : ".NET DTO"
+        } ],
         "description" : "Serves data to the front-end applications, built using .NET, and connects to the SQL database for data persistence.",
         "documentation" : { },
-        "id" : "6",
+        "id" : "7",
         "name" : "API App",
         "properties" : {
           "structurizr.dsl.identifier" : "apiapp"
         },
         "relationships" : [ {
           "description" : "Reads from and writes to",
-          "destinationId" : "7",
-          "id" : "18",
-          "sourceId" : "6",
+          "destinationId" : "13",
+          "id" : "24",
+          "sourceId" : "7",
           "tags" : "Relationship",
           "technology" : "SQL/TCP"
         }, {
           "description" : "Calls for AI-driven recommendations and tracking",
-          "destinationId" : "8",
-          "id" : "19",
-          "sourceId" : "6",
+          "destinationId" : "14",
+          "id" : "25",
+          "sourceId" : "7",
           "tags" : "Relationship",
           "technology" : "gRPC/JSON"
         }, {
           "description" : "Uses for authentication",
-          "destinationId" : "9",
-          "id" : "22",
-          "sourceId" : "6",
+          "destinationId" : "15",
+          "id" : "26",
+          "sourceId" : "7",
           "tags" : "Relationship",
           "technology" : "JSON/HTTPS"
         }, {
           "description" : "Uses to send notifications",
-          "destinationId" : "10",
-          "id" : "23",
-          "sourceId" : "6",
+          "destinationId" : "16",
+          "id" : "27",
+          "sourceId" : "7",
           "tags" : "Relationship",
           "technology" : "JSON/HTTPS"
         }, {
           "description" : "Sends notifications via",
-          "destinationId" : "5",
-          "id" : "24",
-          "sourceId" : "6",
+          "destinationId" : "6",
+          "id" : "30",
+          "sourceId" : "7",
           "tags" : "Relationship",
           "technology" : "JSON/HTTPS"
         }, {
           "description" : "Sends notifications via",
           "destinationId" : "3",
-          "id" : "25",
-          "sourceId" : "6",
+          "id" : "31",
+          "sourceId" : "7",
           "tags" : "Relationship",
           "technology" : "JSON/HTTPS"
+        }, {
+          "description" : "Returns Goal data to",
+          "destinationId" : "5",
+          "id" : "42",
+          "linkedRelationshipId" : "40",
+          "sourceId" : "7",
+          "technology" : "HTTP Response"
         } ],
         "tags" : "Element,Container",
         "technology" : ".NET"
       }, {
         "description" : "Stores user data, learning goals, and progress tracking information.",
         "documentation" : { },
-        "id" : "7",
+        "id" : "13",
         "name" : "SQL Database",
         "properties" : {
           "structurizr.dsl.identifier" : "sqldatabase"
@@ -150,23 +295,23 @@
       }, {
         "description" : "Provides personalized learning recommendations, intelligent progress tracking, and learning insights powered by machine learning models.",
         "documentation" : { },
-        "id" : "8",
+        "id" : "14",
         "name" : "AI Container",
         "properties" : {
           "structurizr.dsl.identifier" : "aicontainer"
         },
         "relationships" : [ {
           "description" : "Reads training data from",
-          "destinationId" : "7",
-          "id" : "20",
-          "sourceId" : "8",
+          "destinationId" : "13",
+          "id" : "28",
+          "sourceId" : "14",
           "tags" : "Relationship",
           "technology" : "SQL/TCP"
         }, {
           "description" : "Sends learning insights and recommendations to",
-          "destinationId" : "6",
-          "id" : "21",
-          "sourceId" : "8",
+          "destinationId" : "7",
+          "id" : "29",
+          "sourceId" : "14",
           "tags" : "Relationship",
           "technology" : "gRPC/JSON"
         } ],
@@ -183,14 +328,14 @@
       },
       "relationships" : [ {
         "description" : "Uses for user authentication",
-        "destinationId" : "9",
-        "id" : "12",
+        "destinationId" : "15",
+        "id" : "18",
         "sourceId" : "2",
         "tags" : "Relationship"
       }, {
         "description" : "Uses for push notifications",
-        "destinationId" : "10",
-        "id" : "13",
+        "destinationId" : "16",
+        "id" : "19",
         "sourceId" : "2",
         "tags" : "Relationship"
       } ],
@@ -198,7 +343,7 @@
     }, {
       "description" : "A service for authenticating users, integrated into the app for secure login.",
       "documentation" : { },
-      "id" : "9",
+      "id" : "15",
       "location" : "Unspecified",
       "name" : "Firebase Authentication",
       "properties" : {
@@ -208,7 +353,7 @@
     }, {
       "description" : "A service used to send push notifications to the app, keeping users updated on their learning progress and reminders.",
       "documentation" : { },
-      "id" : "10",
+      "id" : "16",
       "location" : "Unspecified",
       "name" : "Firebase Cloud Messaging (FCM)",
       "properties" : {
@@ -219,12 +364,76 @@
   },
   "name" : "Pure-Learn App",
   "properties" : {
-    "structurizr.dsl" : "d29ya3NwYWNlICJQdXJlLUxlYXJuIEFwcCIgIlRoaXMgd29ya3NwYWNlIHJlcHJlc2VudHMgdGhlIGFyY2hpdGVjdHVyZSBvZiB0aGUgUHVyZS1MZWFybiBBcHAsIGEgc2VsZi1sZWFybmluZyBtYW5hZ2VtZW50IHN5c3RlbS4gSXQgaW5jbHVkZXMgYm90aCBtb2JpbGUgYW5kIHdlYiBmcm9udC1lbmQgaW50ZXJmYWNlcywgYSBiYWNrLWVuZCBBUEksIGFuZCBhbiBBSSBDb250YWluZXIgZm9yIGFkdmFuY2VkIHBlcnNvbmFsaXplZCBmZWF0dXJlcy4iIHsKCiAgICBtb2RlbCB7CiAgICAgICAgIyBNYWluIEVudGl0aWVzCgogICAgICAgICMgUGVyc29ucwogICAgICAgIGxlYXJuZXIgPSBwZXJzb24gIkxlYXJuZXIiICJBIHBlcnNvbiB3aG8gdXNlcyB0aGUgUHVyZS1MZWFybiBBcHAgdG8gbWFuYWdlIGFuZCB0cmFjayB0aGVpciBzZWxmLWxlYXJuaW5nIGdvYWxzLiIgIlVzZXIiCgogICAgICAgICMgT3VyIFN5c3RlbQogICAgICAgIHB1cmVMZWFybkFwcCA9IHNvZnR3YXJlU3lzdGVtICJQdXJlLUxlYXJuIEFwcCIgIkEgc2VsZi1sZWFybmluZyBtYW5hZ2VtZW50IHN5c3RlbSB0aGF0IGFsbG93cyB1c2VycyB0byBzZXQsIHRyYWNrLCBhbmQgYWNoaWV2ZSB0aGVpciBzZWxmLWxlYXJuaW5nIGdvYWxzLiIgIlNvZnR3YXJlIFN5c3RlbSIgewogICAgICAgICAgICAKICAgICAgICAgICAgIyBGcm9udC1lbmQKICAgICAgICAgICAgc3BhID0gY29udGFpbmVyICJTaW5nbGUgUGFnZSBBcHBsaWNhdGlvbiIgIlByb3ZpZGVzIGFuIGludGVyZmFjZSBmb3IgbGVhcm5lcnMgdG8gaW50ZXJhY3Qgd2l0aCB0aGVpciBsZWFybmluZyBnb2Fscy4iICJSZWFjdCIgIldlYiBCcm93c2VyIiB7CiAgICAgICAgICAgICAgICAgbG9naW4gPSBjb21wb25lbnQgIkxvZ2luIiAiQW55IERlc2NyaWJ0aW9uIiJSZWFjdCBDb21wb25lbnRzIgogICAgICAgICAgICB9CgogICAgICAgICAgICBtb2JpbGVBcHAgPSBjb250YWluZXIgIk1vYmlsZSBBcHAiICJBbGxvd3MgbGVhcm5lcnMgdG8gYWNjZXNzIHRoZWlyIGxlYXJuaW5nIGdvYWxzIG9uIG1vYmlsZSBkZXZpY2VzLiIgIkpldHBhY2sgQ29tcG9zZSIgIk1vYmlsZSBBcHAiIHsKICAgICAgICAgICAgICAgIAogICAgICAgICAgICB9CgogICAgICAgICAgICAjIEJhY2stZW5kCiAgICAgICAgICAgIGFwaUFwcCA9IGNvbnRhaW5lciAiQVBJIEFwcCIgIlNlcnZlcyBkYXRhIHRvIHRoZSBmcm9udC1lbmQgYXBwbGljYXRpb25zLCBidWlsdCB1c2luZyAuTkVULCBhbmQgY29ubmVjdHMgdG8gdGhlIFNRTCBkYXRhYmFzZSBmb3IgZGF0YSBwZXJzaXN0ZW5jZS4iICIuTkVUIiB7CiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIHNxbERhdGFiYXNlID0gY29udGFpbmVyICJTUUwgRGF0YWJhc2UiICJTdG9yZXMgdXNlciBkYXRhLCBsZWFybmluZyBnb2FscywgYW5kIHByb2dyZXNzIHRyYWNraW5nIGluZm9ybWF0aW9uLiIgIlNRTCBTZXJ2ZXIiICJEYXRhYmFzZSIgewogICAgICAgICAgICB9CgogICAgICAgICAgICAjIEFJIEZlYXR1cmVzCiAgICAgICAgICAgIGFpQ29udGFpbmVyID0gY29udGFpbmVyICJBSSBDb250YWluZXIiICJQcm92aWRlcyBwZXJzb25hbGl6ZWQgbGVhcm5pbmcgcmVjb21tZW5kYXRpb25zLCBpbnRlbGxpZ2VudCBwcm9ncmVzcyB0cmFja2luZywgYW5kIGxlYXJuaW5nIGluc2lnaHRzIHBvd2VyZWQgYnkgbWFjaGluZSBsZWFybmluZyBtb2RlbHMuIiAiUHl0aG9uICsgVGVuc29yRmxvdy9QeVRvcmNoIiAiU2VydmVyLVNpZGUgU2VydmljZSIgewogICAgICAgICAgICB9CiAgICAgICAgfQoKICAgICAgICAjIEV4dGVybmFsIFN5c3RlbXMKICAgICAgICBmaXJlYmFzZUF1dGhlbnRpY2F0aW9uID0gc29mdHdhcmVTeXN0ZW0gIkZpcmViYXNlIEF1dGhlbnRpY2F0aW9uIiAiQSBzZXJ2aWNlIGZvciBhdXRoZW50aWNhdGluZyB1c2VycywgaW50ZWdyYXRlZCBpbnRvIHRoZSBhcHAgZm9yIHNlY3VyZSBsb2dpbi4iICJFeGlzdGluZyBTeXN0ZW0iCiAgICAgICAgZmlyZWJhc2VDbG91ZE1lc3NhZ2luZyA9IHNvZnR3YXJlU3lzdGVtICJGaXJlYmFzZSBDbG91ZCBNZXNzYWdpbmcgKEZDTSkiICJBIHNlcnZpY2UgdXNlZCB0byBzZW5kIHB1c2ggbm90aWZpY2F0aW9ucyB0byB0aGUgYXBwLCBrZWVwaW5nIHVzZXJzIHVwZGF0ZWQgb24gdGhlaXIgbGVhcm5pbmcgcHJvZ3Jlc3MgYW5kIHJlbWluZGVycy4iICJFeGlzdGluZyBTeXN0ZW0iCgogICAgICAgICMgUmVsYXRpb25zaGlwcyAtIENvbnRleHQgbGV2ZWwKICAgICAgICBsZWFybmVyIC0+IHB1cmVMZWFybkFwcCAiVXNlcyIKICAgICAgICBwdXJlTGVhcm5BcHAgLT4gZmlyZWJhc2VBdXRoZW50aWNhdGlvbiAiVXNlcyBmb3IgdXNlciBhdXRoZW50aWNhdGlvbiIKICAgICAgICBwdXJlTGVhcm5BcHAgLT4gZmlyZWJhc2VDbG91ZE1lc3NhZ2luZyAiVXNlcyBmb3IgcHVzaCBub3RpZmljYXRpb25zIgoKICAgICAgICAjIFJlbGF0aW9uc2hpcHMgLSBDb250YWluZXIgbGV2ZWwKICAgICAgICBsZWFybmVyIC0+IG1vYmlsZUFwcCAiSW50ZXJhY3RzIHdpdGggdmlhIE1vYmlsZSBBcHAiICJJbnRlcmFjdHMiCiAgICAgICAgbGVhcm5lciAtPiBzcGEgIkludGVyYWN0cyB3aXRoIHZpYSBXZWIgQnJvd3NlciIgIkludGVyYWN0cyIKICAgICAgICBtb2JpbGVBcHAgLT4gYXBpQXBwICJNYWtlcyBBUEkgY2FsbHMgdG8iICJKU09OL0hUVFBTIgogICAgICAgIHNwYSAtPiBhcGlBcHAgIk1ha2VzIEFQSSBjYWxscyB0byIgIkpTT04vSFRUUFMiCiAgICAgICAgYXBpQXBwIC0+IHNxbERhdGFiYXNlICJSZWFkcyBmcm9tIGFuZCB3cml0ZXMgdG8iICJTUUwvVENQIgogICAgICAgIGFwaUFwcCAtPiBhaUNvbnRhaW5lciAiQ2FsbHMgZm9yIEFJLWRyaXZlbiByZWNvbW1lbmRhdGlvbnMgYW5kIHRyYWNraW5nIiAiZ1JQQy9KU09OIgoKICAgICAgICAjIEludGVybmFsIENvbnRhaW5lciByZWxhdGlvbnNoaXBzCiAgICAgICAgYWlDb250YWluZXIgLT4gc3FsRGF0YWJhc2UgIlJlYWRzIHRyYWluaW5nIGRhdGEgZnJvbSIgIlNRTC9UQ1AiCiAgICAgICAgYWlDb250YWluZXIgLT4gYXBpQXBwICJTZW5kcyBsZWFybmluZyBpbnNpZ2h0cyBhbmQgcmVjb21tZW5kYXRpb25zIHRvIiAiZ1JQQy9KU09OIgogICAgICAgIGFwaUFwcCAtPiBmaXJlYmFzZUF1dGhlbnRpY2F0aW9uICJVc2VzIGZvciBhdXRoZW50aWNhdGlvbiIgIkpTT04vSFRUUFMiCiAgICAgICAgYXBpQXBwIC0+IGZpcmViYXNlQ2xvdWRNZXNzYWdpbmcgIlVzZXMgdG8gc2VuZCBub3RpZmljYXRpb25zIiAiSlNPTi9IVFRQUyIKICAgICAgICBhcGlBcHAgLT4gbW9iaWxlQXBwICJTZW5kcyBub3RpZmljYXRpb25zIHZpYSIgIkpTT04vSFRUUFMiCiAgICAgICAgYXBpQXBwIC0+IHNwYSAiU2VuZHMgbm90aWZpY2F0aW9ucyB2aWEiICJKU09OL0hUVFBTIgogICAgfQoKICAgIHZpZXdzIHsKICAgICAgICAjIERlZmluZSBTeXN0ZW0gQ29udGV4dCBWaWV3CiAgICAgICAgc3lzdGVtQ29udGV4dCAicHVyZUxlYXJuQXBwIiAiU3lzdGVtLUNvbnRleHQtRGlhZ3JhbSIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgZGVzY3JpcHRpb24gIlRoZSBzeXN0ZW0gY29udGV4dCBkaWFncmFtIHNob3dpbmcgaG93IHRoZSBsZWFybmVyIGludGVyYWN0cyB3aXRoIHRoZSBQdXJlLUxlYXJuIEFwcCBhbmQgdGhlIGV4dGVybmFsIHN5c3RlbXMgbGlrZSBGaXJlYmFzZSBBdXRoZW50aWNhdGlvbiBhbmQgQ2xvdWQgTWVzc2FnaW5nLiIKICAgICAgICB9CgogICAgICAgICMgRGVmaW5lIENvbnRhaW5lciBWaWV3CiAgICAgICAgY29udGFpbmVyICJwdXJlTGVhcm5BcHAiICJDb250YWluZXItRGlhZ3JhbSIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgZGVzY3JpcHRpb24gIlRoZSBjb250YWluZXIgZGlhZ3JhbSBzaG93aW5nIHRoZSBkaWZmZXJlbnQgY29tcG9uZW50cyBvZiB0aGUgUHVyZS1MZWFybiBBcHAsIGluY2x1ZGluZyB0aGUgZnJvbnQtZW5kIHdlYiBhbmQgbW9iaWxlIGFwcHMsIEFQSSBiYWNrZW5kLCBTUUwgRGF0YWJhc2UsIGFuZCBBSSBDb250YWluZXIgZm9yIGFkdmFuY2VkIGZlYXR1cmVzLiIKICAgICAgICB9CiAgICAgIAoKICAgICAgICBzdHlsZXMgewogICAgICAgICAgICBlbGVtZW50ICJQZXJzb24iIHsKICAgICAgICAgICAgICAgIGJhY2tncm91bmQgIiNGRkZBRjAiCiAgICAgICAgICAgICAgICBjb2xvciAiIzMzMzMzMyIKICAgICAgICAgICAgICAgIHNoYXBlICJwZXJzb24iCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiRXhpc3RpbmcgU3lzdGVtIiB7CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICIjOTk5OTk5IgogICAgICAgICAgICAgICAgY29sb3IgIiNmZmZmZmYiCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiU29mdHdhcmUgU3lzdGVtIiB7CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICIjRkZGRkZGIgogICAgICAgICAgICAgICAgY29sb3IgIiMwMDAwMDAiCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiQ29udGFpbmVyIiB7CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICIjRTBGRkZGIgogICAgICAgICAgICAgICAgY29sb3IgIiMwMDAwOEIiCiAgICAgICAgICAgICAgICBzaGFwZSAiYm94IgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIldlYiBCcm93c2VyIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBXZWJCcm93c2VyCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiTW9iaWxlIEFwcCIgewogICAgICAgICAgICAgICAgc2hhcGUgTW9iaWxlRGV2aWNlTGFuZHNjYXBlCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiRGF0YWJhc2UiIHsKICAgICAgICAgICAgICAgIHNoYXBlIEN5bGluZGVyCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiU2VydmVyLVNpZGUgU2VydmljZSIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAiI0ZGRDcwMCIKICAgICAgICAgICAgICAgIGNvbG9yICIjMDAwMDAwIgogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"
+    "structurizr.dsl" : "d29ya3NwYWNlICJQdXJlLUxlYXJuIEFwcCIgIlRoaXMgd29ya3NwYWNlIHJlcHJlc2VudHMgdGhlIGFyY2hpdGVjdHVyZSBvZiB0aGUgUHVyZS1MZWFybiBBcHAsIGEgc2VsZi1sZWFybmluZyBtYW5hZ2VtZW50IHN5c3RlbS4gSXQgaW5jbHVkZXMgYm90aCBtb2JpbGUgYW5kIHdlYiBmcm9udC1lbmQgaW50ZXJmYWNlcywgYSBiYWNrLWVuZCBBUEksIGFuZCBhbiBBSSBDb250YWluZXIgZm9yIGFkdmFuY2VkIHBlcnNvbmFsaXplZCBmZWF0dXJlcy4iIHsKCiAgICBtb2RlbCB7CiAgICAgICAgIyBNYWluIEVudGl0aWVzCgogICAgICAgICMgUGVyc29ucwogICAgICAgIGxlYXJuZXIgPSBwZXJzb24gIkxlYXJuZXIiICJBIHBlcnNvbiB3aG8gdXNlcyB0aGUgUHVyZS1MZWFybiBBcHAgdG8gbWFuYWdlIGFuZCB0cmFjayB0aGVpciBzZWxmLWxlYXJuaW5nIGdvYWxzLiIgIlVzZXIiCgogICAgICAgICMgT3VyIFN5c3RlbQogICAgICAgIHB1cmVMZWFybkFwcCA9IHNvZnR3YXJlU3lzdGVtICJQdXJlLUxlYXJuIEFwcCIgIkEgc2VsZi1sZWFybmluZyBtYW5hZ2VtZW50IHN5c3RlbSB0aGF0IGFsbG93cyB1c2VycyB0byBzZXQsIHRyYWNrLCBhbmQgYWNoaWV2ZSB0aGVpciBzZWxmLWxlYXJuaW5nIGdvYWxzLiIgIlNvZnR3YXJlIFN5c3RlbSIgewogICAgICAgICAgICAKICAgICAgICAgICAgIyBGcm9udC1lbmQKICAgICAgICAgICAgc3BhID0gY29udGFpbmVyICJTaW5nbGUgUGFnZSBBcHBsaWNhdGlvbiIgIlByb3ZpZGVzIGFuIGludGVyZmFjZSBmb3IgbGVhcm5lcnMgdG8gaW50ZXJhY3Qgd2l0aCB0aGVpciBsZWFybmluZyBnb2Fscy4iICJSZWFjdCIgIldlYiBCcm93c2VyIiB7CiAgICAgICAgICAgICAgICAgbG9naW4gPSBjb21wb25lbnQgIkxvZ2luIiAiSGFuZGxlcyB1c2VyIGF1dGhlbnRpY2F0aW9uIFVJLiIgIlJlYWN0IENvbXBvbmVudCIKICAgICAgICAgICAgICAgICBnb2Fsc0NvbXBvbmVudCA9IGNvbXBvbmVudCAiR29hbHMgVUkiICJEaXNwbGF5cyB0aGUgbGlzdCBvZiBnb2FscyBhbmQgbGV0cyB0aGUgdXNlciBjcmVhdGUgbmV3IGdvYWxzLiIgIlJlYWN0IENvbXBvbmVudCIKICAgICAgICAgICAgfQoKICAgICAgICAgICAgbW9iaWxlQXBwID0gY29udGFpbmVyICJNb2JpbGUgQXBwIiAiQWxsb3dzIGxlYXJuZXJzIHRvIGFjY2VzcyB0aGVpciBsZWFybmluZyBnb2FscyBvbiBtb2JpbGUgZGV2aWNlcy4iICJKZXRwYWNrIENvbXBvc2UiICJNb2JpbGUgQXBwIiB7CiAgICAgICAgICAgICAgICAjIChjb3VsZCBtaXJyb3IgR29hbHMgVUkgY29tcG9uZW50IGhlcmUpCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgICMgQmFjay1lbmQKICAgICAgICAgICAgYXBpQXBwID0gY29udGFpbmVyICJBUEkgQXBwIiAiU2VydmVzIGRhdGEgdG8gdGhlIGZyb250LWVuZCBhcHBsaWNhdGlvbnMsIGJ1aWx0IHVzaW5nIC5ORVQsIGFuZCBjb25uZWN0cyB0byB0aGUgU1FMIGRhdGFiYXNlIGZvciBkYXRhIHBlcnNpc3RlbmNlLiIgIi5ORVQiIHsKICAgICAgICAgICAgICAgIGdvYWxDb250cm9sbGVyID0gY29tcG9uZW50ICJHb2Fsc0NvbnRyb2xsZXIiICJIYW5kbGVzIEhUVFAgcmVxdWVzdHMgZm9yIGdvYWwgb3BlcmF0aW9ucyAobGlzdCwgY3JlYXRlLCB1cGRhdGUsIGRlbGV0ZSkuIiAiLk5FVCBDb250cm9sbGVyIgogICAgICAgICAgICAgICAgZ29hbFNlcnZpY2UgICAgPSBjb21wb25lbnQgIkdvYWxTZXJ2aWNlIiAgICAiQ29udGFpbnMgYnVzaW5lc3MgbG9naWMgYW5kIHZhbGlkYXRpb24gZm9yIGdvYWxzLiIgICAgICIuTkVUIFNlcnZpY2UiCiAgICAgICAgICAgICAgICBnb2FsUmVwb3NpdG9yeSA9IGNvbXBvbmVudCAiR29hbFJlcG9zaXRvcnkiICJQZXJmb3JtcyBDUlVEIG9wZXJhdGlvbnMgb24gR29hbCBlbnRpdGllcyBpbiB0aGUgZGF0YWJhc2UuIiAiLk5FVCBSZXBvc2l0b3J5IgogICAgICAgICAgICAgICAgZ29hbE1hcHBlciAgICAgPSBjb21wb25lbnQgIkdvYWxNYXBwZXIiICAgICAiTWFwcyBiZXR3ZWVuIEdvYWxEdG8gYW5kIEdvYWwgZW50aXR5IG9iamVjdHMuIiAgICAgICIuTkVUIE1hcHBlciIKICAgICAgICAgICAgICAgIGdvYWxEdG8gICAgICAgID0gY29tcG9uZW50ICJHb2FsRHRvIiAgICAgICAgIkRhdGEgVHJhbnNmZXIgT2JqZWN0IGZvciBHb2FsIHBheWxvYWRzLiIgICAgICAgICAgICIuTkVUIERUTyIKICAgICAgICAgICAgfQoKICAgICAgICAgICAgc3FsRGF0YWJhc2UgPSBjb250YWluZXIgIlNRTCBEYXRhYmFzZSIgIlN0b3JlcyB1c2VyIGRhdGEsIGxlYXJuaW5nIGdvYWxzLCBhbmQgcHJvZ3Jlc3MgdHJhY2tpbmcgaW5mb3JtYXRpb24uIiAiU1FMIFNlcnZlciIgIkRhdGFiYXNlIiB7CiAgICAgICAgICAgIH0KCiAgICAgICAgICAgICMgQUkgRmVhdHVyZXMKICAgICAgICAgICAgYWlDb250YWluZXIgPSBjb250YWluZXIgIkFJIENvbnRhaW5lciIgIlByb3ZpZGVzIHBlcnNvbmFsaXplZCBsZWFybmluZyByZWNvbW1lbmRhdGlvbnMsIGludGVsbGlnZW50IHByb2dyZXNzIHRyYWNraW5nLCBhbmQgbGVhcm5pbmcgaW5zaWdodHMgcG93ZXJlZCBieSBtYWNoaW5lIGxlYXJuaW5nIG1vZGVscy4iICJQeXRob24gKyBUZW5zb3JGbG93L1B5VG9yY2giICJTZXJ2ZXItU2lkZSBTZXJ2aWNlIiB7CiAgICAgICAgICAgIH0KICAgICAgICB9CgogICAgICAgICMgRXh0ZXJuYWwgU3lzdGVtcwogICAgICAgIGZpcmViYXNlQXV0aGVudGljYXRpb24gPSBzb2Z0d2FyZVN5c3RlbSAiRmlyZWJhc2UgQXV0aGVudGljYXRpb24iICJBIHNlcnZpY2UgZm9yIGF1dGhlbnRpY2F0aW5nIHVzZXJzLCBpbnRlZ3JhdGVkIGludG8gdGhlIGFwcCBmb3Igc2VjdXJlIGxvZ2luLiIgIkV4aXN0aW5nIFN5c3RlbSIKICAgICAgICBmaXJlYmFzZUNsb3VkTWVzc2FnaW5nID0gc29mdHdhcmVTeXN0ZW0gIkZpcmViYXNlIENsb3VkIE1lc3NhZ2luZyAoRkNNKSIgIkEgc2VydmljZSB1c2VkIHRvIHNlbmQgcHVzaCBub3RpZmljYXRpb25zIHRvIHRoZSBhcHAsIGtlZXBpbmcgdXNlcnMgdXBkYXRlZCBvbiB0aGVpciBsZWFybmluZyBwcm9ncmVzcyBhbmQgcmVtaW5kZXJzLiIgIkV4aXN0aW5nIFN5c3RlbSIKCiAgICAgICAgIyBSZWxhdGlvbnNoaXBzIC0gQ29udGV4dCBsZXZlbAogICAgICAgIGxlYXJuZXIgLT4gcHVyZUxlYXJuQXBwICJVc2VzIgogICAgICAgIHB1cmVMZWFybkFwcCAtPiBmaXJlYmFzZUF1dGhlbnRpY2F0aW9uICJVc2VzIGZvciB1c2VyIGF1dGhlbnRpY2F0aW9uIgogICAgICAgIHB1cmVMZWFybkFwcCAtPiBmaXJlYmFzZUNsb3VkTWVzc2FnaW5nICJVc2VzIGZvciBwdXNoIG5vdGlmaWNhdGlvbnMiCgogICAgICAgICMgUmVsYXRpb25zaGlwcyAtIENvbnRhaW5lciBsZXZlbAogICAgICAgIGxlYXJuZXIgLT4gbW9iaWxlQXBwICJJbnRlcmFjdHMgd2l0aCB2aWEgTW9iaWxlIEFwcCIgIkludGVyYWN0cyIKICAgICAgICBsZWFybmVyIC0+IHNwYSAiSW50ZXJhY3RzIHdpdGggdmlhIFdlYiBCcm93c2VyIiAiSW50ZXJhY3RzIgogICAgICAgIG1vYmlsZUFwcCAtPiBhcGlBcHAgIk1ha2VzIEFQSSBjYWxscyB0byIgIkpTT04vSFRUUFMiCiAgICAgICAgc3BhIC0+IGFwaUFwcCAiTWFrZXMgQVBJIGNhbGxzIHRvIiAiSlNPTi9IVFRQUyIKICAgICAgICBhcGlBcHAgLT4gc3FsRGF0YWJhc2UgIlJlYWRzIGZyb20gYW5kIHdyaXRlcyB0byIgIlNRTC9UQ1AiCiAgICAgICAgYXBpQXBwIC0+IGFpQ29udGFpbmVyICJDYWxscyBmb3IgQUktZHJpdmVuIHJlY29tbWVuZGF0aW9ucyBhbmQgdHJhY2tpbmciICJnUlBDL0pTT04iCiAgICAgICAgYXBpQXBwIC0+IGZpcmViYXNlQXV0aGVudGljYXRpb24gIlVzZXMgZm9yIGF1dGhlbnRpY2F0aW9uIiAiSlNPTi9IVFRQUyIKICAgICAgICBhcGlBcHAgLT4gZmlyZWJhc2VDbG91ZE1lc3NhZ2luZyAiVXNlcyB0byBzZW5kIG5vdGlmaWNhdGlvbnMiICJKU09OL0hUVFBTIgoKICAgICAgICAjIEludGVybmFsIENvbnRhaW5lciByZWxhdGlvbnNoaXBzCiAgICAgICAgYWlDb250YWluZXIgLT4gc3FsRGF0YWJhc2UgIlJlYWRzIHRyYWluaW5nIGRhdGEgZnJvbSIgIlNRTC9UQ1AiCiAgICAgICAgYWlDb250YWluZXIgLT4gYXBpQXBwICJTZW5kcyBsZWFybmluZyBpbnNpZ2h0cyBhbmQgcmVjb21tZW5kYXRpb25zIHRvIiAiZ1JQQy9KU09OIgogICAgICAgIGFwaUFwcCAtPiBtb2JpbGVBcHAgIlNlbmRzIG5vdGlmaWNhdGlvbnMgdmlhIiAiSlNPTi9IVFRQUyIKICAgICAgICBhcGlBcHAgLT4gc3BhICJTZW5kcyBub3RpZmljYXRpb25zIHZpYSIgIkpTT04vSFRUUFMiCgogICAgICAgICMgQ29tcG9uZW50IHJlbGF0aW9uc2hpcHMgZm9yIEdvYWxzIFdvcmtmbG93CiAgICAgICAgZ29hbHNDb21wb25lbnQgLT4gZ29hbENvbnRyb2xsZXIgIlNlbmRzIHJlcXVlc3RzIHRvIiAiSFRUUCIKICAgICAgICBnb2FsQ29udHJvbGxlciAtPiBnb2FsU2VydmljZSAiQ2FsbHMiICJNZXRob2QgQ2FsbHMiCiAgICAgICAgZ29hbFNlcnZpY2UgLT4gZ29hbFJlcG9zaXRvcnkgIlVzZXMiICJNZXRob2QgQ2FsbHMiCiAgICAgICAgZ29hbFJlcG9zaXRvcnkgLT4gc3FsRGF0YWJhc2UgIlJlYWRzIGFuZCB3cml0ZXMgR29hbCBkYXRhIHRvIiAiU1FML1RDUCIKICAgICAgICBnb2FsTWFwcGVyIC0+IGdvYWxEdG8gIk1hcHMgR29hbCBlbnRpdHkgdG8gR29hbER0byIgIk1ldGhvZCBDYWxscyIKICAgICAgICBnb2FsRHRvIC0+IGdvYWxDb250cm9sbGVyICJVc2VkIGFzIHJlcXVlc3QvcmVzcG9uc2UgcGF5bG9hZCIgIkRhdGEgVHJhbnNmZXIiCiAgICAgICAgZ29hbENvbnRyb2xsZXIgLT4gZ29hbHNDb21wb25lbnQgIlJldHVybnMgR29hbCBkYXRhIHRvIiAiSFRUUCBSZXNwb25zZSIKICAgICAgICAKCiAgICB9CgogICAgdmlld3MgewogICAgICAgICMgU3lzdGVtIENvbnRleHQgVmlldwogICAgICAgIHN5c3RlbUNvbnRleHQgInB1cmVMZWFybkFwcCIgIlN5c3RlbS1Db250ZXh0LURpYWdyYW0iIHsKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgICAgIGRlc2NyaXB0aW9uICJUaGUgc3lzdGVtIGNvbnRleHQgZGlhZ3JhbSBzaG93aW5nIGhvdyB0aGUgbGVhcm5lciBpbnRlcmFjdHMgd2l0aCB0aGUgUHVyZS1MZWFybiBBcHAgYW5kIHRoZSBleHRlcm5hbCBzeXN0ZW1zIGxpa2UgRmlyZWJhc2UgQXV0aGVudGljYXRpb24gYW5kIENsb3VkIE1lc3NhZ2luZy4iCiAgICAgICAgfQoKICAgICAgICAjIENvbnRhaW5lciBWaWV3CiAgICAgICAgY29udGFpbmVyICJwdXJlTGVhcm5BcHAiICJDb250YWluZXItRGlhZ3JhbSIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgZGVzY3JpcHRpb24gIlRoZSBjb250YWluZXIgZGlhZ3JhbSBzaG93aW5nIHRoZSBkaWZmZXJlbnQgY29tcG9uZW50cyBvZiB0aGUgUHVyZS1MZWFybiBBcHAsIGluY2x1ZGluZyB0aGUgZnJvbnQtZW5kIHdlYiBhbmQgbW9iaWxlIGFwcHMsIEFQSSBiYWNrZW5kLCBTUUwgRGF0YWJhc2UsIGFuZCBBSSBDb250YWluZXIgZm9yIGFkdmFuY2VkIGZlYXR1cmVzLiIKICAgICAgICB9CgogICAgICAgICMgQ29tcG9uZW50IFZpZXcgZm9yIEdvYWxzIFdvcmtmbG93CiAgICAgICAgY29tcG9uZW50ICJhcGlBcHAiICJDb21wb25lbnQtRGlhZ3JhbSIgewogICAgICAgICAgICBpbmNsdWRlIGdvYWxzQ29tcG9uZW50CiAgICAgICAgICAgIGluY2x1ZGUgZ29hbENvbnRyb2xsZXIKICAgICAgICAgICAgaW5jbHVkZSBnb2FsU2VydmljZQogICAgICAgICAgICBpbmNsdWRlIGdvYWxSZXBvc2l0b3J5CiAgICAgICAgICAgIGluY2x1ZGUgZ29hbE1hcHBlcgogICAgICAgICAgICBpbmNsdWRlIGdvYWxEdG8KICAgICAgICAgICAgaW5jbHVkZSBzcWxEYXRhYmFzZQoKICAgICAgICAgICAgZGVzY3JpcHRpb24gIkNvbXBvbmVudC1sZXZlbCB2aWV3IG9mIGhvdyB0aGUgU1BB4oCZcyBHb2FscyBVSSByZXF1ZXN0cyB0aGUgbGlzdCBvZiBnb2FscyBhbmQgaG93IGl0IGZsb3dzIHRocm91Z2ggdGhlIEFQSSBpbnRvIHRoZSBTUUwgRGF0YWJhc2UgYW5kIGJhY2suIgogICAgICAgIH0KCiAgICAgICAgc3R5bGVzIHsKICAgICAgICAgICAgZWxlbWVudCAiUGVyc29uIiB7CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICIjRkZGQUYwIgogICAgICAgICAgICAgICAgY29sb3IgIiMzMzMzMzMiCiAgICAgICAgICAgICAgICBzaGFwZSAicGVyc29uIgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkV4aXN0aW5nIFN5c3RlbSIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAiIzk5OTk5OSIKICAgICAgICAgICAgICAgIGNvbG9yICIjZmZmZmZmIgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIlNvZnR3YXJlIFN5c3RlbSIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAiI0ZGRkZGRiIKICAgICAgICAgICAgICAgIGNvbG9yICIjMDAwMDAwIgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkNvbnRhaW5lciIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAiI0UwRkZGRiIKICAgICAgICAgICAgICAgIGNvbG9yICIjMDAwMDhCIgogICAgICAgICAgICAgICAgc2hhcGUgImJveCIKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJXZWIgQnJvd3NlciIgewogICAgICAgICAgICAgICAgc2hhcGUgV2ViQnJvd3NlcgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIk1vYmlsZSBBcHAiIHsKICAgICAgICAgICAgICAgIHNoYXBlIE1vYmlsZURldmljZUxhbmRzY2FwZQogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkRhdGFiYXNlIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBDeWxpbmRlcgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIlNlcnZlci1TaWRlIFNlcnZpY2UiIHsKICAgICAgICAgICAgICAgIGJhY2tncm91bmQgIiNGRkQ3MDAiCiAgICAgICAgICAgICAgICBjb2xvciAiIzAwMDAwMCIKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQ=="
   },
   "views" : {
+    "componentViews" : [ {
+      "containerId" : "7",
+      "description" : "Component-level view of how the SPA’s Goals UI requests the list of goals and how it flows through the API into the SQL Database and back.",
+      "dimensions" : {
+        "height" : 3150,
+        "width" : 1835
+      },
+      "elements" : [ {
+        "id" : "5",
+        "x" : 1164,
+        "y" : 1310
+      }, {
+        "id" : "8",
+        "x" : 228,
+        "y" : 1310
+      }, {
+        "id" : "9",
+        "x" : 228,
+        "y" : 1910
+      }, {
+        "id" : "10",
+        "x" : 228,
+        "y" : 2510
+      }, {
+        "id" : "11",
+        "x" : 219,
+        "y" : 171
+      }, {
+        "id" : "12",
+        "x" : 228,
+        "y" : 710
+      }, {
+        "id" : "13",
+        "x" : 1169,
+        "y" : 2516
+      } ],
+      "externalContainerBoundariesVisible" : false,
+      "key" : "Component-Diagram",
+      "order" : 3,
+      "relationships" : [ {
+        "id" : "32",
+        "vertices" : [ {
+          "x" : 919,
+          "y" : 1326
+        } ]
+      }, {
+        "id" : "35"
+      }, {
+        "id" : "36"
+      }, {
+        "id" : "37"
+      }, {
+        "id" : "38"
+      }, {
+        "id" : "39"
+      }, {
+        "id" : "40",
+        "vertices" : [ {
+          "x" : 914,
+          "y" : 1596
+        } ]
+      } ]
+    } ],
     "configuration" : {
       "branding" : { },
-      "lastSavedView" : "Container-Diagram",
+      "lastSavedView" : "Component-Diagram",
+      "metadataSymbols" : "SquareBrackets",
       "styles" : {
         "elements" : [ {
           "background" : "#fffaf0",
@@ -264,97 +473,92 @@
     "containerViews" : [ {
       "description" : "The container diagram showing the different components of the Pure-Learn App, including the front-end web and mobile apps, API backend, SQL Database, and AI Container for advanced features.",
       "dimensions" : {
-        "height" : 1973,
-        "width" : 3508
+        "height" : 2686,
+        "width" : 2760
       },
       "elements" : [ {
         "id" : "1",
-        "x" : 199,
-        "y" : 532
+        "x" : 857,
+        "y" : 151
       }, {
         "id" : "3",
-        "x" : 905,
-        "y" : 315
-      }, {
-        "id" : "5",
-        "x" : 899,
-        "y" : 882
+        "x" : 220,
+        "y" : 751
       }, {
         "id" : "6",
-        "x" : 1850,
-        "y" : 615
+        "x" : 1545,
+        "y" : 751
       }, {
         "id" : "7",
-        "x" : 2725,
-        "y" : 882
+        "x" : 883,
+        "y" : 1401
       }, {
-        "id" : "8",
-        "x" : 2725,
-        "y" : 295
+        "id" : "13",
+        "x" : 270,
+        "y" : 2046
       }, {
-        "id" : "9",
-        "x" : 2215,
-        "y" : 1415
+        "id" : "14",
+        "x" : 1565,
+        "y" : 2046
       }, {
-        "id" : "10",
-        "x" : 1596,
-        "y" : 1403
+        "id" : "15",
+        "x" : 2110,
+        "y" : 1641
+      }, {
+        "id" : "16",
+        "x" : 2110,
+        "y" : 1186
       } ],
       "externalSoftwareSystemBoundariesVisible" : false,
       "key" : "Container-Diagram",
       "order" : 2,
-      "paperSize" : "Slide_16_9",
       "relationships" : [ {
-        "id" : "14"
-      }, {
-        "id" : "15"
-      }, {
-        "id" : "16",
-        "vertices" : [ {
-          "x" : 1521,
-          "y" : 813
-        } ]
-      }, {
-        "id" : "17",
-        "vertices" : [ {
-          "x" : 1495,
-          "y" : 656
-        } ]
-      }, {
-        "id" : "18"
-      }, {
-        "id" : "19",
-        "vertices" : [ {
-          "x" : 2420,
-          "y" : 485
-        } ]
-      }, {
         "id" : "20"
       }, {
-        "id" : "21",
-        "vertices" : [ {
-          "x" : 2540,
-          "y" : 715
-        } ]
+        "id" : "21"
       }, {
-        "id" : "22"
+        "id" : "22",
+        "vertices" : [ {
+          "x" : 1340,
+          "y" : 1181
+        } ]
       }, {
         "id" : "23",
         "vertices" : [ {
-          "x" : 1906,
-          "y" : 1258
+          "x" : 890,
+          "y" : 1146
         } ]
       }, {
-        "id" : "24",
-        "vertices" : [ {
-          "x" : 1651,
-          "y" : 1018
-        } ]
+        "id" : "24"
       }, {
         "id" : "25",
         "vertices" : [ {
-          "x" : 1595,
-          "y" : 451
+          "x" : 1250,
+          "y" : 1856
+        } ]
+      }, {
+        "id" : "26"
+      }, {
+        "id" : "27"
+      }, {
+        "id" : "28"
+      }, {
+        "id" : "29",
+        "vertices" : [ {
+          "x" : 1520,
+          "y" : 1801
+        } ]
+      }, {
+        "id" : "30",
+        "vertices" : [ {
+          "x" : 1560,
+          "y" : 1316
+        } ]
+      }, {
+        "id" : "31",
+        "vertices" : [ {
+          "x" : 680,
+          "y" : 1346
         } ]
       } ],
       "softwareSystemId" : "2"
@@ -362,36 +566,35 @@
     "systemContextViews" : [ {
       "description" : "The system context diagram showing how the learner interacts with the Pure-Learn App and the external systems like Firebase Authentication and Cloud Messaging.",
       "dimensions" : {
-        "height" : 1316,
-        "width" : 2316
+        "height" : 2000,
+        "width" : 2099
       },
       "elements" : [ {
         "id" : "1",
-        "x" : 240,
-        "y" : 430
+        "x" : 849,
+        "y" : 151
       }, {
         "id" : "2",
-        "x" : 910,
-        "y" : 510
+        "x" : 824,
+        "y" : 851
       }, {
-        "id" : "9",
-        "x" : 1658,
-        "y" : 208
+        "id" : "15",
+        "x" : 449,
+        "y" : 1451
       }, {
-        "id" : "10",
-        "x" : 1658,
-        "y" : 808
+        "id" : "16",
+        "x" : 1199,
+        "y" : 1451
       } ],
       "enterpriseBoundaryVisible" : true,
       "key" : "System-Context-Diagram",
       "order" : 1,
-      "paperSize" : "A5_Landscape",
       "relationships" : [ {
-        "id" : "11"
+        "id" : "17"
       }, {
-        "id" : "12"
+        "id" : "18"
       }, {
-        "id" : "13"
+        "id" : "19"
       } ],
       "softwareSystemId" : "2"
     } ]

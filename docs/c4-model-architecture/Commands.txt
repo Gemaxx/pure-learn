@@ -2,5 +2,7 @@
 docker pull structurizr/lite
 
 
-docker run -it --rm -p 8080:8080 -v D:\structurizr:/usr/local/structurizr structurizr/lite
+docker run -it --rm -p 8081:8080 -v D:\pure-learn\docs\c4-model-architecture:/usr/local/structurizr structurizr/lite
+
+# After running, open http://localhost:8081 in your browser to access Structurizr Lite.
 
