@@ -6,7 +6,7 @@ import ResourceCard from './ResourceCard';
 import ResourceModal from './ResourceModal';
 import { Button } from './ui/button';
 import { FileText } from 'lucide-react';
-import { getLearningResources, deleteLearningResource } from '../services/learning-resources-service';
+import { getLearningResources, softDeleteLearningResource } from '../services/learning-resources-service';
 
 // نوع resource الأساسي
 interface LearningResource {
@@ -34,14 +34,15 @@ export default function LearningResourcesBoard() {
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [editResource, setEditResource] = useState<LearningResource | null>(null);
+  const [operatingResourceId, setOperatingResourceId] = useState<string | null>(null);
 
   // جلب الموارد من الـ API
   const fetchResources = async () => {
-    if (!learnerId) return;
+    if (!learnerId || !goalId) return;
     setLoading(true);
     setError(null);
     try {
-      const data = await getLearningResources(learnerId);
+      const data = await getLearningResources(learnerId, goalId);
       setResources(Array.isArray(data) ? data : []);
       setError(null);
     } catch (err) {
@@ -53,7 +54,7 @@ export default function LearningResourcesBoard() {
 
   useEffect(() => {
     fetchResources();
-  }, [learnerId]);
+  }, [learnerId, goalId]);
 
   // إضافة resource جديد
   const handleResourceAdded = () => {
@@ -70,15 +71,16 @@ export default function LearningResourcesBoard() {
 
   // حذف resource
   const handleDelete = async (id: string) => {
-    if (!learnerId) return;
-    setLoading(true);
+    if (!learnerId || operatingResourceId) return;
+    setOperatingResourceId(id);
     try {
-      await deleteLearningResource(learnerId, id);
-      fetchResources();
+      await softDeleteLearningResource(learnerId, id);
+      setResources((prev) => prev.filter((r) => r.id !== id));
     } catch {
-      setError('A server error occurred. Please try again.');
+      setError("A server error occurred. Please try again.");
+      fetchResources(); // Refetch only on error
     } finally {
-      setLoading(false);
+      setOperatingResourceId(null);
     }
   };
 
@@ -97,9 +99,6 @@ export default function LearningResourcesBoard() {
           <FileText className="w-16 h-16 text-muted-foreground mb-4" />
           <h2 className="text-xl font-semibold mb-2">No resources yet</h2>
           <p className="text-muted-foreground mb-6">Create your first resource to start documenting your learning journey.</p>
-          <Button onClick={() => { setEditResource(null); setModalOpen(true); }}>
-            + Create Your First Resource
-          </Button>
         </div>
       ) : error ? (
         <div className="text-center text-destructive py-12">{error}</div>
@@ -111,6 +110,7 @@ export default function LearningResourcesBoard() {
               resource={resource}
               onEdit={() => handleEdit(resource)}
               onDelete={() => handleDelete(resource.id)}
+              isDeleting={operatingResourceId === resource.id}
             />
           ))}
         </div>

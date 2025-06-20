@@ -63,6 +63,7 @@ export default function CategoryPage() {
   const [goalToDelete, setGoalToDelete] = useState<Goal | null>(null)
   const [goalToEdit, setGoalToEdit] = useState<Goal | null>(null)
   const [deleteType, setDeleteType] = useState<"soft" | "hard">("soft")
+  const [isDeleting, setIsDeleting] = useState(false)
   const [selectedTerm, setSelectedTerm] = useState<string>("All")
   const [selectedStatus, setSelectedStatus] = useState<string>("All")
 
@@ -145,7 +146,8 @@ export default function CategoryPage() {
   }
 
   const confirmDeleteGoal = async () => {
-    if (!goalToDelete || !user?.id) return
+    if (!goalToDelete || !user?.id || isDeleting) return
+    setIsDeleting(true)
 
     try {
       if (deleteType === "soft") {
@@ -174,6 +176,8 @@ export default function CategoryPage() {
         variant: "destructive",
       })
       console.error(err)
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -263,9 +267,6 @@ export default function CategoryPage() {
           <div className="text-center py-8">
             <Target className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <p className="text-muted-foreground mb-4">You have no goals matching the selected filters</p>
-            <Button onClick={() => setIsGoalModalOpen(true)} variant="outline" className="w-full sm:w-auto">
-              Create Your First Goal
-            </Button>
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -361,12 +362,13 @@ export default function CategoryPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDeleteGoal}
               className={deleteType === "hard" ? "bg-destructive hover:bg-destructive/90" : ""}
+              disabled={isDeleting}
             >
-              {deleteType === "soft" ? "Soft Delete" : "Hard Delete"}
+              {isDeleting ? "Deleting..." : deleteType === "soft" ? "Soft Delete" : "Hard Delete"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
