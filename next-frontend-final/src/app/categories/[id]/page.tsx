@@ -35,6 +35,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 const termColors = {
   "Short-Term": "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
@@ -62,6 +63,9 @@ export default function CategoryPage() {
   const [goalToDelete, setGoalToDelete] = useState<Goal | null>(null)
   const [goalToEdit, setGoalToEdit] = useState<Goal | null>(null)
   const [deleteType, setDeleteType] = useState<"soft" | "hard">("soft")
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [selectedTerm, setSelectedTerm] = useState<string>("All")
+  const [selectedStatus, setSelectedStatus] = useState<string>("All")
 
   const { user } = useAuth()
   const params = useParams()
@@ -142,7 +146,8 @@ export default function CategoryPage() {
   }
 
   const confirmDeleteGoal = async () => {
-    if (!goalToDelete || !user?.id) return
+    if (!goalToDelete || !user?.id || isDeleting) return
+    setIsDeleting(true)
 
     try {
       if (deleteType === "soft") {
@@ -171,8 +176,17 @@ export default function CategoryPage() {
         variant: "destructive",
       })
       console.error(err)
+    } finally {
+      setIsDeleting(false)
     }
   }
+
+  // Filtered goals based on selected term and status
+  const filteredGoals = goals.filter((goal) => {
+    const termMatch = selectedTerm === "All" || goal.term === selectedTerm
+    const statusMatch = selectedStatus === "All" || goal.status === selectedStatus
+    return termMatch && statusMatch
+  })
 
   if (isLoading) {
     return (
@@ -204,15 +218,35 @@ export default function CategoryPage() {
 
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
-      <div className="flex items-center gap-2 mb-6">
+      <div className="flex items-center gap-2 mb-2">
         <div className="w-4 h-4 rounded-full" style={{ backgroundColor: category.color }}></div>
         <h1 className="text-xl sm:text-2xl font-bold">{category.title}</h1>
       </div>
-
       {category.description && (
-        <div className="mb-8 text-muted-foreground text-sm sm:text-base">{category.description}</div>
+        <div className="mb-4 text-muted-foreground text-sm sm:text-base">{category.description}</div>
       )}
-
+      {/* Filter Buttons */}
+      <div className="flex flex-col items-center justify-center mb-8 gap-3">
+        <div className="flex flex-wrap gap-2 justify-center">
+          <ToggleGroup type="single" value={selectedTerm} onValueChange={(val) => setSelectedTerm(val || "All")}>
+            <ToggleGroupItem value="All" aria-label="All Terms" className="min-w-[120px]">All</ToggleGroupItem>
+            <ToggleGroupItem value="Short-Term" aria-label="Short-Term">Short-Term</ToggleGroupItem>
+            <ToggleGroupItem value="Medium-Term" aria-label="Medium-Term">Medium-Term</ToggleGroupItem>
+            <ToggleGroupItem value="Long-Term" aria-label="Long-Term">Long-Term</ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+        <div className="flex flex-wrap gap-2 justify-center">
+          <ToggleGroup type="single" value={selectedStatus} onValueChange={(val) => setSelectedStatus(val || "All")}>
+            <ToggleGroupItem value="All" aria-label="All Statuses" className="min-w-[120px]">All</ToggleGroupItem>
+            <ToggleGroupItem value="Not-Started" aria-label="Not-Started">Not-Started</ToggleGroupItem>
+            <ToggleGroupItem value="In-Progress" aria-label="In-Progress">In-Progress</ToggleGroupItem>
+            <ToggleGroupItem value="Done" aria-label="Done">Done</ToggleGroupItem>
+            <ToggleGroupItem value="Canceled" aria-label="Canceled">Canceled</ToggleGroupItem>
+            <ToggleGroupItem value="On-Hold" aria-label="On-Hold">On-Hold</ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+      </div>
+      {/* End Filter Buttons */}
       <div className="bg-secondary/30 p-4 sm:p-6 rounded-lg">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <h2 className="text-lg font-medium flex items-center gap-2">
@@ -229,17 +263,14 @@ export default function CategoryPage() {
           <div className="text-center py-8">
             <p className="text-muted-foreground">Loading goals...</p>
           </div>
-        ) : goals.length === 0 ? (
+        ) : filteredGoals.length === 0 ? (
           <div className="text-center py-8">
             <Target className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-muted-foreground mb-4">You have no goals, create a new one</p>
-            <Button onClick={() => setIsGoalModalOpen(true)} variant="outline" className="w-full sm:w-auto">
-              Create Your First Goal
-            </Button>
+            <p className="text-muted-foreground mb-4">You have no goals matching the selected filters</p>
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {goals.map((goal) => (
+            {filteredGoals.map((goal) => (
               <Card key={goal.id} className="hover:shadow-md transition-shadow">
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between mb-3">
@@ -331,12 +362,13 @@ export default function CategoryPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDeleteGoal}
               className={deleteType === "hard" ? "bg-destructive hover:bg-destructive/90" : ""}
+              disabled={isDeleting}
             >
-              {deleteType === "soft" ? "Soft Delete" : "Hard Delete"}
+              {isDeleting ? "Deleting..." : deleteType === "soft" ? "Soft Delete" : "Hard Delete"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

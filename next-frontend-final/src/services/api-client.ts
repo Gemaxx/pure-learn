@@ -26,14 +26,26 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
 
     // Check if the response is ok
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: `Error: ${response.status}` }))
-      throw new Error(errorData.message || `Error: ${response.status}`)
+      let errorMessage = `Error: ${response.status}`
+      try {
+        const errorData = await response.json()
+        errorMessage = errorData.message || errorData.title || errorMessage
+        if (errorData.errors) {
+          const errorDetails = Object.entries(errorData.errors)
+            .map(([key, value]) => `${key}: ${(value as string[]).join(", ")}`)
+            .join("; ")
+          errorMessage = errorDetails || errorMessage
+        }
+      } catch {
+        // If we can't parse the error response, use the status code message
+      }
+      throw new Error(errorMessage)
     }
 
     // Check if response is empty
     const text = await response.text()
     if (!text) {
-      return []
+      return null
     }
 
     // Parse JSON response
@@ -41,7 +53,7 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
       return JSON.parse(text)
     } catch (e) {
       console.error("Failed to parse response as JSON:", text)
-      return []
+      return null
     }
   } catch (error) {
     console.error("API request failed:", error)
@@ -127,14 +139,10 @@ export async function restoreCategory(learnerId: string, categoryId: string): Pr
 
 export async function getDeletedCategories(learnerId: string): Promise<Category[]> {
   try {
-    // First try the specific deleted categories endpoint
-    return await fetchWithAuth(`/api/learners/${learnerId}/categories/deleted`)
+    const response = await fetchWithAuth(`/api/learners/${learnerId}/categories?IsDeleted=true`)
+    return Array.isArray(response) ? response : []
   } catch (error) {
-    console.warn("Failed to fetch deleted categories with specific endpoint, falling back to main endpoint with filter")
-    // Fallback: If the specific endpoint doesn't exist, we'll get all categories and filter them client-side
-    // This is a temporary solution until the API supports the deleted endpoint
-    const allCategories = await fetchWithAuth(`/api/learners/${learnerId}/categories`)
-    // Return an empty array if the API doesn't support soft-deleted categories yet
+    console.error("Failed to fetch deleted categories:", error)
     return []
   }
 }
@@ -214,5 +222,23 @@ export async function softDeleteGoal(learnerId: string, goalId: string): Promise
 export async function hardDeleteGoal(learnerId: string, goalId: string): Promise<void> {
   return fetchWithAuth(`/api/learners/${learnerId}/goals/${goalId}/hard-delete`, {
     method: "DELETE",
+  })
+}
+
+// جلب الأهداف المحذوفة
+export async function getDeletedGoals(learnerId: string): Promise<Goal[]> {
+  try {
+    const response = await fetchWithAuth(`/api/learners/${learnerId}/goals?IsDeleted=true`)
+    return Array.isArray(response) ? response : []
+  } catch (error) {
+    console.error("Failed to fetch deleted goals:", error)
+    return []
+  }
+}
+
+// استرجاع هدف
+export async function restoreGoal(learnerId: string, goalId: string): Promise<Goal> {
+  return fetchWithAuth(`/api/learners/${learnerId}/goals/${goalId}/restore`, {
+    method: "PATCH",
   })
 }

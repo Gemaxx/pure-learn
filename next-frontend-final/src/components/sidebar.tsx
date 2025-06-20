@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Home, Calendar, Search, Settings, ChevronDown, ChevronRight, Plus, Edit, Trash2, Target, MoreVertical } from "lucide-react"
+import { Home, Calendar, Search, Settings, ChevronDown, ChevronRight, Plus, Edit, Trash2, Target, MoreVertical, PlusCircle } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 import { getCategories, softDeleteCategory, type Category, getCategoryDetails } from "@/services/api-client"
 import { Button } from "@/components/ui/button"
@@ -15,6 +15,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { GoalFormModal } from "@/components/goal-form-modal"
+import { useTrash } from "@/contexts/trash-context"
 
 export function Sidebar() {
   const [categories, setCategories] = useState<Category[]>([])
@@ -24,11 +26,15 @@ export function Sidebar() {
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
   const [editMode, setEditMode] = useState<"create" | "edit">("create")
+  const [isGoalModalOpen, setIsGoalModalOpen] = useState(false)
+  const [goalCategoryId, setGoalCategoryId] = useState<string | null>(null)
+  const [operatingCategoryId, setOperatingCategoryId] = useState<string | null>(null)
 
   const { user } = useAuth()
   const pathname = usePathname()
   const router = useRouter()
   const { toast } = useToast()
+  const { triggerRefresh } = useTrash()
 
   const fetchCategories = async () => {
     if (!user?.id) return
@@ -79,7 +85,8 @@ export function Sidebar() {
   }
 
   const handleDeleteCategory = async (category: Category) => {
-    if (!user?.id) return
+    if (!user?.id || operatingCategoryId) return
+    setOperatingCategoryId(category.id)
 
     try {
       await softDeleteCategory(user.id, category.id)
@@ -89,13 +96,18 @@ export function Sidebar() {
         description: "Category moved to Trash.",
         variant: "success",
       })
+      triggerRefresh()
     } catch (err) {
+      console.error("Error moving category to trash:", err)
       toast({
         title: "Error",
-        description: "Something went wrong. Please try again.",
+        description: "Failed to move category to trash. Please try again.",
         variant: "destructive",
       })
-      console.error(err)
+      // Refetch on error to ensure consistency
+      fetchCategories()
+    } finally {
+      setOperatingCategoryId(null)
     }
   }
 
@@ -215,8 +227,13 @@ export function Sidebar() {
                               size="sm"
                               className="h-8 w-8 p-0"
                               onClick={(e) => e.stopPropagation()}
+                              disabled={operatingCategoryId === category.id}
                             >
-                              <MoreVertical size={14} />
+                              {operatingCategoryId === category.id ? (
+                                <MoreVertical size={14} className="animate-spin" />
+                              ) : (
+                                <MoreVertical size={14} />
+                              )}
                               <span className="sr-only">More options</span>
                             </Button>
                           </DropdownMenuTrigger>
@@ -228,7 +245,21 @@ export function Sidebar() {
                               }}
                             >
                               <Edit className="h-4 w-4 mr-2" />
-                              Update
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setGoalCategoryId(category.id)
+                                setIsGoalModalOpen(true)
+                              }}
+                            >
+                              {/* <span className="flex items-center gap-2">
+                                <span className="inline-flex items-center justify-center rounded-full bg-muted w-5 h-5 text-black">
+                                  <Plus className="w-3 h-3" />
+                                </span>
+                                Add Goal
+                              </span> */}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={(e) => {
@@ -236,9 +267,10 @@ export function Sidebar() {
                                 handleDeleteCategory(category)
                               }}
                               className="text-destructive"
+                              disabled={operatingCategoryId === category.id}
                             >
                               <Trash2 className="h-4 w-4 mr-2" />
-                              Delete
+                              Move to Trash
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -258,6 +290,13 @@ export function Sidebar() {
         onSuccess={editMode === "create" ? handleAddCategory : handleUpdateCategory}
         category={selectedCategory || undefined}
         mode={editMode}
+      />
+
+      <GoalFormModal
+        isOpen={isGoalModalOpen}
+        onClose={() => setIsGoalModalOpen(false)}
+        onSuccess={handleAddCategory}
+        categoryId={goalCategoryId}
       />
     </>
   )

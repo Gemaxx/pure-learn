@@ -16,9 +16,10 @@ interface ResourceCardProps {
   resource: LearningResource;
   onEdit: () => void;
   onDelete: () => void;
+  isDeleting: boolean;
 }
 
-export default function ResourceCard({ resource, onEdit, onDelete }: ResourceCardProps) {
+export default function ResourceCard({ resource, onEdit, onDelete, isDeleting }: ResourceCardProps) {
   return (
     <div className="mb-3 bg-card rounded-md border border-border hover:bg-accent/50 transition-colors">
       <div className="p-4">
@@ -26,22 +27,29 @@ export default function ResourceCard({ resource, onEdit, onDelete }: ResourceCar
           <h3 className="font-medium text-sm leading-tight pr-2">{resource.title}</h3>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="h-6 w-6 text-muted-foreground hover:bg-muted rounded flex items-center justify-center">
-                <MoreVertical className="h-4 w-4" />
+              <button
+                className="h-6 w-6 text-muted-foreground hover:bg-muted rounded flex items-center justify-center"
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <MoreVertical className="h-4 w-4 animate-spin" />
+                ) : (
+                  <MoreVertical className="h-4 w-4" />
+                )}
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={onEdit}>
+              <DropdownMenuItem onClick={onEdit} disabled={isDeleting}>
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={onDelete} className="text-red-600">
+              <DropdownMenuItem onClick={onDelete} className="text-red-600" disabled={isDeleting}>
                 Move to trash
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
         <div className="flex items-center gap-2 mb-3 text-xs text-muted-foreground">
-          <span className="capitalize">{resource.typeName || resource.typeId}</span>
+          <span className="capitalize">{resource.typeName }</span>
         </div>
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
