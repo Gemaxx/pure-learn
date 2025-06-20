@@ -2808,14 +2808,14 @@
       "CreateNoteRequestDto": {
         "required": [
           "body",
+          "goalId",
           "title"
         ],
         "type": "object",
         "properties": {
           "goalId": {
             "type": "integer",
-            "format": "int64",
-            "nullable": true
+            "format": "int64"
           },
           "title": {
             "maxLength": 255,
@@ -2852,15 +2852,19 @@
       },
       "CreateTaskRequestDto": {
         "required": [
+          "eisenhowerStatus",
+          "goalId",
           "kanbanStatusId",
-          "title"
+          "repeatFrequency",
+          "timeTaskRelated",
+          "title",
+          "typeId"
         ],
         "type": "object",
         "properties": {
           "goalId": {
             "type": "integer",
-            "format": "int64",
-            "nullable": true
+            "format": "int64"
           },
           "kanbanStatusId": {
             "type": "integer",
@@ -2868,11 +2872,10 @@
           },
           "typeId": {
             "type": "integer",
-            "format": "int64",
-            "nullable": true
+            "format": "int64"
           },
           "title": {
-            "maxLength": 100,
+            "maxLength": 255,
             "minLength": 1,
             "type": "string"
           },
@@ -2880,6 +2883,73 @@
             "maxLength": 50,
             "minLength": 0,
             "type": "string"
+          },
+          "timeTaskRelated": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "estimatedTime": {
+            "type": "string",
+            "format": "time",
+            "nullable": true
+          },
+          "timeSpent": {
+            "type": "string",
+            "format": "time",
+            "nullable": true
+          },
+          "repeatFrequency": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          },
+          "repeatInterval": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "repeatOnSunday": {
+            "type": "boolean"
+          },
+          "repeatOnMonday": {
+            "type": "boolean"
+          },
+          "repeatOnTuesday": {
+            "type": "boolean"
+          },
+          "repeatOnWednesday": {
+            "type": "boolean"
+          },
+          "repeatOnThursday": {
+            "type": "boolean"
+          },
+          "repeatOnFriday": {
+            "type": "boolean"
+          },
+          "repeatOnSaturday": {
+            "type": "boolean"
+          },
+          "repeatEnds": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "repeatEndDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "repeatEndOccurrences": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           }
         },
         "additionalProperties": false

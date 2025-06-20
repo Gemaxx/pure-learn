@@ -18,30 +18,30 @@ namespace api.Repos
             _context = context;
         }
 
-        public async Task<List<KanbanStatus>> GetKanbanStatusesAsync(long learnerId)
+        public async Task<List<KanbanStatus>> GetKanbanStatusesAsync(long goalId)
         {
             return await _context.KanbanStatuses
-                .Where(s => s.LearnerId == learnerId && !s.IsDeleted)
+                .Where(s => s.GoalId == goalId && !s.IsDeleted)
                 .ToListAsync();
         }
 
-        public async Task<KanbanStatus?> GetKanbanStatusAsync(long learnerId, long statusId)
+        public async Task<KanbanStatus?> GetKanbanStatusAsync(long goalId, long statusId)
         {
             return await _context.KanbanStatuses
-                .FirstOrDefaultAsync(s => s.LearnerId == learnerId && s.Id == statusId && !s.IsDeleted);
+                .FirstOrDefaultAsync(s => s.GoalId == goalId && s.Id == statusId && !s.IsDeleted);
         }
 
-        public async Task<KanbanStatus> CreateKanbanStatusAsync(long learnerId, KanbanStatus status)
+        public async Task<KanbanStatus> CreateKanbanStatusAsync(long goalId, KanbanStatus status)
         {
-            status.LearnerId = learnerId;
+            status.GoalId = goalId;
             _context.KanbanStatuses.Add(status);
             await _context.SaveChangesAsync();
             return status;
         }
 
-        public async Task<KanbanStatus?> UpdateKanbanStatusAsync(long learnerId, long statusId, KanbanStatus status)
+        public async Task<KanbanStatus?> UpdateKanbanStatusAsync(long goalId, long statusId, KanbanStatus status)
         {
-            var existingStatus = await GetKanbanStatusAsync(learnerId, statusId);
+            var existingStatus = await GetKanbanStatusAsync(goalId, statusId);
             if (existingStatus == null)
                 return null;
 
@@ -50,9 +50,9 @@ namespace api.Repos
             return existingStatus;
         }
 
-        public async Task<bool> DeleteKanbanStatusAsync(long learnerId, long statusId)
+        public async Task<bool> DeleteKanbanStatusAsync(long goalId, long statusId)
         {
-            var status = await GetKanbanStatusAsync(learnerId, statusId);
+            var status = await GetKanbanStatusAsync(goalId, statusId);
             if (status == null)
                 return false;
 
@@ -61,27 +61,26 @@ namespace api.Repos
             return true;
         }
 
-        public async Task<bool> SoftDeleteKanbanStatusAsync(long learnerId, long statusId)
+        public async Task<bool> SoftDeleteKanbanStatusAsync(long goalId, long statusId)
         {
-            var status = await GetKanbanStatusAsync(learnerId, statusId);
+            var status = await GetKanbanStatusAsync(goalId, statusId);
             if (status == null)
-                return false;
+            return false;
 
             status.IsDeleted = true;
-            status.DeletedAt = DateTime.UtcNow;
+            _context.KanbanStatuses.Update(status);
             await _context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<bool> RestoreKanbanStatusAsync(long learnerId, long statusId)
+        public async Task<bool> RestoreKanbanStatusAsync(long goalId, long statusId)
         {
-            var status = await _context.KanbanStatuses
-                .FirstOrDefaultAsync(s => s.LearnerId == learnerId && s.Id == statusId && s.IsDeleted);
+            var status = await GetKanbanStatusAsync(goalId, statusId);
             if (status == null)
-                return false;
+            return false;
 
             status.IsDeleted = false;
-            status.DeletedAt = null;
+            _context.KanbanStatuses.Update(status);
             await _context.SaveChangesAsync();
             return true;
         }

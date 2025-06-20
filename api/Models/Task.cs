@@ -90,7 +90,7 @@ public partial class Task
 
     public virtual ICollection<Subtask> Subtasks { get; set; } = new List<Subtask>();
 
-    public virtual TaskType? Type { get; set; }
+    public virtual TaskType? Type { get; set; = null!;}
 
     public virtual ICollection<StudySession> StudySessions { get; set; } = new List<StudySession>();
 }

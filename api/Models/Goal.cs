@@ -33,6 +33,8 @@ public partial class Goal
 
     public virtual Category? Category { get; set; }
 
+    public virtual ICollection<KanbanStatus> KanbanStatuses { get; set; } = new List<KanbanStatus>();
+
     public virtual Learner Learner { get; set; } = null!;
 
     public virtual ICollection<LearningResource> LearningResources { get; set; } = new List<LearningResource>();

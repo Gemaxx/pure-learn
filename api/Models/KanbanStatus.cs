@@ -15,9 +15,9 @@ public partial class KanbanStatus
 
     public bool IsDeleted { get; set; }
 
-    public long LearnerId { get; set; }
+    public long? GoalId { get; set; }
 
-    public virtual Learner Learner { get; set; } = null!;
+    public virtual Goal? Goal { get; set; }
 
     public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
 }

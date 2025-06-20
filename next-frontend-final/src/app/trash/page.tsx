@@ -2,266 +2,256 @@
 
 import { useState, useEffect } from "react"
 import { useAuth } from "@/contexts/auth-context"
+import { useTrash } from "@/contexts/trash-context"
 import {
-  getDeletedCategories, restoreCategory, hardDeleteCategory, type Category,
-  getDeletedGoals, restoreGoal, hardDeleteGoal, type Goal
+  getDeletedCategories,
+  restoreCategory,
+  hardDeleteCategory,
+  type Category,
+  getDeletedGoals,
+  restoreGoal,
+  hardDeleteGoal,
+  type Goal,
 } from "@/services/api-client"
+import { getDeletedNotes, restoreNote, hardDeleteNote, type Note } from "@/services/notes-service"
 import {
-  getDeletedNotes, restoreNote, hardDeleteNote, type Note
-} from "@/services/notes-service"
-import {
-  getDeletedLearningResources, restoreLearningResource, hardDeleteLearningResource
+  getDeletedLearningResources,
+  restoreLearningResource,
+  hardDeleteLearningResource,
+  type LearningResource,
 } from "@/services/learning-resources-service"
-import { Button } from "@/components/ui/button"
-import { useToast } from "@/hooks/use-toast"
 import TrashSection from "@/components/TrashSection"
 import TrashItem from "@/components/TrashItem"
-import { Trash2, RefreshCw, Folder, Target, FileText, BookOpen } from "lucide-react"
+import { Folder, Target, FileText, BookOpen } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
 
 export default function TrashPage() {
   const [deletedCategories, setDeletedCategories] = useState<Category[]>([])
   const [deletedGoals, setDeletedGoals] = useState<Goal[]>([])
   const [deletedNotes, setDeletedNotes] = useState<Note[]>([])
-  const [deletedResources, setDeletedResources] = useState<any[]>([])
+  const [deletedResources, setDeletedResources] = useState<LearningResource[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [operatingItemId, setOperatingItemId] = useState<string | number | null>(null)
 
   const { user } = useAuth()
+  const { triggerRefresh } = useTrash()
   const { toast } = useToast()
 
-  // جلب كل العناصر المحذوفة
   const fetchAllDeleted = async () => {
     if (!user?.id) return
-    setIsLoading(true)
+    if (!deletedCategories.length && !deletedGoals.length && !deletedNotes.length && !deletedResources.length) {
+      setIsLoading(true)
+    }
     setError(null)
     try {
       const [cats, goals, notes, resources] = await Promise.all([
         getDeletedCategories(user.id),
         getDeletedGoals(user.id),
         getDeletedNotes(user.id),
-        getDeletedLearningResources(user.id)
+        getDeletedLearningResources(user.id),
       ])
-      setDeletedCategories(Array.isArray(cats) ? cats : [])
-      setDeletedGoals(Array.isArray(goals) ? goals : [])
-      setDeletedNotes(Array.isArray(notes) ? notes : [])
-      setDeletedResources(Array.isArray(resources) ? resources : [])
+      setDeletedCategories(cats?.filter(Boolean) || [])
+      setDeletedGoals(goals?.filter(Boolean) || [])
+      setDeletedNotes(notes?.filter(Boolean) || [])
+      setDeletedResources(resources?.filter(Boolean) || [])
     } catch (err) {
-      setError("The trash feature is not available at the moment. Please try again later.")
-      toast({
-        title: "Error",
-        description: "Failed to load trash items. This feature might not be fully implemented yet.",
-        variant: "destructive",
-      })
+      console.error("Error fetching deleted items:", err)
+      setError("Something went wrong. Please try again later.")
     } finally {
       setIsLoading(false)
+      setOperatingItemId(null)
     }
   }
 
   useEffect(() => {
-    fetchAllDeleted()
-    // eslint-disable-next-line
-  }, [user?.id])
+    if (user?.id) {
+      fetchAllDeleted()
+    }
+  }, [user?.id, triggerRefresh])
 
-  // Restore & Delete handlers for each type
-  const handleRestoreCategory = async (cat: Category) => {
+  const handleRestore = async (id: string | number, type: string) => {
     if (!user?.id) return
+    setOperatingItemId(id)
     try {
-      await restoreCategory(user.id, cat.id)
-      setDeletedCategories((prev) => prev.filter((c) => c.id !== cat.id))
-      toast({ title: "Success", description: "Category restored.", variant: "success" })
-    } catch (err) {
-      toast({ title: "Error", description: "Failed to restore category.", variant: "destructive" })
-    }
-  }
-  const handleDeleteCategory = async (cat: Category) => {
-    if (!user?.id) return
-    try {
-      await hardDeleteCategory(user.id, cat.id)
-      setDeletedCategories((prev) => prev.filter((c) => c.id !== cat.id))
-      toast({ title: "Success", description: "Category permanently deleted.", variant: "destructive" })
-    } catch (err) {
-      toast({ title: "Error", description: "Failed to delete category.", variant: "destructive" })
-    }
-  }
-  const handleRestoreGoal = async (goal: Goal) => {
-    if (!user?.id) return
-    try {
-      await restoreGoal(user.id, String(goal.id))
-      setDeletedGoals((prev) => prev.filter((g) => g.id !== goal.id))
-      toast({ title: "Success", description: "Goal restored.", variant: "success" })
-    } catch (err) {
-      toast({ title: "Error", description: "Failed to restore goal.", variant: "destructive" })
-    }
-  }
-  const handleDeleteGoal = async (goal: Goal) => {
-    if (!user?.id) return
-    try {
-      await hardDeleteGoal(user.id, String(goal.id))
-      setDeletedGoals((prev) => prev.filter((g) => g.id !== goal.id))
-      toast({ title: "Success", description: "Goal permanently deleted.", variant: "destructive" })
-    } catch (err) {
-      toast({ title: "Error", description: "Failed to delete goal.", variant: "destructive" })
-    }
-  }
-  const handleRestoreNote = async (note: Note) => {
-    if (!user?.id) return
-    try {
-      await restoreNote(user.id, String(note.id))
-      setDeletedNotes((prev) => prev.filter((n) => n.id !== note.id))
-      toast({ title: "Success", description: "Note restored.", variant: "success" })
-    } catch (err) {
-      toast({ title: "Error", description: "Failed to restore note.", variant: "destructive" })
-    }
-  }
-  const handleDeleteNote = async (note: Note) => {
-    if (!user?.id) return
-    try {
-      await hardDeleteNote(user.id, String(note.id))
-      setDeletedNotes((prev) => prev.filter((n) => n.id !== note.id))
-      toast({ title: "Success", description: "Note permanently deleted.", variant: "destructive" })
-    } catch (err) {
-      toast({ title: "Error", description: "Failed to delete note.", variant: "destructive" })
-    }
-  }
-  const handleRestoreResource = async (res: any) => {
-    if (!user?.id) return
-    try {
-      await restoreLearningResource(user.id, String(res.id))
-      setDeletedResources((prev) => prev.filter((r) => r.id !== res.id))
-      toast({ title: "Success", description: "Resource restored.", variant: "success" })
-    } catch (err) {
-      toast({ title: "Error", description: "Failed to restore resource.", variant: "destructive" })
-    }
-  }
-  const handleDeleteResource = async (res: any) => {
-    if (!user?.id) return
-    try {
-      await hardDeleteLearningResource(user.id, String(res.id))
-      setDeletedResources((prev) => prev.filter((r) => r.id !== res.id))
-      toast({ title: "Success", description: "Resource permanently deleted.", variant: "destructive" })
-    } catch (err) {
-      toast({ title: "Error", description: "Failed to delete resource.", variant: "destructive" })
-    }
-  }
-
-  // Empty Trash
-  const handleEmptyTrash = async () => {
-    if (!user?.id) return
-    setIsLoading(true)
-    try {
-      await Promise.all([
-        ...deletedCategories.map((cat) => hardDeleteCategory(user.id, cat.id)),
-        ...deletedGoals.map((goal) => hardDeleteGoal(user.id, String(goal.id))),
-        ...deletedNotes.map((note) => hardDeleteNote(user.id, String(note.id))),
-        ...deletedResources.map((res) => hardDeleteLearningResource(user.id, String(res.id)))
-      ])
-      setDeletedCategories([])
-      setDeletedGoals([])
-      setDeletedNotes([])
-      setDeletedResources([])
-      toast({ title: "Success", description: "Trash emptied.", variant: "success" })
-    } catch (err) {
-      toast({ title: "Error", description: "Failed to empty trash.", variant: "destructive" })
+      let restoredItem
+      switch (type) {
+        case "category":
+          restoredItem = await restoreCategory(user.id, String(id))
+          break
+        case "goal":
+          restoredItem = await restoreGoal(user.id, String(id))
+          break
+        case "note":
+          restoredItem = await restoreNote(user.id, String(id))
+          break
+        case "resource":
+          restoredItem = await restoreLearningResource(user.id, String(id))
+          break
+        default:
+          throw new Error("Unknown item type")
+      }
+      toast({ title: "Success", description: `${type.charAt(0).toUpperCase() + type.slice(1)} restored.`, variant: "success" })
+      triggerRefresh()
+      // Optimistically update UI
+      switch (type) {
+        case "category":
+          setDeletedCategories((prev) => prev.filter((i) => i.id !== id))
+          break
+        case "goal":
+          setDeletedGoals((prev) => prev.filter((i) => i.id !== id))
+          break
+        case "note":
+          setDeletedNotes((prev) => prev.filter((i) => i.id !== id))
+          break
+        case "resource":
+          setDeletedResources((prev) => prev.filter((i) => i.id !== id))
+          break
+      }
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message || `Failed to restore ${type}.`, variant: "destructive" })
+      // On failure, refetch to get the correct state from the server
+      await fetchAllDeleted()
     } finally {
-      setIsLoading(false)
+      setOperatingItemId(null)
     }
   }
 
-  const isAllEmpty =
-    deletedCategories.length === 0 &&
-    deletedGoals.length === 0 &&
-    deletedNotes.length === 0 &&
-    deletedResources.length === 0
+  const handleDelete = async (id: string | number, type: string) => {
+    if (!user?.id) return
+    setOperatingItemId(id)
+
+    const isStillInList = (() => {
+      switch (type) {
+        case "category":
+          return deletedCategories.find((c) => c.id === id)
+        case "goal":
+          return deletedGoals.find((g) => g.id === id)
+        case "note":
+          return deletedNotes.find((n) => n.id === id)
+        case "resource":
+          return deletedResources.find((r) => r.id === id)
+        default:
+          return false
+      }
+    })()
+
+    if (!isStillInList) {
+      toast({
+        title: "Already deleted",
+        description: `${type} not found or already removed.`,
+        variant: "destructive",
+      })
+      setOperatingItemId(null)
+      return
+    }
+
+    try {
+      switch (type) {
+        case "category":
+          await hardDeleteCategory(user.id, String(id))
+          setDeletedCategories((prev) => prev.filter((cat) => cat.id !== id))
+          break
+        case "goal":
+          await hardDeleteGoal(user.id, String(id))
+          setDeletedGoals((prev) => prev.filter((g) => g.id !== id))
+          break
+        case "note":
+          await hardDeleteNote(user.id, String(id))
+          setDeletedNotes((prev) => prev.filter((n) => n.id !== id))
+          break
+        case "resource":
+          await hardDeleteLearningResource(user.id, String(id))
+          setDeletedResources((prev) => prev.filter((r) => r.id !== id))
+          break
+      }
+
+      toast({
+        title: "Deleted",
+        description: `${type.charAt(0).toUpperCase() + type.slice(1)} permanently deleted.`,
+        variant: "destructive",
+      })
+      triggerRefresh() // Keep this to notify other components like the sidebar
+    } catch (err: any) {
+      toast({
+        title: "Error",
+        description: err.message || `Failed to delete ${type}.`,
+        variant: "destructive",
+      })
+      // On failure, refetch to get the correct state from the server
+      await fetchAllDeleted()
+    } finally {
+      setOperatingItemId(null)
+    }
+  }
+
+  const isAllEmpty = !isLoading && [deletedCategories, deletedGoals, deletedNotes, deletedResources].every((arr) => arr.length === 0)
 
   return (
     <div className="container mx-auto p-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Trash</h1>
-        {!isAllEmpty && (
-          <Button
-            className="bg-black text-white dark:bg-white dark:text-black border border-black dark:border-white hover:opacity-90"
-            size="sm"
-            onClick={handleEmptyTrash}
-            disabled={isLoading}
-          >
-            <Trash2 size={16} className="mr-1" /> Empty Trash
-          </Button>
-        )}
       </div>
+
       {isLoading ? (
-        <div className="bg-secondary/30 p-6 rounded-lg">
-          <p className="text-center">Loading trash items...</p>
-        </div>
+        <div className="text-center py-8">Loading...</div>
       ) : error ? (
-        <div className="bg-destructive/10 p-6 rounded-lg">
-          <p className="text-destructive text-center">{error}</p>
-          <p className="text-center mt-2 text-sm text-muted-foreground">
-            The trash feature might still be in development. Check back later.
-          </p>
-        </div>
+        <div className="text-center py-8 text-destructive">{error}</div>
       ) : isAllEmpty ? (
-        <div className="flex flex-col items-center justify-center h-96">
-          <Trash2 size={56} className="text-muted-foreground mb-4" />
-          <p className="text-xl font-semibold text-muted-foreground">Your trash is empty.</p>
-          <p className="text-sm text-muted-foreground mt-2">
-            Items you delete will appear here and can be restored or permanently deleted.
-          </p>
-        </div>
+        <div className="text-center py-8 text-muted-foreground">Trash is empty</div>
       ) : (
         <div className="space-y-8">
-          {deletedGoals.length > 0 && (
-            <TrashSection title="Goals" icon={<Target className="text-primary" size={20} />}>
-              {deletedGoals.map((goal) => (
-                <TrashItem
-                  key={goal.id}
-                  title={goal.title}
-                  description={goal.description}
-                  onRestore={() => handleRestoreGoal(goal)}
-                  onDelete={() => handleDeleteGoal(goal)}
-                  icon={<Target size={16} className="text-primary" />}
-                />
-              ))}
-            </TrashSection>
-          )}
           {deletedCategories.length > 0 && (
-            <TrashSection title="Categories" icon={<Folder className="text-primary" size={20} />}>
+            <TrashSection title="Categories" icon={<Folder className="w-5 h-5" />}>
               {deletedCategories.map((cat) => (
                 <TrashItem
-                  key={cat.id}
-                  title={cat.title}
-                  description={cat.description}
-                  color={cat.color}
-                  onRestore={() => handleRestoreCategory(cat)}
-                  onDelete={() => handleDeleteCategory(cat)}
-                  icon={<Folder size={16} className="text-primary" />}
+                  key={`cat-${cat.id}`}
+                  item={cat}
+                  onDelete={() => handleDelete(cat.id, "category")}
+                  onRestore={() => handleRestore(cat.id, "category")}
+                  isOperating={operatingItemId === cat.id}
                 />
               ))}
             </TrashSection>
           )}
+
+          {deletedGoals.length > 0 && (
+            <TrashSection title="Goals" icon={<Target className="w-5 h-5" />}>
+              {deletedGoals.map((goal) => (
+                <TrashItem
+                  key={`goal-${goal.id}`}
+                  item={goal}
+                  onDelete={() => handleDelete(goal.id, "goal")}
+                  onRestore={() => handleRestore(goal.id, "goal")}
+                  isOperating={operatingItemId === goal.id}
+                />
+              ))}
+            </TrashSection>
+          )}
+
           {deletedNotes.length > 0 && (
-            <TrashSection title="Notes" icon={<FileText className="text-primary" size={20} />}>
+            <TrashSection title="Notes" icon={<FileText className="w-5 h-5" />}>
               {deletedNotes.map((note) => (
                 <TrashItem
-                  key={note.id}
-                  title={note.title}
-                  description={note.body}
-                  onRestore={() => handleRestoreNote(note)}
-                  onDelete={() => handleDeleteNote(note)}
-                  icon={<FileText size={16} className="text-primary" />}
+                  key={`note-${note.id}`}
+                  item={note}
+                  onDelete={() => handleDelete(note.id, "note")}
+                  onRestore={() => handleRestore(note.id, "note")}
+                  isOperating={operatingItemId === note.id}
                 />
               ))}
             </TrashSection>
           )}
+
           {deletedResources.length > 0 && (
-            <TrashSection title="Learning Resources" icon={<BookOpen className="text-primary" size={20} />}>
+            <TrashSection title="Resources" icon={<BookOpen className="w-5 h-5" />}>
               {deletedResources.map((res) => (
                 <TrashItem
-                  key={res.id}
-                  title={res.title}
-                  description={res.description}
-                  onRestore={() => handleRestoreResource(res)}
-                  onDelete={() => handleDeleteResource(res)}
-                  icon={<BookOpen size={16} className="text-primary" />}
+                  key={`res-${res.id}`}
+                  item={res}
+                  onDelete={() => handleDelete(res.id, "resource")}
+                  onRestore={() => handleRestore(res.id, "resource")}
+                  isOperating={operatingItemId === res.id}
                 />
               ))}
             </TrashSection>

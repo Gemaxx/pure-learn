@@ -91,36 +91,5 @@ namespace api.Repos
             await _context.SaveChangesAsync();
             return true;
         }
-
-        // Create a default task type for a new learner
-        public async Task<Models.TaskType> CreateDefaultTaskTypeAsync(long learnerId)
-        {
-            var defaultTaskType = new Models.TaskType
-            {
-                Name = "General",
-                Description = "Default task type for general tasks",
-                LearnerId = learnerId,
-                IsDeleted = false
-            };
-
-            _context.TaskTypes.Add(defaultTaskType);
-            await _context.SaveChangesAsync();
-            return defaultTaskType;
-        }
-
-        // Get or create default task type for a learner
-        public async Task<Models.TaskType> GetOrCreateDefaultTaskTypeAsync(long learnerId)
-        {
-            var existingTaskTypes = await GetTaskTypesAsync(learnerId);
-            
-            if (existingTaskTypes.Any())
-            {
-                // Return the first available task type
-                return existingTaskTypes.First();
-            }
-            
-            // Create default task type if none exist
-            return await CreateDefaultTaskTypeAsync(learnerId);
-        }
     }
 }
