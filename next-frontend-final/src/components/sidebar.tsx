@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { GoalFormModal } from "@/components/goal-form-modal"
+import { useTrash } from "@/contexts/trash-context"
 
 export function Sidebar() {
   const [categories, setCategories] = useState<Category[]>([])
@@ -27,11 +28,13 @@ export function Sidebar() {
   const [editMode, setEditMode] = useState<"create" | "edit">("create")
   const [isGoalModalOpen, setIsGoalModalOpen] = useState(false)
   const [goalCategoryId, setGoalCategoryId] = useState<string | null>(null)
+  const [operatingCategoryId, setOperatingCategoryId] = useState<string | null>(null)
 
   const { user } = useAuth()
   const pathname = usePathname()
   const router = useRouter()
   const { toast } = useToast()
+  const { triggerRefresh } = useTrash()
 
   const fetchCategories = async () => {
     if (!user?.id) return
@@ -82,7 +85,8 @@ export function Sidebar() {
   }
 
   const handleDeleteCategory = async (category: Category) => {
-    if (!user?.id) return
+    if (!user?.id || operatingCategoryId) return
+    setOperatingCategoryId(category.id)
 
     try {
       await softDeleteCategory(user.id, category.id)
@@ -92,13 +96,18 @@ export function Sidebar() {
         description: "Category moved to Trash.",
         variant: "success",
       })
+      triggerRefresh()
     } catch (err) {
+      console.error("Error moving category to trash:", err)
       toast({
         title: "Error",
-        description: "Something went wrong. Please try again.",
+        description: "Failed to move category to trash. Please try again.",
         variant: "destructive",
       })
-      console.error(err)
+      // Refetch on error to ensure consistency
+      fetchCategories()
+    } finally {
+      setOperatingCategoryId(null)
     }
   }
 
@@ -218,8 +227,13 @@ export function Sidebar() {
                               size="sm"
                               className="h-8 w-8 p-0"
                               onClick={(e) => e.stopPropagation()}
+                              disabled={operatingCategoryId === category.id}
                             >
-                              <MoreVertical size={14} />
+                              {operatingCategoryId === category.id ? (
+                                <MoreVertical size={14} className="animate-spin" />
+                              ) : (
+                                <MoreVertical size={14} />
+                              )}
                               <span className="sr-only">More options</span>
                             </Button>
                           </DropdownMenuTrigger>
@@ -253,9 +267,10 @@ export function Sidebar() {
                                 handleDeleteCategory(category)
                               }}
                               className="text-destructive"
+                              disabled={operatingCategoryId === category.id}
                             >
                               <Trash2 className="h-4 w-4 mr-2" />
-                              Move to trash
+                              Move to Trash
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>

@@ -38,7 +38,7 @@ export default function ResourceModal({ open, onClose, onResourceAdded, resource
     title: '',
     typeId: '',
     totalUnits: '',
-    progress: '',
+    progress: '0',
     status: 'Not-Started',
   });
   const [loading, setLoading] = useState(false);
@@ -57,7 +57,7 @@ export default function ResourceModal({ open, onClose, onResourceAdded, resource
         status: resource.status,
       });
     } else {
-      setForm({ title: '', typeId: '', totalUnits: '', progress: '', status: 'Not-Started' });
+      setForm({ title: '', typeId: '', totalUnits: '', progress: '0', status: 'Not-Started' });
     }
   }, [resource, open]);
 
@@ -92,13 +92,23 @@ export default function ResourceModal({ open, onClose, onResourceAdded, resource
     e.preventDefault();
     setLoading(true);
     setError(null);
+
+    const totalUnits = Number(form.totalUnits) || 0;
+    const progress = Number(form.progress) || 0;
+
+    if (progress > totalUnits) {
+      setError("Progress cannot be greater than total units.");
+      setLoading(false);
+      return;
+    }
+
     try {
       if (!learnerId) throw new Error('No learnerId');
       const body: any = {
         title: form.title,
         typeId: form.typeId,
-        totalUnits: Number(form.totalUnits),
-        progress: Number(form.progress),
+        totalUnits: totalUnits,
+        progress: progress,
         status: form.status,
       };
       if (goalId) {

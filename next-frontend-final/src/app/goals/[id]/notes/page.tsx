@@ -81,6 +81,7 @@ export default function NotesPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [noteToDelete, setNoteToDelete] = useState<Note | null>(null)
   const [deleteType, setDeleteType] = useState<"soft" | "hard">("soft")
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const { user } = useAuth()
   const params = useParams()
@@ -124,7 +125,8 @@ export default function NotesPage() {
   }
 
   const confirmDeleteNote = async () => {
-    if (!noteToDelete || !user?.id) return
+    if (!noteToDelete || !user?.id || isDeleting) return
+    setIsDeleting(true)
 
     try {
       if (deleteType === "soft") {
@@ -153,6 +155,8 @@ export default function NotesPage() {
         variant: "destructive",
       })
       console.error(err)
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -189,10 +193,6 @@ export default function NotesPage() {
           <p className="text-muted-foreground mb-4">
             Create your first note to start documenting your learning journey.
           </p>
-          <Button onClick={handleCreateNote} variant="outline">
-            <Plus className="h-4 w-4 mr-2" />
-            Create Your First Note
-          </Button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -213,12 +213,13 @@ export default function NotesPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDeleteNote}
               className={deleteType === "hard" ? "bg-destructive hover:bg-destructive/90" : ""}
+              disabled={isDeleting}
             >
-              {deleteType === "soft" ? "Soft Delete" : "Hard Delete"}
+              {isDeleting ? "Deleting..." : deleteType === "soft" ? "Soft Delete" : "Hard Delete"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
