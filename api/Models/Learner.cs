@@ -7,9 +7,11 @@ namespace api.Models;
 
 public class Learner
 { 
-    public new long Id { get; set; }
+    public long Id { get; set; }
 
     public string Name { get; set; } = null!;
+    public string Email { get; set; } = null!;
+    public string PasswordHash { get; set; } = null!;
 
     public string? ProfilePicture { get; set; }
 
@@ -41,4 +43,8 @@ public class Learner
     public virtual ICollection<TaskType> TaskTypes { get; set; } = new List<TaskType>();
 
     public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
+
+    public virtual ICollection<StudySession> StudySessions { get; set; } = new List<StudySession>();
+
+    public virtual ICollection<PomodoroInsight> PomodoroInsights { get; set; } = new List<PomodoroInsight>();
 }

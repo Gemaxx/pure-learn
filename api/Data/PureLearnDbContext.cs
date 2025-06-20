@@ -22,6 +22,10 @@ namespace api.Data
         public virtual DbSet<Subtask> Subtasks { get; set; } = null!;
         public virtual DbSet<Models.Task> Tasks { get; set; } = null!;
         public virtual DbSet<TaskType> TaskTypes { get; set; } = null!;
+        public virtual DbSet<StudySession> StudySessions { get; set; } = null!;
+        public virtual DbSet<PomodoroCycle> PomodoroCycles { get; set; } = null!;
+        public virtual DbSet<TimerSettings> TimerSettings { get; set; } = null!;
+        public virtual DbSet<PomodoroInsight> PomodoroInsights { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -233,6 +237,133 @@ namespace api.Data
                     .HasForeignKey(d => d.LearnerId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_TaskTypes_Learner_LearnerId");
+            });
+
+            modelBuilder.Entity<StudySession>(entity =>
+            {
+                entity.ToTable("StudySession", tb =>
+                {
+                    tb.HasTrigger("trg_soft_delete_study_session");
+                    tb.HasTrigger("trg_update_study_session_updated_at");
+                });
+
+                // Soft‐delete filter (ignores rows where IsDeleted == true)
+                entity.HasQueryFilter(s => !s.IsDeleted);
+
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => e.LearnerId);
+                entity.HasIndex(e => e.TaskId);
+
+                entity.Property(e => e.Id)
+                      .HasColumnName("id");
+
+                entity.Property(e => e.LearnerId)
+                      .HasColumnName("learner_id");
+
+                entity.Property(e => e.TaskId)
+                      .HasColumnName("task_id");
+
+                entity.Property(e => e.StartTime)
+                      .HasColumnName("start_time");
+
+                entity.Property(e => e.EndTime)
+                      .HasColumnName("end_time");
+
+                entity.Property(e => e.CycleCount)
+                      .HasColumnName("cycle_count");
+
+                entity.Property(e => e.IsCompleted)
+                      .HasColumnName("is_completed");
+
+                entity.Property(e => e.CreatedAt)
+                      .HasColumnName("created_at")
+                      .HasDefaultValueSql("sysdatetime()");
+
+                entity.Property(e => e.UpdatedAt)
+                      .HasColumnName("updated_at")
+                      .HasDefaultValueSql("sysdatetime()");
+
+                entity.Property(e => e.DeletedAt)
+                      .HasColumnName("deleted_at");
+
+                entity.Property(e => e.IsDeleted)
+                      .HasColumnName("is_deleted")
+                      .HasDefaultValue(false);
+
+                entity.HasOne(d => d.Learner)
+                      .WithMany(l => l.StudySessions)
+                      .HasForeignKey(d => d.LearnerId)
+                      .OnDelete(DeleteBehavior.Restrict)
+                      .HasConstraintName("FK_StudySession_Learner");
+
+                entity.HasOne(d => d.Task)
+                      .WithMany((api.Models.Task t) => t.StudySessions)
+                      .HasForeignKey(d => d.TaskId)
+                      .OnDelete(DeleteBehavior.Restrict)
+                      .HasConstraintName("FK_StudySession_Task");
+            });
+
+            modelBuilder.Entity<PomodoroCycle>(entity =>
+            {
+                entity.ToTable("PomodoroCycle");
+
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => e.StudySessionId);
+
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.StudySessionId).HasColumnName("study_session_id");
+                entity.Property(e => e.IsCompleted).HasColumnName("is_completed");
+                entity.Property(e => e.StartTime).HasColumnName("start_time");
+                entity.Property(e => e.EndTime).HasColumnName("end_time");
+                entity.Property(e => e.BreakType).HasColumnName("break_type");
+                entity.Property(e => e.BreakStart).HasColumnName("break_start");
+                entity.Property(e => e.BreakEnd).HasColumnName("break_end");
+
+                entity.HasOne(e => e.StudySession)
+                      .WithMany(s => s.PomodoroCycles)
+                      .HasForeignKey(e => e.StudySessionId)
+                      .OnDelete(DeleteBehavior.Cascade)
+                      .IsRequired(false);
+            });
+
+            modelBuilder.Entity<TimerSettings>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.ToTable("TimerSettings");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.FocusMinutes).HasColumnName("focus_minutes");
+                entity.Property(e => e.ShortBreakMin).HasColumnName("short_break_min");
+                entity.Property(e => e.LongBreakMin).HasColumnName("long_break_min");
+                entity.Property(e => e.CyclesBeforeLongBreak).HasColumnName("cycles_before_long_break");
+
+                entity.HasOne<ApplicationUser>()
+                    .WithOne()
+                    .HasForeignKey<TimerSettings>(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<PomodoroInsight>(entity =>
+            {
+                entity.ToTable("PomodoroInsight");
+
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => e.LearnerId);
+
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.LearnerId).HasColumnName("learner_id");
+                entity.Property(e => e.TotalPomodoros).HasColumnName("total_pomodoros");
+                entity.Property(e => e.TotalFocusTime).HasColumnName("total_focus_time");
+                entity.Property(e => e.WeeklyPomodoros).HasColumnName("weekly_pomodoros");
+                entity.Property(e => e.WeeklyFocusTime).HasColumnName("weekly_focus_time");
+                entity.Property(e => e.WeekOf).HasColumnName("week_of");
+
+                entity.HasOne(d => d.Learner)
+                    .WithMany(l => l.PomodoroInsights)
+                    .HasForeignKey(d => d.LearnerId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_PomodoroInsight_Learner");
             });
 
             OnModelCreatingPartial(modelBuilder);

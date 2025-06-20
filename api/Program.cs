@@ -4,6 +4,7 @@ using api.Interfaces; // Interfaces for repositories
 using api.Repos;
 using api.Repository; // Repository implementations
 using Microsoft.EntityFrameworkCore;
+using api.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +45,9 @@ var builder = WebApplication.CreateBuilder(args);
         )
     );
 
+    // AutoMapper
+    builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
     // Dependency Injection: Register all repositories
     builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
     builder.Services.AddScoped<IGoalRepository, GoalRepository>();
@@ -55,6 +59,9 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<ISubtaskRepository, SubtaskRepository>();
     builder.Services.AddScoped<ITaskRepository, TaskRepository>();
     builder.Services.AddScoped<ITaskTypeRepository, TaskTypeRepository>();
+    builder.Services.AddScoped<ITimerSettingsRepository, TimerSettingsRepository>();
+    builder.Services.AddScoped<IStudySessionRepository, StudySessionRepository>();
+    builder.Services.AddScoped<IPomodoroInsightRepository, PomodoroInsightRepository>();
 }
 
 var app = builder.Build();
