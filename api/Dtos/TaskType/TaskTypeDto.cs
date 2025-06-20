@@ -17,7 +17,7 @@ namespace api.Dtos.TaskType
         [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters.")]
         public string? Description { get; set; }
 
-        // Return base64 encoded string for icon, default to null
-        public string? Icon { get; set; } = null;
+        // Return base64 encoded string for icon
+        public string? Icon { get; set; }
     }
 }

@@ -5,7 +5,10 @@ namespace api.Dtos.Note
 {
     public class CreateNoteRequestDto 
     {
-        public long? GoalId { get; set; }
+        
+        [Required(ErrorMessage = "Goal required.")]
+        [ForeignKey("Goal")]
+        public long GoalId { get; set; }
 
         [Required(ErrorMessage = "Title is required.")]
         [StringLength(255, MinimumLength = 3, ErrorMessage = "Title must be between 3 and 255 characters.")]
