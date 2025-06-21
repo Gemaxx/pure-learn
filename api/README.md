@@ -91,7 +91,7 @@ Not Yet
    - Create"Entity"RequestDto
    - Patch"Entity"RequestDto
 4. Configure Manual  [Mapper](Mapper)
-5. Create Repository [Interfaces](Interfaces)
+5. Create Repository [Interfaces](Interfaces)   
 6. Create QueryObject in [Helpers Dir](Helpers) for filtering and sort operations for entities.
 7. Implement [Repository](Repos)
 8. Create [Controllers](Controllers)
