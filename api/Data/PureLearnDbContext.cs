@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using api.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace api.Data
 {
-    public partial class PureLearnDbContext : IdentityDbContext<ApplicationUser>
+    public partial class PureLearnDbContext : IdentityDbContext<Learner, IdentityRole<long>, long>
     {
         public PureLearnDbContext() : base() { }
 
@@ -215,6 +216,11 @@ namespace api.Data
                     .HasForeignKey(d => d.KanbanStatusId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Tasks_KanbanStatus_KanbanStatusId");
+
+                entity.HasMany(t => t.SubTasks)
+                    .WithOne(st => st.Task)
+                    .HasForeignKey(st => st.TaskId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             // Add TaskType entity configuration
@@ -332,15 +338,15 @@ namespace api.Data
                 entity.ToTable("TimerSettings");
 
                 entity.Property(e => e.Id).HasColumnName("id");
-                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.LearnerId).HasColumnName("learner_id");
                 entity.Property(e => e.FocusMinutes).HasColumnName("focus_minutes");
                 entity.Property(e => e.ShortBreakMin).HasColumnName("short_break_min");
                 entity.Property(e => e.LongBreakMin).HasColumnName("long_break_min");
                 entity.Property(e => e.CyclesBeforeLongBreak).HasColumnName("cycles_before_long_break");
 
-                entity.HasOne<ApplicationUser>()
+                entity.HasOne<Learner>()
                     .WithOne()
-                    .HasForeignKey<TimerSettings>(e => e.UserId)
+                    .HasForeignKey<TimerSettings>(e => e.LearnerId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
 

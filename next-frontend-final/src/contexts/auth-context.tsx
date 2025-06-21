@@ -20,7 +20,7 @@ type AuthContextType = {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
-  login: (token: string, userId: string) => void;
+  login: (token: string, userData: User) => void;
   logout: () => void;
   setUserData: (userData: User) => void;
 };
@@ -29,40 +29,60 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // Mock user data for temporary access
-  const mockUser: User = {
-    id: "4",
-    name: "Alaa",
-    email: "temp@example.com",
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Initialize auth state from localStorage on mount
+  useEffect(() => {
+    const storedToken = localStorage.getItem('authToken');
+    const storedUser = localStorage.getItem('userData');
+    
+    if (storedToken && storedUser) {
+      try {
+        const userData = JSON.parse(storedUser);
+        setToken(storedToken);
+        setUser(userData);
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error('Error parsing stored user data:', error);
+        // Clear invalid data
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userData');
+      }
+    }
+  }, []);
+
+  // Login function
+  const login = (newToken: string, userData: User) => {
+    setToken(newToken);
+    setUser(userData);
+    setIsAuthenticated(true);
+    localStorage.setItem('authToken', newToken);
+    localStorage.setItem('userData', JSON.stringify(userData));
   };
 
-  // Mock token
-  const mockToken = "temp-token";
-
-  // Login function (kept for future use)
-  const login = (newToken: string, userId: string) => {
-    // Temporarily disabled
-    console.log("Login temporarily disabled");
-  };
-
-  // Logout function (kept for future use)
+  // Logout function
   const logout = () => {
-    // Temporarily disabled
-    console.log("Logout temporarily disabled");
+    setToken(null);
+    setUser(null);
+    setIsAuthenticated(false);
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userData');
   };
 
-  // Set user data function (kept for future use)
+  // Set user data function
   const setUserData = (userData: User) => {
-    // Temporarily disabled
-    console.log("Set user data temporarily disabled");
+    setUser(userData);
+    localStorage.setItem('userData', JSON.stringify(userData));
   };
 
   return (
     <AuthContext.Provider
       value={{
-        user: mockUser,
-        token: mockToken,
-        isAuthenticated: true,
+        user,
+        token,
+        isAuthenticated,
         login,
         logout,
         setUserData,

@@ -22,21 +22,21 @@ public class PomodoroInsightsController : ControllerBase
         _mapper = mapper;
     }
 
-    private long GetCurrentUserId()
+    private long GetCurrentLearnerId()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (long.TryParse(userId, out var id))
+        var learnerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (long.TryParse(learnerId, out var id))
         {
             return id;
         }
-        throw new InvalidOperationException("User ID not found or invalid.");
+        throw new InvalidOperationException("Learner ID not found or invalid.");
     }
     
     [HttpGet]
     public async Task<IActionResult> GetInsights()
     {
-        var userId = GetCurrentUserId();
-        var insights = await _insightRepo.GetByLearnerIdAsync(userId);
+        var learnerId = GetCurrentLearnerId();
+        var insights = await _insightRepo.GetByLearnerIdAsync(learnerId);
         if (insights == null)
         {
             return NotFound();
@@ -47,8 +47,8 @@ public class PomodoroInsightsController : ControllerBase
     [HttpPost("recalculate")]
     public async Task<IActionResult> Recalculate()
     {
-        var userId = GetCurrentUserId();
-        await _insightRepo.RecalculateInsightsAsync(userId);
+        var learnerId = GetCurrentLearnerId();
+        await _insightRepo.RecalculateInsightsAsync(learnerId);
         return Ok();
     }
 } 

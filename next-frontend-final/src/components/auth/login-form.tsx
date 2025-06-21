@@ -27,8 +27,8 @@ export function LoginForm({ onSuccess, onCancel }: { onSuccess?: () => void; onC
     try {
       const response = await loginUser({ email, password })
 
-      login(response.token, response.id)
-      setUserData({ id: response.id, name: response.name, email: response.email })
+      const userData = { id: response.id, name: response.name, email: response.email }
+      login(response.token, userData)
 
       if (onSuccess) onSuccess()
       router.push("/dashboard")

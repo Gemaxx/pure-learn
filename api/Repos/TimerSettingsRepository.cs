@@ -15,9 +15,9 @@ public class TimerSettingsRepository : ITimerSettingsRepository
         _context = context;
     }
 
-    public async Task<TimerSettings?> GetByUserIdAsync(string userId)
+    public async Task<TimerSettings?> GetByLearnerIdAsync(long learnerId)
     {
-        return await _context.TimerSettings.FirstOrDefaultAsync(t => t.UserId == userId);
+        return await _context.TimerSettings.FirstOrDefaultAsync(t => t.LearnerId == learnerId);
     }
 
     public async Task<TimerSettings> CreateAsync(TimerSettings settings)
@@ -27,9 +27,9 @@ public class TimerSettingsRepository : ITimerSettingsRepository
         return settings;
     }
 
-    public async Task<TimerSettings?> UpdateAsync(string userId, TimerSettings settings)
+    public async Task<TimerSettings?> UpdateAsync(long learnerId, TimerSettings settings)
     {
-        var existingSettings = await GetByUserIdAsync(userId);
+        var existingSettings = await GetByLearnerIdAsync(learnerId);
         if (existingSettings == null)
         {
             return null;
@@ -44,9 +44,9 @@ public class TimerSettingsRepository : ITimerSettingsRepository
         return existingSettings;
     }
 
-    public async Task<TimerSettings?> DeleteAsync(string userId)
+    public async Task<TimerSettings?> DeleteAsync(long learnerId)
     {
-        var settings = await GetByUserIdAsync(userId);
+        var settings = await GetByLearnerIdAsync(learnerId);
         if (settings == null)
         {
             return null;

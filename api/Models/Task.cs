@@ -88,9 +88,14 @@ public partial class Task
 
     public virtual Subgoal? Subgoal { get; set; }
 
-    public virtual ICollection<Subtask> Subtasks { get; set; } = new List<Subtask>();
+    public virtual ICollection<Subtask> SubTasks { get; set; } = new List<Subtask>();
 
-    public virtual TaskType? Type { get; set; = null!;}
+    public virtual TaskType? Type { get; set; }
 
     public virtual ICollection<StudySession> StudySessions { get; set; } = new List<StudySession>();
+
+    public Task()
+    {
+        Type = null!;
+    }
 }

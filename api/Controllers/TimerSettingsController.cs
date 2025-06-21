@@ -23,22 +23,19 @@ public class TimerSettingsController : ControllerBase
         _mapper = mapper;
     }
 
-    private string GetCurrentUserId()
+    private long GetCurrentLearnerId()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (!string.IsNullOrEmpty(userId))
-        {
-            return userId;
-        }
-        // TEMP: For local testing without authentication
-        return "dummy-identity-001"; // or any valid test user IdentityId
+        var learnerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (long.TryParse(learnerId, out var id))
+            return id;
+        throw new InvalidOperationException("Learner ID not found or invalid.");
     }
 
     [HttpGet]
     public async Task<IActionResult> GetSettings()
     {
-        var userId = GetCurrentUserId();
-        var settings = await _timerSettingsRepo.GetByUserIdAsync(userId);
+        var learnerId = GetCurrentLearnerId();
+        var settings = await _timerSettingsRepo.GetByLearnerIdAsync(learnerId);
         if (settings == null)
         {
             return NotFound();
@@ -55,11 +52,11 @@ public class TimerSettingsController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        var userId = GetCurrentUserId();
+        var learnerId = GetCurrentLearnerId();
         var settingsModel = _mapper.Map<TimerSettings>(settingsDto);
-        settingsModel.UserId = userId;
+        settingsModel.LearnerId = learnerId;
 
-        var existingSettings = await _timerSettingsRepo.GetByUserIdAsync(userId);
+        var existingSettings = await _timerSettingsRepo.GetByLearnerIdAsync(learnerId);
         if (existingSettings == null)
         {
             var createdSettings = await _timerSettingsRepo.CreateAsync(settingsModel);
@@ -67,7 +64,7 @@ public class TimerSettingsController : ControllerBase
         }
         else
         {
-            var updatedSettings = await _timerSettingsRepo.UpdateAsync(userId, settingsModel);
+            var updatedSettings = await _timerSettingsRepo.UpdateAsync(learnerId, settingsModel);
             return Ok(_mapper.Map<TimerSettingsDto>(updatedSettings));
         }
     }

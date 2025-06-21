@@ -9,10 +9,10 @@ namespace api.Models
         public long Id { get; set; }
 
         [Required]
-        public string UserId { get; set; } = null!;
+        public long LearnerId { get; set; }
 
-        [ForeignKey("UserId")]
-        public ApplicationUser User { get; set; } = null!;
+        [ForeignKey("LearnerId")]
+        public Learner Learner { get; set; } = null!;
 
         [Required]
         public int FocusMinutes { get; set; }

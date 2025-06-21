@@ -14,7 +14,7 @@ namespace api.Controllers;
 
 [Route("api/sessions")]
 [ApiController]
-// [Authorize] // Temporarily removed for Swagger testing
+[Authorize]
 public class StudySessionsController : ControllerBase
 {
     private readonly IStudySessionRepository _sessionRepo;
@@ -26,21 +26,24 @@ public class StudySessionsController : ControllerBase
         _mapper = mapper;
     }
 
-    private long GetCurrentUserId()
+    private long GetCurrentLearnerId()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (long.TryParse(userId, out var id))
+        if (User?.Identity?.IsAuthenticated != true)
         {
-            return id;
+            return 0;
         }
-        // TEMP: For local testing without authentication
-        return 1; // or any valid test user ID in your DB
+        var learnerIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!long.TryParse(learnerIdClaim, out var id))
+        {
+            throw new UnauthorizedAccessException("JWT missing learner id");
+        }
+        return id;
     }
     
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] StudySessionQueryObject query)
     {
-        query.LearnerId = GetCurrentUserId();
+        query.LearnerId = GetCurrentLearnerId();
         var sessions = await _sessionRepo.GetAllAsync(query);
         var sessionDtos = _mapper.Map<List<StudySessionDto>>(sessions);
         return Ok(sessionDtos);
@@ -50,7 +53,7 @@ public class StudySessionsController : ControllerBase
     public async Task<IActionResult> GetById([FromRoute] long id)
     {
         var session = await _sessionRepo.GetByIdAsync(id);
-        if (session == null || session.LearnerId != GetCurrentUserId())
+        if (session == null || session.LearnerId != GetCurrentLearnerId())
         {
             return NotFound();
         }
@@ -60,8 +63,14 @@ public class StudySessionsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateStudySessionRequestDto sessionDto)
     {
+        var learnerId = GetCurrentLearnerId();
+        if (learnerId == 0)
+        {
+            return Unauthorized();
+        }
+        
         var sessionModel = _mapper.Map<StudySession>(sessionDto);
-        sessionModel.LearnerId = GetCurrentUserId();
+        sessionModel.LearnerId = learnerId;
         
         var createdSession = await _sessionRepo.CreateAsync(sessionModel);
         return CreatedAtAction(nameof(GetById), new { id = createdSession.Id }, _mapper.Map<StudySessionDto>(createdSession));
@@ -71,7 +80,7 @@ public class StudySessionsController : ControllerBase
     public async Task<IActionResult> Update([FromRoute] long id, [FromBody] PatchStudySessionRequestDto patchDto)
     {
         var sessionModel = await _sessionRepo.GetByIdAsync(id);
-        if (sessionModel == null || sessionModel.LearnerId != GetCurrentUserId())
+        if (sessionModel == null || sessionModel.LearnerId != GetCurrentLearnerId())
         {
             return NotFound();
         }
@@ -87,7 +96,7 @@ public class StudySessionsController : ControllerBase
     public async Task<IActionResult> Delete([FromRoute] long id)
     {
         var sessionModel = await _sessionRepo.GetByIdAsync(id);
-        if (sessionModel == null || sessionModel.LearnerId != GetCurrentUserId())
+        if (sessionModel == null || sessionModel.LearnerId != GetCurrentLearnerId())
         {
             return NotFound();
         }
@@ -100,7 +109,7 @@ public class StudySessionsController : ControllerBase
     public async Task<IActionResult> AddCycleToSession([FromBody] CreatePomodoroCycleRequestDto cycleDto)
     {
         var session = await _sessionRepo.GetByIdAsync(cycleDto.StudySessionId);
-        if (session == null || session.LearnerId != GetCurrentUserId())
+        if (session == null || session.LearnerId != GetCurrentLearnerId())
         {
             return Forbid(); // Or BadRequest
         }

@@ -50,10 +50,16 @@ namespace api.Repos
         }
 
         // Retrieve a single task for the specified learner and taskId.
-        public async Task<Models.Task?> GetTaskAsync(long learnerId, long taskId)
+        public async Task<Models.Task?> GetTaskAsync(long learnerId, long taskId, bool includeSubtasks = false)
         {   
+            var query = _context.Tasks.AsQueryable();
+
+            if(includeSubtasks)
+            {
+                query = query.Include(t => t.SubTasks);
+            }
             
-            return await _context.Tasks
+            return await query
                 .FirstOrDefaultAsync(t => t.Id == taskId 
                                           && t.LearnerId == learnerId 
                                           && !t.IsDeleted);
@@ -172,7 +178,7 @@ namespace api.Repos
         // Permanently delete a task.
         public async Task<bool> DeleteTaskAsync(long learnerId, long taskId)
         {
-            var task = await GetTaskAsync(learnerId, taskId);
+            var task = await GetTaskAsync(learnerId, taskId, false);
             if (task == null)
                 return false;
 
@@ -184,7 +190,7 @@ namespace api.Repos
         // Soft delete: mark a task as deleted without actually removing it from the database.
         public async Task<bool> SoftDeleteTaskAsync(long learnerId, long taskId)
         {
-            var task = await GetTaskAsync(learnerId, taskId);
+            var task = await GetTaskAsync(learnerId, taskId, false);
             if (task == null)
                 return false;
 

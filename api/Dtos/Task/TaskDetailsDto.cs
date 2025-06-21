@@ -62,7 +62,6 @@ namespace api.Dtos.Task
         public DateTime? DeletedAt { get; set; }
 
         public bool IsDeleted { get; set; }
-
-    
+        public ICollection<Dtos.Subtask.SubtaskDto> SubTasks { get; set; } = new List<Dtos.Subtask.SubtaskDto>();
     }
 }

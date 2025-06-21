@@ -1,4 +1,5 @@
 using api.Dtos.Task;
+using System.Linq;
 
 namespace api.Mapper
 {
@@ -16,6 +17,7 @@ namespace api.Mapper
                 TypeId = taskModel.TypeId,
                 KanbanStatusId = taskModel.KanbanStatusId,
                 EisenhowerStatus = taskModel.EisenhowerStatus?? "Urgent & Important",
+                SubTasks = taskModel.SubTasks.Select(s => s.ToSubtaskDto()).ToList()
             };
         }
         // Mapping from Task model to TaskDetailsDto (detailed view)
@@ -54,7 +56,8 @@ namespace api.Mapper
                 // SubgoalId = taskModel.SubgoalId,
                 // LearningResourceId = taskModel.LearningResourceId,
                 DeletedAt = taskModel.DeletedAt,
-                IsDeleted = taskModel.IsDeleted
+                IsDeleted = taskModel.IsDeleted,
+                SubTasks = taskModel.SubTasks.Select(s => s.ToSubtaskDto()).ToList()
             };
         }
         // Mapping from CreateTaskRequestDto to Task model
