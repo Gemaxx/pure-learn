@@ -3,6 +3,7 @@ import ResourceTypeModal from './ResourceTypeModal';
 import { useAuth } from '@/contexts/auth-context';
 import { getResourceTypes, addLearningResource, updateLearningResource } from '../services/learning-resources-service';
 import { Button } from './ui/button';
+import { ExternalLink } from 'lucide-react';
 
 interface ResourceType {
   id: string;
@@ -17,7 +18,7 @@ interface LearningResource {
   typeName?: string;
   totalUnits: number;
   progress: number;
-  status: 'Not-Started' | 'In-Progress' | 'Done' | 'On-Hold';
+  link?: string;
 }
 
 interface ResourceModalProps {
@@ -28,8 +29,6 @@ interface ResourceModalProps {
   goalId?: string | number;
 }
 
-const STATUSES = ['Not-Started', 'In-Progress', 'Done', 'On-Hold'] as const;
-
 export default function ResourceModal({ open, onClose, onResourceAdded, resource, goalId }: ResourceModalProps) {
   const { user } = useAuth();
   const learnerId = user?.id;
@@ -39,7 +38,7 @@ export default function ResourceModal({ open, onClose, onResourceAdded, resource
     typeId: '',
     totalUnits: '',
     progress: '0',
-    status: 'Not-Started',
+    link: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,10 +53,10 @@ export default function ResourceModal({ open, onClose, onResourceAdded, resource
         typeId: resource.typeId,
         totalUnits: resource.totalUnits.toString(),
         progress: resource.progress.toString(),
-        status: resource.status,
+        link: resource.link || '',
       });
     } else {
-      setForm({ title: '', typeId: '', totalUnits: '', progress: '0', status: 'Not-Started' });
+      setForm({ title: '', typeId: '', totalUnits: '', progress: '0', link: '' });
     }
   }, [resource, open]);
 
@@ -104,12 +103,18 @@ export default function ResourceModal({ open, onClose, onResourceAdded, resource
 
     try {
       if (!learnerId) throw new Error('No learnerId');
+
+      let finalLink = form.link.trim();
+      if (finalLink && !/^https?:\/\//i.test(finalLink)) {
+        finalLink = `https://${finalLink}`;
+      }
+
       const body: any = {
         title: form.title,
         typeId: form.typeId,
         totalUnits: totalUnits,
         progress: progress,
-        status: form.status,
+        link: finalLink || undefined,
       };
       if (goalId) {
         console.log("goalId:", goalId);
@@ -135,6 +140,17 @@ export default function ResourceModal({ open, onClose, onResourceAdded, resource
   const handleTypeAdded = (typeId: string) => {
     setTypeModalOpen(false);
     setNewTypeId(typeId);
+  };
+
+  // فتح الرابط في المتصفح
+  const handleOpenLink = () => {
+    if (form.link.trim()) {
+      let url = form.link.trim();
+      if (!/^https?:\/\//i.test(url)) {
+        url = `https://${url}`;
+      }
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
   };
 
   return (
@@ -211,15 +227,27 @@ export default function ResourceModal({ open, onClose, onResourceAdded, resource
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Status</label>
-              <select
-                name="status"
-                value={form.status}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-border bg-background text-foreground px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary appearance-none"
-              >
-                {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
-              </select>
+              <label className="block text-sm font-medium mb-1">Link</label>
+              <div className="flex gap-2">
+                <input
+                  name="link"
+                  value={form.link}
+                  onChange={handleChange}
+                  className="flex-1 rounded-lg border border-border bg-background text-foreground px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="https://example.com"
+                  type="text"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleOpenLink}
+                  disabled={!form.link.trim()}
+                  className="px-3 py-2"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
             {error && <div className="text-destructive text-xs text-center mt-2">{error}</div>}
             <div className="flex justify-between gap-2 pt-4">
