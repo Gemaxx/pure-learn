@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LogOut, User } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { PomodoroIndicator } from "./ui/pomodoro-indicator";
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -37,7 +38,11 @@ export function Navbar() {
         <Link href="/" className="font-bold text-lg">
           PureLearn
         </Link>
+        
         <div className="ml-auto flex items-center gap-2 mr-10">
+          {/* Pomodoro Indicator */}
+          <PomodoroIndicator />
+          
           <ThemeToggle />
           {isAuthenticated && user && (
             <DropdownMenu>

@@ -2,6 +2,7 @@ import type React from "react"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Navbar } from "@/components/navbar"
 import { AuthProvider } from "@/contexts/auth-context"
+import { PomodoroProvider } from "@/contexts/pomodoro-context"
 import { Toaster } from "@/components/ui/toaster"
 import "./globals.css"
 import { Inter as FontSans } from "next/font/google"
@@ -32,11 +33,13 @@ export default function RootLayout({
       <body className={cn("min-h-screen bg-background text-foreground font-sans antialiased", fontSans.variable)} suppressHydrationWarning>
         <ThemeProvider>
           <AuthProvider>
-            <TrashProvider>
-              <Navbar />
-              <main className="pt-14">{children}</main>
-              <Toaster />
-            </TrashProvider>
+            <PomodoroProvider>
+              <TrashProvider>
+                <Navbar />
+                <main className="pt-14">{children}</main>
+                <Toaster />
+              </TrashProvider>
+            </PomodoroProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

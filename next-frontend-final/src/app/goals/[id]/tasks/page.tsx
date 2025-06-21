@@ -288,6 +288,7 @@ export default function TasksPage() {
               status={status}
               tasks={getTasksForStatus(status.id)}
               taskTypes={taskTypes}
+              goalId={goalId}
               onEdit={handleEditStatus}
               onDelete={handleDeleteStatus}
               onAddTask={handleAddTask}

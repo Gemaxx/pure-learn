@@ -73,6 +73,26 @@ export default function CategoryPage() {
   const { toast } = useToast()
   const categoryId = params.id as string
 
+  // Early validation of categoryId
+  if (!categoryId || categoryId === 'undefined' || categoryId === 'null') {
+    return (
+      <div className="container mx-auto p-4 sm:p-6 lg:p-8">
+        <div className="bg-destructive/10 p-4 rounded-md text-destructive">
+          <div className="font-medium mb-2">Invalid Category</div>
+          <div className="text-sm mb-3">The category ID is invalid or missing.</div>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => router.push('/categories')}
+            className="text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground"
+          >
+            Go to Categories
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
   if (!user?.id) {
     return (
       <div className="container mx-auto p-4 sm:p-6 lg:p-8">
@@ -83,17 +103,40 @@ export default function CategoryPage() {
 
   useEffect(() => {
     const fetchCategoryDetails = async () => {
-      if (!user?.id || !categoryId) return
+      if (!user?.id || !categoryId) {
+        console.log('Missing required data:', { userId: user?.id, categoryId })
+        return
+      }
 
       setIsLoading(true)
       setError(null)
 
       try {
+        console.log('Fetching category details for:', { userId: user.id, categoryId })
         const data = await getCategoryDetails(user.id, categoryId)
+        console.log('Category details received:', data)
         setCategory(data)
       } catch (err) {
-        setError("Failed to load category details")
-        console.error(err)
+        console.error('Error fetching category details:', err)
+        
+        // More specific error handling
+        let errorMessage = "Failed to load category details"
+        
+        if (err instanceof Error) {
+          if (err.message.includes('404') || err.message.includes('Not Found')) {
+            errorMessage = "Category not found"
+          } else if (err.message.includes('401') || err.message.includes('Unauthorized')) {
+            errorMessage = "You are not authorized to view this category"
+          } else if (err.message.includes('500') || err.message.includes('Internal Server Error')) {
+            errorMessage = "Server error occurred. Please try again later."
+          } else if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+            errorMessage = "Unable to connect to server. Please check your connection and try again."
+          } else {
+            errorMessage = err.message || errorMessage
+          }
+        }
+        
+        setError(errorMessage)
       } finally {
         setIsLoading(false)
       }
@@ -203,7 +246,27 @@ export default function CategoryPage() {
   if (error) {
     return (
       <div className="container mx-auto p-4 sm:p-6 lg:p-8">
-        <div className="bg-destructive/10 p-4 rounded-md text-destructive">{error}</div>
+        <div className="bg-destructive/10 p-4 rounded-md text-destructive">
+          <div className="font-medium mb-2">Error Loading Category</div>
+          <div className="text-sm mb-3">{error}</div>
+          
+          {/* Debug information */}
+          <div className="bg-background/50 p-3 rounded text-xs mb-3">
+            <div className="font-medium mb-1">Debug Information:</div>
+            <div>Category ID: {categoryId}</div>
+            <div>User ID: {user?.id || 'Not available'}</div>
+            <div>API Base URL: {process.env.NODE_ENV === 'development' ? 'http://localhost:5115' : 'Production URL'}</div>
+          </div>
+          
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => window.location.reload()}
+            className="text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground"
+          >
+            Try Again
+          </Button>
+        </div>
       </div>
     )
   }

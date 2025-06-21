@@ -21,10 +21,12 @@ import {
 import { useAuth } from "@/contexts/auth-context";
 import { useToast } from "@/hooks/use-toast";
 import { updateTask, type Task, type TaskType } from "@/services/task-service";
+import { PomodoroButton } from "./pomodoro-button";
 
 type TaskCardProps = {
   task: Task;
   taskTypes: TaskType[];
+  goalId: string;
   onEdit: (task: Task) => void;
   onDelete: (task: Task, type: "soft" | "hard") => void;
   onUpdate: (task: Task) => void;
@@ -51,6 +53,7 @@ const priorityLabels = {
 export function TaskCard({
   task,
   taskTypes,
+  goalId,
   onEdit,
   onDelete,
   onUpdate,
@@ -122,38 +125,48 @@ export function TaskCard({
             {task.title}
           </h4>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6 text-muted-foreground"
-            >
-              <MoreVertical className="h-3 w-3" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem onClick={() => onEdit(task)}>
-              <Edit className="h-4 w-4 mr-2" />
-              Edit Task
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => onDelete(task, "soft")}
-              className="text-yellow-600"
-            >
-              <Trash2 className="h-4 w-4 mr-2" />
-              Soft Delete
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => onDelete(task, "hard")}
-              className="text-destructive"
-            >
-              <AlertTriangle className="h-4 w-4 mr-2" />
-              Hard Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        
+        <div className="flex items-center gap-1">
+          {/* Pomodoro Button */}
+          <PomodoroButton
+            taskId={task.id.toString()}
+            goalId={goalId}
+            size="sm"
+          />
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6 text-muted-foreground"
+              >
+                <MoreVertical className="h-3 w-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem onClick={() => onEdit(task)}>
+                <Edit className="h-4 w-4 mr-2" />
+                Edit Task
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => onDelete(task, "soft")}
+                className="text-yellow-600"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Soft Delete
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => onDelete(task, "hard")}
+                className="text-destructive"
+              >
+                <AlertTriangle className="h-4 w-4 mr-2" />
+                Hard Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-1 text-xs">

@@ -13,11 +13,15 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
   }
 
   try {
+    console.log('Making API request:', `${API_BASE_URL}${url}`)
+    
     // Send request with token
     const response = await fetch(`${API_BASE_URL}${url}`, {
       ...options,
       headers,
     })
+
+    console.log('API response status:', response.status, response.statusText)
 
     // For 204 No Content responses, return null
     if (response.status === 204) {
@@ -26,9 +30,10 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
 
     // Check if the response is ok
     if (!response.ok) {
-      let errorMessage = `Error: ${response.status}`
+      let errorMessage = `Error: ${response.status} ${response.statusText}`
       try {
         const errorData = await response.json()
+        console.error('API error response:', errorData)
         errorMessage = errorData.message || errorData.title || errorMessage
         if (errorData.errors) {
           const errorDetails = Object.entries(errorData.errors)
@@ -36,10 +41,15 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
             .join("; ")
           errorMessage = errorDetails || errorMessage
         }
-      } catch {
+      } catch (parseError) {
+        console.error('Failed to parse error response:', parseError)
         // If we can't parse the error response, use the status code message
       }
-      throw new Error(errorMessage)
+      
+      const error = new Error(errorMessage)
+      // Add response status to error for better debugging
+      ;(error as any).status = response.status
+      throw error
     }
 
     // Check if response is empty
@@ -50,13 +60,19 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
 
     // Parse JSON response
     try {
-      return JSON.parse(text)
+      const data = JSON.parse(text)
+      console.log('API response data:', data)
+      return data
     } catch (e) {
       console.error("Failed to parse response as JSON:", text)
       return null
     }
   } catch (error) {
-    console.error("API request failed:", error)
+    console.error("API request failed:", {
+      url: `${API_BASE_URL}${url}`,
+      error: error instanceof Error ? error.message : error,
+      status: (error as any).status
+    })
     throw error
   }
 }

@@ -17,6 +17,7 @@ type KanbanColumnProps = {
   status: KanbanStatus;
   tasks: Task[];
   taskTypes: TaskType[];
+  goalId: string;
   onEdit: (status: KanbanStatus) => void;
   onDelete: (status: KanbanStatus) => void;
   onAddTask: (status: KanbanStatus) => void;
@@ -30,6 +31,7 @@ export function KanbanColumn({
   status,
   tasks,
   taskTypes,
+  goalId,
   onEdit,
   onDelete,
   onAddTask,
@@ -127,6 +129,7 @@ export function KanbanColumn({
             key={task.id}
             task={task}
             taskTypes={taskTypes}
+            goalId={goalId}
             onEdit={onEditTask}
             onDelete={onDeleteTask}
             onUpdate={onUpdateTask}
@@ -162,6 +165,7 @@ export function KanbanColumn({
                   key={task.id}
                   task={task}
                   taskTypes={taskTypes}
+                  goalId={goalId}
                   onEdit={onEditTask}
                   onDelete={onDeleteTask}
                   onUpdate={onUpdateTask}
