@@ -27,6 +27,4 @@ public class Learner : IdentityUser<long>
     public virtual ICollection<Note> Notes { get; set; } = new List<Note>();
     public virtual ICollection<TaskType> TaskTypes { get; set; } = new List<TaskType>();
     public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
-    public virtual ICollection<StudySession> StudySessions { get; set; } = new List<StudySession>();
-    public virtual ICollection<PomodoroInsight> PomodoroInsights { get; set; } = new List<PomodoroInsight>();
 }

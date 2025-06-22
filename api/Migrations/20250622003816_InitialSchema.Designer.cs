@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Data;
 
@@ -11,9 +12,11 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(PureLearnDbContext))]
-    partial class PureLearnDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250622003816_InitialSchema")]
+    partial class InitialSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -484,6 +487,9 @@ namespace api.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("CategoryId");
 
+                    b.Property<long?>("CategoryId1")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -524,6 +530,9 @@ namespace api.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("SubgoalId");
 
+                    b.Property<long?>("SubgoalId1")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -548,11 +557,15 @@ namespace api.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("CategoryId1");
+
                     b.HasIndex("GoalId");
 
                     b.HasIndex("LearnerId");
 
                     b.HasIndex("SubgoalId");
+
+                    b.HasIndex("SubgoalId1");
 
                     b.HasIndex("TypeId");
 
@@ -617,6 +630,9 @@ namespace api.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("CategoryId");
 
+                    b.Property<long?>("CategoryId1")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("CreatedAt");
@@ -628,6 +644,9 @@ namespace api.Migrations
                     b.Property<long?>("GoalId")
                         .HasColumnType("bigint")
                         .HasColumnName("GoalId");
+
+                    b.Property<long?>("GoalId1")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -643,9 +662,15 @@ namespace api.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("SubgoalId");
 
+                    b.Property<long?>("SubgoalId1")
+                        .HasColumnType("bigint");
+
                     b.Property<long?>("TaskId")
                         .HasColumnType("bigint")
                         .HasColumnName("TaskId");
+
+                    b.Property<long?>("TaskId1")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -660,13 +685,21 @@ namespace api.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("CategoryId1");
+
                     b.HasIndex("GoalId");
+
+                    b.HasIndex("GoalId1");
 
                     b.HasIndex("LearnerId");
 
                     b.HasIndex("SubgoalId");
 
+                    b.HasIndex("SubgoalId1");
+
                     b.HasIndex("TaskId");
+
+                    b.HasIndex("TaskId1");
 
                     b.ToTable("Notes", (string)null);
                 });
@@ -849,6 +882,9 @@ namespace api.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("GoalId");
 
+                    b.Property<long?>("GoalId1")
+                        .HasColumnType("bigint");
+
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit")
                         .HasColumnName("IsDeleted");
@@ -870,6 +906,8 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("GoalId");
+
+                    b.HasIndex("GoalId1");
 
                     b.ToTable("Subgoals", (string)null);
                 });
@@ -951,6 +989,9 @@ namespace api.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("GoalId");
 
+                    b.Property<long?>("GoalId1")
+                        .HasColumnType("bigint");
+
                     b.Property<bool?>("IsCompleted")
                         .HasColumnType("bit")
                         .HasColumnName("IsCompleted");
@@ -973,9 +1014,15 @@ namespace api.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("LearningResourceId");
 
+                    b.Property<long?>("LearningResourceId1")
+                        .HasColumnType("bigint");
+
                     b.Property<long?>("SubgoalId")
                         .HasColumnType("bigint")
                         .HasColumnName("SubgoalId");
+
+                    b.Property<long?>("SubgoalId1")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -996,13 +1043,19 @@ namespace api.Migrations
 
                     b.HasIndex("GoalId");
 
+                    b.HasIndex("GoalId1");
+
                     b.HasIndex("KanbanStatusId");
 
                     b.HasIndex("LearnerId");
 
                     b.HasIndex("LearningResourceId");
 
+                    b.HasIndex("LearningResourceId1");
+
                     b.HasIndex("SubgoalId");
+
+                    b.HasIndex("SubgoalId1");
 
                     b.HasIndex("TypeId");
 
@@ -1189,13 +1242,20 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.LearningResource", b =>
                 {
+                    b.HasOne("api.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .HasConstraintName("FK_LearningResources_Category_CategoryId");
+
                     b.HasOne("api.Models.Category", null)
                         .WithMany("LearningResources")
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId1");
 
-                    b.HasOne("api.Models.Goal", null)
+                    b.HasOne("api.Models.Goal", "Goal")
                         .WithMany("LearningResources")
-                        .HasForeignKey("GoalId");
+                        .HasForeignKey("GoalId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("FK_LearningResources_Goals_GoalId");
 
                     b.HasOne("api.Models.Learner", "Learner")
                         .WithMany("LearningResources")
@@ -1204,9 +1264,14 @@ namespace api.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_LearningResources_Learner_LearnerId");
 
+                    b.HasOne("api.Models.Subgoal", "Subgoal")
+                        .WithMany()
+                        .HasForeignKey("SubgoalId")
+                        .HasConstraintName("FK_LearningResources_Subgoal_SubgoalId");
+
                     b.HasOne("api.Models.Subgoal", null)
                         .WithMany("LearningResources")
-                        .HasForeignKey("SubgoalId");
+                        .HasForeignKey("SubgoalId1");
 
                     b.HasOne("api.Models.LearningResourceType", "Type")
                         .WithMany("LearningResources")
@@ -1215,7 +1280,13 @@ namespace api.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_LearningResources_LearningResourceTypes_TypeId");
 
+                    b.Navigation("Category");
+
+                    b.Navigation("Goal");
+
                     b.Navigation("Learner");
+
+                    b.Navigation("Subgoal");
 
                     b.Navigation("Type");
                 });
@@ -1234,13 +1305,23 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Note", b =>
                 {
+                    b.HasOne("api.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .HasConstraintName("FK_Notes_Category_CategoryId");
+
                     b.HasOne("api.Models.Category", null)
                         .WithMany("Notes")
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId1");
+
+                    b.HasOne("api.Models.Goal", "Goal")
+                        .WithMany()
+                        .HasForeignKey("GoalId")
+                        .HasConstraintName("FK_Notes_Goal_GoalId");
 
                     b.HasOne("api.Models.Goal", null)
                         .WithMany("Notes")
-                        .HasForeignKey("GoalId");
+                        .HasForeignKey("GoalId1");
 
                     b.HasOne("api.Models.Learner", "Learner")
                         .WithMany("Notes")
@@ -1249,15 +1330,33 @@ namespace api.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Notes_Learner_LearnerId");
 
+                    b.HasOne("api.Models.Subgoal", "Subgoal")
+                        .WithMany()
+                        .HasForeignKey("SubgoalId")
+                        .HasConstraintName("FK_Notes_Subgoal_SubgoalId");
+
                     b.HasOne("api.Models.Subgoal", null)
                         .WithMany("Notes")
-                        .HasForeignKey("SubgoalId");
+                        .HasForeignKey("SubgoalId1");
+
+                    b.HasOne("api.Models.Task", "Task")
+                        .WithMany()
+                        .HasForeignKey("TaskId")
+                        .HasConstraintName("FK_Notes_Task_TaskId");
 
                     b.HasOne("api.Models.Task", null)
                         .WithMany("Notes")
-                        .HasForeignKey("TaskId");
+                        .HasForeignKey("TaskId1");
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Goal");
 
                     b.Navigation("Learner");
+
+                    b.Navigation("Subgoal");
+
+                    b.Navigation("Task");
                 });
 
             modelBuilder.Entity("api.Models.PomodoroCycle", b =>
@@ -1305,11 +1404,18 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Subgoal", b =>
                 {
-                    b.HasOne("api.Models.Goal", null)
-                        .WithMany("Subgoals")
+                    b.HasOne("api.Models.Goal", "Goal")
+                        .WithMany()
                         .HasForeignKey("GoalId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Subgoals_Goal_GoalId");
+
+                    b.HasOne("api.Models.Goal", null)
+                        .WithMany("Subgoals")
+                        .HasForeignKey("GoalId1");
+
+                    b.Navigation("Goal");
                 });
 
             modelBuilder.Entity("api.Models.Subtask", b =>
@@ -1331,9 +1437,14 @@ namespace api.Migrations
                         .HasForeignKey("CategoryId")
                         .HasConstraintName("FK_Tasks_Category_CategoryId");
 
+                    b.HasOne("api.Models.Goal", "Goal")
+                        .WithMany()
+                        .HasForeignKey("GoalId")
+                        .HasConstraintName("FK_Tasks_Goal_GoalId");
+
                     b.HasOne("api.Models.Goal", null)
                         .WithMany("Tasks")
-                        .HasForeignKey("GoalId");
+                        .HasForeignKey("GoalId1");
 
                     b.HasOne("api.Models.KanbanStatus", "KanbanStatus")
                         .WithMany("Tasks")
@@ -1347,13 +1458,23 @@ namespace api.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Tasks_Learner_LearnerId");
 
+                    b.HasOne("api.Models.LearningResource", "LearningResource")
+                        .WithMany()
+                        .HasForeignKey("LearningResourceId")
+                        .HasConstraintName("FK_Tasks_LearningResource_LearningResourceId");
+
                     b.HasOne("api.Models.LearningResource", null)
                         .WithMany("Tasks")
-                        .HasForeignKey("LearningResourceId");
+                        .HasForeignKey("LearningResourceId1");
+
+                    b.HasOne("api.Models.Subgoal", "Subgoal")
+                        .WithMany()
+                        .HasForeignKey("SubgoalId")
+                        .HasConstraintName("FK_Tasks_Subgoal_SubgoalId");
 
                     b.HasOne("api.Models.Subgoal", null)
                         .WithMany("Tasks")
-                        .HasForeignKey("SubgoalId");
+                        .HasForeignKey("SubgoalId1");
 
                     b.HasOne("api.Models.TaskType", "Type")
                         .WithMany("Tasks")
@@ -1362,9 +1483,15 @@ namespace api.Migrations
 
                     b.Navigation("Category");
 
+                    b.Navigation("Goal");
+
                     b.Navigation("KanbanStatus");
 
                     b.Navigation("Learner");
+
+                    b.Navigation("LearningResource");
+
+                    b.Navigation("Subgoal");
 
                     b.Navigation("Type");
                 });

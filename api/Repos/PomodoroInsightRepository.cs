@@ -17,22 +17,59 @@ public class PomodoroInsightRepository : IPomodoroInsightRepository
         _context = context;
     }
 
-    public async System.Threading.Tasks.Task<PomodoroInsight?> GetByLearnerIdAsync(long learnerId)
+    public async Task<PomodoroInsight?> GetByLearnerIdAsync(long learnerId)
     {
-        return await _context.PomodoroInsights
-                             .FirstOrDefaultAsync(i => i.LearnerId == learnerId);
+        return await _context.PomodoroInsight
+            .FirstOrDefaultAsync(i => i.LearnerId == learnerId);
+    }
+
+    public async Task<PomodoroInsight> CreateInsightAsync(PomodoroInsight insight)
+    {
+        await _context.PomodoroInsight.AddAsync(insight);
+        await _context.SaveChangesAsync();
+        return insight;
+    }
+
+    public async Task<PomodoroInsight> UpdateInsightAsync(PomodoroInsight insight)
+    {
+        _context.PomodoroInsight.Update(insight);
+        await _context.SaveChangesAsync();
+        return insight;
+    }
+
+    public async Task<IEnumerable<PomodoroInsight>> GetWeeklyInsightsAsync(long learnerId, DateTime weekOf)
+    {
+        var sessions = await _context.StudySession
+            .Where(s => s.LearnerId == learnerId && s.CreatedAt >= weekOf && s.CreatedAt < weekOf.AddDays(7))
+            .ToListAsync();
+
+        // Calculate insights from sessions
+        var totalPomodoros = sessions.Count;
+        var totalFocusTime = sessions.Sum(s => (s.EndTime - s.StartTime)?.TotalMinutes ?? 0);
+
+        var insight = new PomodoroInsight
+        {
+            LearnerId = learnerId,
+            TotalPomodoros = totalPomodoros,
+            TotalFocusTime = TimeSpan.FromMinutes(totalFocusTime),
+            WeeklyPomodoros = totalPomodoros,
+            WeeklyFocusTime = TimeSpan.FromMinutes(totalFocusTime),
+            WeekOf = DateOnly.FromDateTime(weekOf)
+        };
+
+        return new List<PomodoroInsight> { insight };
     }
 
     public async System.Threading.Tasks.Task RecalculateInsightsAsync(long learnerId)
     {
-        var insight = await _context.PomodoroInsights.FirstOrDefaultAsync(i => i.LearnerId == learnerId);
+        var insight = await _context.PomodoroInsight.FirstOrDefaultAsync(i => i.LearnerId == learnerId);
         if (insight == null)
         {
             insight = new PomodoroInsight { LearnerId = learnerId };
-            await _context.PomodoroInsights.AddAsync(insight);
+            await _context.PomodoroInsight.AddAsync(insight);
         }
         
-        var sessions = await _context.StudySessions
+        var sessions = await _context.StudySession
                                      .Where(s => s.LearnerId == learnerId && s.IsCompleted)
                                      .Include(s => s.Task)
                                      .ToListAsync();
@@ -41,12 +78,12 @@ public class PomodoroInsightRepository : IPomodoroInsightRepository
         var startOfWeek = today.AddDays(-(int)today.DayOfWeek); // Assuming Sunday is the first day
 
         insight.TotalPomodoros = sessions.Sum(s => s.CycleCount);
-        insight.TotalFocusTime = sessions.Aggregate(TimeSpan.Zero, (total, s) => total + s.Duration);
+        insight.TotalFocusTime = TimeSpan.FromMinutes(sessions.Sum(s => s.Duration.TotalMinutes));
         
         var weeklySessions = sessions.Where(s => DateOnly.FromDateTime(s.StartTime) >= startOfWeek).ToList();
         
         insight.WeeklyPomodoros = weeklySessions.Sum(s => s.CycleCount);
-        insight.WeeklyFocusTime = weeklySessions.Aggregate(TimeSpan.Zero, (total, s) => total + s.Duration);
+        insight.WeeklyFocusTime = TimeSpan.FromMinutes(weeklySessions.Sum(s => s.Duration.TotalMinutes));
         insight.WeekOf = startOfWeek;
 
         await _context.SaveChangesAsync();

@@ -23,10 +23,10 @@ namespace api.Data
         public virtual DbSet<Subtask> Subtasks { get; set; } = null!;
         public virtual DbSet<Models.Task> Tasks { get; set; } = null!;
         public virtual DbSet<TaskType> TaskTypes { get; set; } = null!;
-        public virtual DbSet<StudySession> StudySessions { get; set; } = null!;
+        public virtual DbSet<StudySession> StudySession { get; set; } = null!;
         public virtual DbSet<PomodoroCycle> PomodoroCycles { get; set; } = null!;
+        public virtual DbSet<PomodoroInsight> PomodoroInsight { get; set; } = null!;
         public virtual DbSet<TimerSettings> TimerSettings { get; set; } = null!;
-        public virtual DbSet<PomodoroInsight> PomodoroInsights { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -142,13 +142,20 @@ namespace api.Data
                 entity.ToTable("LearningResource");
 
                 entity.Property(e => e.Id).HasColumnName("id");
-                entity.Property(e => e.TypeId).HasColumnName("type_id");
-                entity.Property(e => e.GoalId).HasColumnName("goal_id");
                 entity.Property(e => e.Title).HasMaxLength(255).HasColumnName("title");
-               
-                entity.Property(e => e.IsDeleted).HasDefaultValue(false).HasColumnName("is_deleted");
+                entity.Property(e => e.Status).HasColumnName("Status");
+                entity.Property(e => e.TypeId).HasColumnName("type_id");
+                entity.Property(e => e.TotalUnits).HasColumnName("TotalUnits");
+                entity.Property(e => e.Progress).HasColumnName("Progress");
+                entity.Property(e => e.Link).HasColumnName("Link");
                 entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetime())").HasColumnName("created_at");
                 entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysdatetime())").HasColumnName("updated_at");
+                entity.Property(e => e.LearnerId).HasColumnName("LearnerId");
+                entity.Property(e => e.CategoryId).HasColumnName("CategoryId");
+                entity.Property(e => e.GoalId).HasColumnName("goal_id");
+                entity.Property(e => e.SubgoalId).HasColumnName("SubgoalId");
+                entity.Property(e => e.DeletedAt).HasColumnName("DeletedAt");
+                entity.Property(e => e.IsDeleted).HasDefaultValue(false).HasColumnName("is_deleted");
 
                 entity.HasOne(d => d.Type)
                     .WithMany(p => p.LearningResources)
@@ -156,14 +163,73 @@ namespace api.Data
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_LearningResources_LearningResourceTypes_TypeId");
 
-                entity.HasOne(d => d.Goal)
+                entity.HasOne(d => d.Learner)
                     .WithMany(p => p.LearningResources)
-                    .HasForeignKey(d => d.GoalId)
-                    .OnDelete(DeleteBehavior.Restrict) // ⛔️ بدل Cascade لحل المشكلة
-                    .HasConstraintName("FK_LearningResources_Goals_GoalId");
+                    .HasForeignKey(d => d.LearnerId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_LearningResources_Learner_LearnerId");
             });
 
-            // Add Task entity configuration
+            modelBuilder.Entity<LearningResourceType>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.ToTable("LearningResourceTypes");
+
+                entity.Property(e => e.Id).HasColumnName("Id");
+                entity.Property(e => e.Name).HasColumnName("Name");
+                entity.Property(e => e.UnitType).HasColumnName("UnitType");
+                entity.Property(e => e.LearnerId).HasColumnName("LearnerId");
+                entity.Property(e => e.DeletedAt).HasColumnName("DeletedAt");
+                entity.Property(e => e.IsDeleted).HasDefaultValue(false).HasColumnName("IsDeleted");
+
+                entity.HasOne(d => d.Learner)
+                    .WithMany(p => p.LearningResourceTypes)
+                    .HasForeignKey(d => d.LearnerId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_LearningResourceTypes_Learner_LearnerId");
+            });
+
+            modelBuilder.Entity<Note>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.ToTable("Notes");
+
+                entity.Property(e => e.Id).HasColumnName("Id");
+                entity.Property(e => e.Title).HasColumnName("Title");
+                entity.Property(e => e.Body).HasColumnName("Body");
+                entity.Property(e => e.CreatedAt).HasColumnName("CreatedAt");
+                entity.Property(e => e.UpdatedAt).HasColumnName("UpdatedAt");
+                entity.Property(e => e.CategoryId).HasColumnName("CategoryId");
+                entity.Property(e => e.GoalId).HasColumnName("GoalId");
+                entity.Property(e => e.SubgoalId).HasColumnName("SubgoalId");
+                entity.Property(e => e.TaskId).HasColumnName("TaskId");
+                entity.Property(e => e.LearnerId).HasColumnName("LearnerId");
+                entity.Property(e => e.DeletedAt).HasColumnName("DeletedAt");
+                entity.Property(e => e.IsDeleted).HasDefaultValue(false).HasColumnName("IsDeleted");
+
+                entity.HasOne(d => d.Learner)
+                    .WithMany(p => p.Notes)
+                    .HasForeignKey(d => d.LearnerId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_Notes_Learner_LearnerId");
+            });
+
+            modelBuilder.Entity<Subgoal>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.ToTable("Subgoals");
+
+                entity.Property(e => e.Id).HasColumnName("Id");
+                entity.Property(e => e.Title).HasColumnName("Title");
+                entity.Property(e => e.Description).HasColumnName("Description");
+                entity.Property(e => e.Status).HasColumnName("Status");
+                entity.Property(e => e.CreatedAt).HasColumnName("CreatedAt");
+                entity.Property(e => e.UpdatedAt).HasColumnName("UpdatedAt");
+                entity.Property(e => e.GoalId).HasColumnName("GoalId");
+                entity.Property(e => e.DeletedAt).HasColumnName("DeletedAt");
+                entity.Property(e => e.IsDeleted).HasColumnName("IsDeleted");
+            });
+
             modelBuilder.Entity<Models.Task>(entity =>
             {
                 entity.HasKey(e => e.Id);
@@ -183,38 +249,27 @@ namespace api.Data
                 entity.Property(e => e.SubgoalId).HasColumnName("SubgoalId");
                 entity.Property(e => e.LearningResourceId).HasColumnName("LearningResourceId");
                 entity.Property(e => e.DeletedAt).HasColumnName("DeletedAt");
-                entity.Property(e => e.IsDeleted).HasColumnName("IsDeleted");
+                entity.Property(e => e.IsDeleted).HasDefaultValue(false).HasColumnName("IsDeleted");
 
-                // Configure TaskType relationship
                 entity.HasOne(d => d.Type)
                     .WithMany(p => p.Tasks)
                     .HasForeignKey(d => d.TypeId)
-                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Tasks_TaskTypes_TypeId");
 
-                // Configure other relationships
                 entity.HasOne(d => d.Learner)
                     .WithMany(p => p.Tasks)
                     .HasForeignKey(d => d.LearnerId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Tasks_Learner_LearnerId");
 
-                entity.HasOne(d => d.Goal)
-                    .WithMany(p => p.Tasks)
-                    .HasForeignKey(d => d.GoalId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_Tasks_Goal_GoalId");
-
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.Tasks)
                     .HasForeignKey(d => d.CategoryId)
-                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Tasks_Category_CategoryId");
 
                 entity.HasOne(d => d.KanbanStatus)
                     .WithMany(p => p.Tasks)
                     .HasForeignKey(d => d.KanbanStatusId)
-                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Tasks_KanbanStatus_KanbanStatusId");
 
                 entity.HasMany(t => t.SubTasks)
@@ -223,21 +278,40 @@ namespace api.Data
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Add TaskType entity configuration
+            modelBuilder.Entity<Subtask>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.ToTable("Subtasks");
+
+                entity.Property(e => e.Id).HasColumnName("Id");
+                entity.Property(e => e.Title).HasColumnName("Title");
+                entity.Property(e => e.Status).HasColumnName("Status");
+                entity.Property(e => e.CreatedAt).HasColumnName("CreatedAt");
+                entity.Property(e => e.UpdatedAt).HasColumnName("UpdatedAt");
+                entity.Property(e => e.TaskId).HasColumnName("TaskId");
+                entity.Property(e => e.DeletedAt).HasColumnName("DeletedAt");
+                entity.Property(e => e.IsDeleted).HasDefaultValue(false).HasColumnName("IsDeleted");
+
+                entity.HasOne(d => d.Task)
+                    .WithMany(p => p.SubTasks)
+                    .HasForeignKey(d => d.TaskId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_Subtasks_Tasks_TaskId");
+            });
+
             modelBuilder.Entity<TaskType>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.ToTable("TaskTypes");
 
                 entity.Property(e => e.Id).HasColumnName("Id");
-                entity.Property(e => e.Name).HasMaxLength(255).HasColumnName("Name");
+                entity.Property(e => e.Name).HasColumnName("Name");
                 entity.Property(e => e.Description).HasColumnName("Description");
                 entity.Property(e => e.Icon).HasColumnName("Icon");
                 entity.Property(e => e.LearnerId).HasColumnName("LearnerId");
                 entity.Property(e => e.DeletedAt).HasColumnName("DeletedAt");
-                entity.Property(e => e.IsDeleted).HasColumnName("IsDeleted");
+                entity.Property(e => e.IsDeleted).HasDefaultValue(false).HasColumnName("IsDeleted");
 
-                // Configure Learner relationship
                 entity.HasOne(d => d.Learner)
                     .WithMany(p => p.TaskTypes)
                     .HasForeignKey(d => d.LearnerId)
@@ -247,74 +321,38 @@ namespace api.Data
 
             modelBuilder.Entity<StudySession>(entity =>
             {
-                entity.ToTable("StudySession", tb =>
-                {
-                    tb.HasTrigger("trg_soft_delete_study_session");
-                    tb.HasTrigger("trg_update_study_session_updated_at");
-                });
-
-                // Soft‐delete filter (ignores rows where IsDeleted == true)
-                entity.HasQueryFilter(s => !s.IsDeleted);
-
                 entity.HasKey(e => e.Id);
-                entity.HasIndex(e => e.LearnerId);
-                entity.HasIndex(e => e.TaskId);
+                entity.ToTable("StudySession");
 
-                entity.Property(e => e.Id)
-                      .HasColumnName("id");
-
-                entity.Property(e => e.LearnerId)
-                      .HasColumnName("learner_id");
-
-                entity.Property(e => e.TaskId)
-                      .HasColumnName("task_id");
-
-                entity.Property(e => e.StartTime)
-                      .HasColumnName("start_time");
-
-                entity.Property(e => e.EndTime)
-                      .HasColumnName("end_time");
-
-                entity.Property(e => e.CycleCount)
-                      .HasColumnName("cycle_count");
-
-                entity.Property(e => e.IsCompleted)
-                      .HasColumnName("is_completed");
-
-                entity.Property(e => e.CreatedAt)
-                      .HasColumnName("created_at")
-                      .HasDefaultValueSql("sysdatetime()");
-
-                entity.Property(e => e.UpdatedAt)
-                      .HasColumnName("updated_at")
-                      .HasDefaultValueSql("sysdatetime()");
-
-                entity.Property(e => e.DeletedAt)
-                      .HasColumnName("deleted_at");
-
-                entity.Property(e => e.IsDeleted)
-                      .HasColumnName("is_deleted")
-                      .HasDefaultValue(false);
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.LearnerId).HasColumnName("learner_id");
+                entity.Property(e => e.TaskId).HasColumnName("task_id");
+                entity.Property(e => e.StartTime).HasColumnName("start_time");
+                entity.Property(e => e.EndTime).HasColumnName("end_time");
+                entity.Property(e => e.CycleCount).HasColumnName("cycle_count");
+                entity.Property(e => e.IsCompleted).HasColumnName("is_completed");
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
+                entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+                entity.Property(e => e.IsDeleted).HasDefaultValue(false).HasColumnName("is_deleted");
+                entity.Property(e => e.RowVersion).HasColumnName("RowVersion").IsRowVersion();
 
                 entity.HasOne(d => d.Learner)
-                      .WithMany(l => l.StudySessions)
-                      .HasForeignKey(d => d.LearnerId)
-                      .OnDelete(DeleteBehavior.Restrict)
-                      .HasConstraintName("FK_StudySession_Learner");
+                    .WithMany()
+                    .HasForeignKey(d => d.LearnerId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_StudySession_Learner_LearnerId");
 
                 entity.HasOne(d => d.Task)
-                      .WithMany((api.Models.Task t) => t.StudySessions)
-                      .HasForeignKey(d => d.TaskId)
-                      .OnDelete(DeleteBehavior.Restrict)
-                      .HasConstraintName("FK_StudySession_Task");
+                    .WithMany()
+                    .HasForeignKey(d => d.TaskId)
+                    .HasConstraintName("FK_StudySession_Tasks_TaskId");
             });
 
             modelBuilder.Entity<PomodoroCycle>(entity =>
             {
-                entity.ToTable("PomodoroCycle");
-
                 entity.HasKey(e => e.Id);
-                entity.HasIndex(e => e.StudySessionId);
+                entity.ToTable("PomodoroCycle");
 
                 entity.Property(e => e.Id).HasColumnName("id");
                 entity.Property(e => e.StudySessionId).HasColumnName("study_session_id");
@@ -325,37 +363,17 @@ namespace api.Data
                 entity.Property(e => e.BreakStart).HasColumnName("break_start");
                 entity.Property(e => e.BreakEnd).HasColumnName("break_end");
 
-                entity.HasOne(e => e.StudySession)
-                      .WithMany(s => s.PomodoroCycles)
-                      .HasForeignKey(e => e.StudySessionId)
-                      .OnDelete(DeleteBehavior.Cascade)
-                      .IsRequired(false);
-            });
-
-            modelBuilder.Entity<TimerSettings>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.ToTable("TimerSettings");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-                entity.Property(e => e.LearnerId).HasColumnName("learner_id");
-                entity.Property(e => e.FocusMinutes).HasColumnName("focus_minutes");
-                entity.Property(e => e.ShortBreakMin).HasColumnName("short_break_min");
-                entity.Property(e => e.LongBreakMin).HasColumnName("long_break_min");
-                entity.Property(e => e.CyclesBeforeLongBreak).HasColumnName("cycles_before_long_break");
-
-                entity.HasOne<Learner>()
-                    .WithOne()
-                    .HasForeignKey<TimerSettings>(e => e.LearnerId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(d => d.StudySession)
+                    .WithMany(p => p.PomodoroCycles)
+                    .HasForeignKey(d => d.StudySessionId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_PomodoroCycle_StudySession_StudySessionId");
             });
 
             modelBuilder.Entity<PomodoroInsight>(entity =>
             {
-                entity.ToTable("PomodoroInsight");
-
                 entity.HasKey(e => e.Id);
-                entity.HasIndex(e => e.LearnerId);
+                entity.ToTable("PomodoroInsight");
 
                 entity.Property(e => e.Id).HasColumnName("id");
                 entity.Property(e => e.LearnerId).HasColumnName("learner_id");
@@ -366,10 +384,29 @@ namespace api.Data
                 entity.Property(e => e.WeekOf).HasColumnName("week_of");
 
                 entity.HasOne(d => d.Learner)
-                    .WithMany(l => l.PomodoroInsights)
+                    .WithMany()
                     .HasForeignKey(d => d.LearnerId)
                     .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_PomodoroInsight_Learner");
+                    .HasConstraintName("FK_PomodoroInsight_Learner_LearnerId");
+            });
+
+            modelBuilder.Entity<TimerSettings>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.ToTable("TimerSettings");
+
+                entity.Property(e => e.Id).HasColumnName("Id");
+                entity.Property(e => e.LearnerId).HasColumnName("LearnerId");
+                entity.Property(e => e.FocusMinutes).HasColumnName("FocusMinutes");
+                entity.Property(e => e.ShortBreakMin).HasColumnName("ShortBreakMin");
+                entity.Property(e => e.LongBreakMin).HasColumnName("LongBreakMin");
+                entity.Property(e => e.CyclesBeforeLongBreak).HasColumnName("CyclesBeforeLongBreak");
+
+                entity.HasOne(d => d.Learner)
+                    .WithMany()
+                    .HasForeignKey(d => d.LearnerId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_TimerSettings_Learner_LearnerId");
             });
 
             OnModelCreatingPartial(modelBuilder);

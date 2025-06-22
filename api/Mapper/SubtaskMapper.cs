@@ -18,7 +18,7 @@ namespace api.Mapper
                 Title = subtaskModel.Title,
                 CreatedAt = subtaskModel.CreatedAt,
                 UpdatedAt = subtaskModel.UpdatedAt,
-                IsCompleted = subtaskModel.IsCompleted
+                Status = subtaskModel.Status
             };
         }
 
@@ -28,6 +28,7 @@ namespace api.Mapper
             return new Subtask
             {
                 Title = createDto.Title,
+                Status = "Not Started"
             };
         }
 
@@ -36,8 +37,8 @@ namespace api.Mapper
         {
             if (!string.IsNullOrEmpty(patchDto.Title))
                 subtask.Title = patchDto.Title;
-            if (patchDto.IsCompleted.HasValue)
-                subtask.IsCompleted = patchDto.IsCompleted.Value;
+            if (!string.IsNullOrEmpty(patchDto.Status))
+                subtask.Status = patchDto.Status;
         }
     }
 }

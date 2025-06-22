@@ -8,15 +8,15 @@ using api.Dtos.Insights;
 
 namespace api.Controllers;
 
-[Route("api/insights/pomodoro")]
+[Route("api/learners/{learnerId}/pomodoroinsight")]
 [ApiController]
 [Authorize]
-public class PomodoroInsightsController : ControllerBase
+public class PomodoroInsightController : ControllerBase
 {
     private readonly IPomodoroInsightRepository _insightRepo;
     private readonly IMapper _mapper;
 
-    public PomodoroInsightsController(IPomodoroInsightRepository insightRepo, IMapper mapper)
+    public PomodoroInsightController(IPomodoroInsightRepository insightRepo, IMapper mapper)
     {
         _insightRepo = insightRepo;
         _mapper = mapper;
@@ -33,21 +33,21 @@ public class PomodoroInsightsController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetInsights()
+    public async Task<IActionResult> GetInsights(long learnerId)
     {
-        var learnerId = GetCurrentLearnerId();
+        var currentLearnerId = GetCurrentLearnerId();
+        
         var insights = await _insightRepo.GetByLearnerIdAsync(learnerId);
         if (insights == null)
         {
-            return NotFound();
+            return NotFound($"No insights found for learner {learnerId}. Current authenticated learner: {currentLearnerId}");
         }
         return Ok(_mapper.Map<PomodoroInsightDto>(insights));
     }
 
     [HttpPost("recalculate")]
-    public async Task<IActionResult> Recalculate()
+    public async Task<IActionResult> Recalculate(long learnerId)
     {
-        var learnerId = GetCurrentLearnerId();
         await _insightRepo.RecalculateInsightsAsync(learnerId);
         return Ok();
     }

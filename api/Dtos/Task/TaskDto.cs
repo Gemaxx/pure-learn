@@ -4,7 +4,6 @@ namespace api.Dtos.Task
     {
         public long Id { get; set; }
         public string Title { get; set; } = null!;
-        public bool? IsCompleted { get; set; } = false;  
         public long? GoalId { get; set; }
         public long? TypeId { get; set; }
         public long? KanbanStatusId { get; set; }

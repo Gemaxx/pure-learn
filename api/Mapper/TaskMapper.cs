@@ -12,7 +12,6 @@ namespace api.Mapper
             {
                 Id = taskModel.Id,
                 Title = taskModel.Title,
-                IsCompleted = taskModel.IsCompleted,
                 GoalId = taskModel.GoalId,
                 TypeId = taskModel.TypeId,
                 KanbanStatusId = taskModel.KanbanStatusId,
@@ -30,7 +29,6 @@ namespace api.Mapper
                 
                 KanbanStatusId = taskModel.KanbanStatusId,
                 TypeId = taskModel.TypeId,
-                IsCompleted = taskModel.IsCompleted,
                 Title = taskModel.Title,
                 EisenhowerStatus = taskModel.EisenhowerStatus ?? "Urgent & Important",
                 /*
@@ -56,7 +54,6 @@ namespace api.Mapper
                 // SubgoalId = taskModel.SubgoalId,
                 // LearningResourceId = taskModel.LearningResourceId,
                 DeletedAt = taskModel.DeletedAt,
-                IsDeleted = taskModel.IsDeleted,
                 SubTasks = taskModel.SubTasks.Select(s => s.ToSubtaskDto()).ToList()
             };
         }
@@ -98,8 +95,6 @@ namespace api.Mapper
         {
             if (!string.IsNullOrEmpty(patchDto.Title))
                 task.Title = patchDto.Title;
-            if (patchDto.IsCompleted.HasValue)
-                task.IsCompleted = patchDto.IsCompleted.Value;
             if (patchDto.GoalId.HasValue)
                 task.GoalId = patchDto.GoalId.Value;
             if (patchDto.KanbanStatusId.HasValue)

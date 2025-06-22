@@ -18,7 +18,7 @@ namespace api.Repos
         public async Task<List<Subtask>> GetSubtasksAsync(long taskId, SubtaskQueryObject query)
         {
             IQueryable<Subtask> subtasks = _context.Subtasks
-                .Where(s => s.TaskId == taskId && !s.IsDeleted);
+                .Where(s => s.TaskId == taskId && s.DeletedAt == null);
 
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
@@ -31,7 +31,7 @@ namespace api.Repos
         public async Task<Subtask?> GetSubtaskAsync(long taskId, long subtaskId)
         {
             return await _context.Subtasks
-                .FirstOrDefaultAsync(s => s.TaskId == taskId && s.Id == subtaskId && !s.IsDeleted);
+                .FirstOrDefaultAsync(s => s.TaskId == taskId && s.Id == subtaskId && s.DeletedAt == null);
         }
 
         public async Task<Subtask> CreateSubtaskAsync(long taskId, Subtask subtask)
@@ -39,8 +39,10 @@ namespace api.Repos
             subtask.TaskId = taskId;
             subtask.CreatedAt = System.DateTime.UtcNow;
             subtask.UpdatedAt = System.DateTime.UtcNow;
+            subtask.IsDeleted = false;
 
             _context.Subtasks.Add(subtask);
+            _context.Entry(subtask).Property(e => e.IsDeleted).IsModified = true;
             await _context.SaveChangesAsync();
             return subtask;
         }
@@ -75,7 +77,6 @@ namespace api.Repos
             if (subtask == null)
                 return false;
 
-            subtask.IsDeleted = true;
             subtask.DeletedAt = System.DateTime.UtcNow;
             subtask.UpdatedAt = System.DateTime.UtcNow;
             await _context.SaveChangesAsync();
@@ -85,11 +86,10 @@ namespace api.Repos
         public async Task<bool> RestoreSubtaskAsync(long taskId, long subtaskId)
         {
             var subtask = await _context.Subtasks
-                .FirstOrDefaultAsync(s => s.TaskId == taskId && s.Id == subtaskId && s.IsDeleted);
+                .FirstOrDefaultAsync(s => s.TaskId == taskId && s.Id == subtaskId && s.DeletedAt != null);
             if (subtask == null)
                 return false;
 
-            subtask.IsDeleted = false;
             subtask.DeletedAt = null;
             subtask.UpdatedAt = System.DateTime.UtcNow;
             await _context.SaveChangesAsync();

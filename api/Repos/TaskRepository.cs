@@ -24,7 +24,7 @@ namespace api.Repos
         public async Task<List<Models.Task>> GetTasksAsync(long learnerId, TaskQueryObjects query)
         {
             var tasksQuery = _context.Tasks
-            .Where(t => t.LearnerId == learnerId && !t.IsDeleted);
+            .Where(t => t.LearnerId == learnerId && t.DeletedAt == null);
 
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
@@ -62,7 +62,7 @@ namespace api.Repos
             return await query
                 .FirstOrDefaultAsync(t => t.Id == taskId 
                                           && t.LearnerId == learnerId 
-                                          && !t.IsDeleted);
+                                          && t.DeletedAt == null);
         }
 
         // Create a new task for the learner.
@@ -72,6 +72,8 @@ namespace api.Repos
             task.LearnerId = learnerId;
             task.CreatedAt = DateTime.UtcNow;
             task.UpdatedAt = DateTime.UtcNow;
+            task.IsDeleted = false;
+            task.DeletedAt = null;
 
             await _context.Tasks.AddAsync(task);
             await _context.SaveChangesAsync();
@@ -83,7 +85,7 @@ namespace api.Repos
         public async Task<Models.Task?> UpdateTaskAsync(long learnerId, long taskId, Models.Task task)
         {
             var existingTask = await _context.Tasks
-            .FirstOrDefaultAsync(t => t.LearnerId == learnerId && t.Id == taskId && !t.IsDeleted);
+            .FirstOrDefaultAsync(t => t.LearnerId == learnerId && t.Id == taskId && t.DeletedAt == null);
 
             if (existingTask == null)
             {
@@ -194,7 +196,6 @@ namespace api.Repos
             if (task == null)
                 return false;
 
-            task.IsDeleted = true;
             task.DeletedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return true;
@@ -206,11 +207,10 @@ namespace api.Repos
             var task = await _context.Tasks
                 .FirstOrDefaultAsync(t => t.Id == taskId 
                                           && t.LearnerId == learnerId 
-                                          && t.IsDeleted);
+                                          && t.DeletedAt != null);
             if (task == null)
                 return false;
 
-            task.IsDeleted = false;
             task.DeletedAt = null;
             task.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();

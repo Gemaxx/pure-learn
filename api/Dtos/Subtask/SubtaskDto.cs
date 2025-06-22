@@ -16,7 +16,7 @@ namespace api.Dtos.Subtask
 
         [Required]
         [StringLength(50, ErrorMessage = "Status cannot exceed 50 characters.")]
-        public bool IsCompleted { get; set; }
+        public string Status { get; set; } = "Not Started";
 
         // Optionally include audit fields if you want to expose them
         public DateTime? CreatedAt { get; set; }

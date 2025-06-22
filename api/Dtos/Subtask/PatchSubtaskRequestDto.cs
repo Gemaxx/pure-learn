@@ -12,6 +12,6 @@ namespace api.Dtos.Subtask
         public string? Title { get; set; }
 
         [StringLength(50, ErrorMessage = "Status cannot exceed 50 characters.")]
-        public bool? IsCompleted { get; set; }
+        public string? Status { get; set; }
     }
 }
