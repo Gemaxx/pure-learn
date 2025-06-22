@@ -11,7 +11,7 @@ namespace api.Interfaces
     public interface ITaskRepository
     {
         Task<List<Models.Task>> GetTasksAsync(long learnerId, TaskQueryObjects query);
-        Task<Models.Task?> GetTaskAsync(long learnerId, long taskId);
+        Task<Models.Task?> GetTaskAsync(long learnerId, long taskId, bool includeSubtasks = false);
         Task<Models.Task> CreateTaskAsync(long learnerId, Models.Task task);
         Task<Models.Task?> UpdateTaskAsync(long learnerId, long taskId, Models.Task task);
         Task<bool> DeleteTaskAsync(long learnerId, long taskId);

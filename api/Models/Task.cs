@@ -6,89 +6,56 @@ namespace api.Models;
 
 public partial class Task
 {
+    [Column("Id")]
     public long Id { get; set; }
 
+    [Column("Title")]
     public string Title { get; set; } = null!;
-    public bool? IsCompleted { get; set; } = false;  
+    
+    [Column("IsCompleted")]
+    public bool? IsCompleted { get; set; }
+
+    [Column("TypeId")]
     public long? TypeId { get; set; }
 
-
+    [Column("KanbanStatusId")]
     public long? KanbanStatusId { get; set; }
 
-   
+    [Column("EisenhowerStatus")]
     public string? EisenhowerStatus { get; set; }
 
-    // Time Management
-    /*
-    public DateOnly? DueDate { get; set; }
-
-    // Task Duration
-    public TimeOnly? EstimatedTime { get; set; }
-
-    public TimeOnly? TimeSpent { get; set; }
-
-    // RecurrencePatterns  عايز يتحط ف تابول لواحده ويتشا من التاسكات
-    public string? RepeatFrequency { get; set; }
-
-    public int? RepeatInterval { get; set; }
-
-    
-    public bool? RepeatOnSunday { get; set; }
-
-    public bool? RepeatOnMonday { get; set; }
-
-    public bool? RepeatOnTuesday { get; set; }
-
-    public bool? RepeatOnWednesday { get; set; }
-
-    public bool? RepeatOnThursday { get; set; }
-
-    public bool? RepeatOnFriday { get; set; }
-
-    public bool? RepeatOnSaturday { get; set; }
-
-    
-    public string? RepeatEnds { get; set; }
-
-    public DateOnly? RepeatEndDate { get; set; }
-
-    public int? RepeatEndOccurrences { get; set; }
-
-    */
-
+    [Column("CreatedAt")]
     public DateTime? CreatedAt { get; set; }
 
+    [Column("UpdatedAt")]
     public DateTime? UpdatedAt { get; set; }
 
+    [Column("LearnerId")]
     public long LearnerId { get; set; }
 
+    [Column("CategoryId")]
     public long? CategoryId { get; set; }
 
+    [Column("GoalId")]
     public long? GoalId { get; set; }
 
+    [Column("SubgoalId")]
     public long? SubgoalId { get; set; }
 
+    [Column("LearningResourceId")]
     public long? LearningResourceId { get; set; }
 
+    [Column("DeletedAt")]
     public DateTime? DeletedAt { get; set; }
 
-    public bool IsDeleted { get; set; }
+    [Column("IsDeleted")]
+    public bool IsDeleted { get; set; } = false;
 
+    // Navigation properties - only essential ones
     public virtual Category? Category { get; set; }
-
-    public virtual Goal? Goal { get; set; }
-
-    public virtual KanbanStatus KanbanStatus { get; set; } = null!;
-
+    public virtual KanbanStatus? KanbanStatus { get; set; }
     public virtual Learner Learner { get; set; } = null!;
-
-    public virtual LearningResource? LearningResource { get; set; }
-
     public virtual ICollection<Note> Notes { get; set; } = new List<Note>();
-
-    public virtual Subgoal? Subgoal { get; set; }
-
-    public virtual ICollection<Subtask> Subtasks { get; set; } = new List<Subtask>();
-
-    public virtual TaskType Type { get; set; } = null!;
+    public virtual ICollection<Subtask> SubTasks { get; set; } = new List<Subtask>();
+    public virtual TaskType? Type { get; set; }
 }

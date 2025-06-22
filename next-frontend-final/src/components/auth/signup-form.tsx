@@ -44,8 +44,8 @@ export function SignUpForm({ onSuccess, onCancel }: { onSuccess?: () => void; on
     try {
       const response = await registerUser({ name, email, password })
 
-      login(response.token, response.id)
-      setUserData({ id: response.id, name, email })
+      const userData = { id: response.id, name, email }
+      login(response.token, userData)
 
       if (onSuccess) onSuccess()
       router.push("/dashboard")

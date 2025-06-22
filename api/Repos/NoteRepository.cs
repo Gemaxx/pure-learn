@@ -85,6 +85,7 @@ namespace api.Repos
             note.LearnerId = learnerId;
             note.CreatedAt = DateTime.UtcNow;
             note.UpdatedAt = DateTime.UtcNow;
+            note.IsDeleted = false;
 
             await _context.Notes.AddAsync(note);
             await _context.SaveChangesAsync();

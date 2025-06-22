@@ -10,8 +10,6 @@ namespace api.Dtos.Task
 
         [StringLength(100, MinimumLength = 1, ErrorMessage = "Title must be between 1 and 100 characters.")]
         public string? Title { get; set; }
-        public bool? IsCompleted { get; set; } 
-
 
         public DateOnly? DueDate { get; set; }
 

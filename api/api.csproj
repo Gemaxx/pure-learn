@@ -31,4 +31,9 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <!-- Exclude test files from the main project build -->
+  <ItemGroup>
+    <Compile Remove="Tests\**" />
+  </ItemGroup>
+
 </Project>

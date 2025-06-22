@@ -23,10 +23,13 @@ namespace api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<long>", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -50,7 +53,7 @@ namespace api.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -64,9 +67,8 @@ namespace api.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -75,7 +77,7 @@ namespace api.Migrations
                     b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<long>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -89,9 +91,8 @@ namespace api.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -100,7 +101,7 @@ namespace api.Migrations
                     b.ToTable("AspNetUserClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<long>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -111,9 +112,8 @@ namespace api.Migrations
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -122,13 +122,13 @@ namespace api.Migrations
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<long>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -137,10 +137,10 @@ namespace api.Migrations
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -154,71 +154,6 @@ namespace api.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("api.Models.ApplicationUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.Category", b =>
@@ -431,9 +366,16 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("bio");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -445,6 +387,13 @@ namespace api.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("deleted_at");
 
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -455,15 +404,44 @@ namespace api.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("last_login");
 
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("name");
 
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
                     b.Property<string>("ProfilePicture")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("profile_picture");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .ValueGeneratedOnAdd()
@@ -471,7 +449,19 @@ namespace api.Migrations
                         .HasColumnName("updated_at")
                         .HasDefaultValueSql("(sysdatetime())");
 
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("Learner", null, t =>
                         {
@@ -491,7 +481,8 @@ namespace api.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<long?>("CategoryId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("CategoryId");
 
                     b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -500,7 +491,8 @@ namespace api.Migrations
                         .HasDefaultValueSql("(sysdatetime())");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("DeletedAt");
 
                     b.Property<long?>("GoalId")
                         .HasColumnType("bigint")
@@ -513,19 +505,24 @@ namespace api.Migrations
                         .HasColumnName("is_deleted");
 
                     b.Property<long>("LearnerId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("LearnerId");
 
                     b.Property<string>("Link")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Link");
 
                     b.Property<int>("Progress")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("Progress");
 
                     b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Status");
 
                     b.Property<long?>("SubgoalId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("SubgoalId");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -534,7 +531,8 @@ namespace api.Migrations
                         .HasColumnName("title");
 
                     b.Property<int>("TotalUnits")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("TotalUnits");
 
                     b.Property<long>("TypeId")
                         .HasColumnType("bigint")
@@ -565,76 +563,98 @@ namespace api.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("DeletedAt");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
 
                     b.Property<long>("LearnerId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("LearnerId");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
 
                     b.Property<string>("UnitType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UnitType");
 
                     b.HasKey("Id");
 
                     b.HasIndex("LearnerId");
 
-                    b.ToTable("LearningResourceTypes");
+                    b.ToTable("LearningResourceTypes", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.Note", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Body")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Body");
 
                     b.Property<long?>("CategoryId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("CategoryId");
 
                     b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("DeletedAt");
 
                     b.Property<long?>("GoalId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("GoalId");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
 
                     b.Property<long>("LearnerId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("LearnerId");
 
                     b.Property<long?>("SubgoalId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("SubgoalId");
 
                     b.Property<long?>("TaskId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("TaskId");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Title");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UpdatedAt");
 
                     b.HasKey("Id");
 
@@ -648,139 +668,327 @@ namespace api.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("Notes");
+                    b.ToTable("Notes", (string)null);
+                });
+
+            modelBuilder.Entity("api.Models.PomodoroCycle", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime?>("BreakEnd")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("break_end");
+
+                    b.Property<DateTime?>("BreakStart")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("break_start");
+
+                    b.Property<string>("BreakType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("break_type");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("end_time");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_completed");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("start_time");
+
+                    b.Property<long>("StudySessionId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("study_session_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudySessionId");
+
+                    b.ToTable("PomodoroCycle", (string)null);
+                });
+
+            modelBuilder.Entity("api.Models.PomodoroInsight", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("LearnerId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("learner_id");
+
+                    b.Property<TimeSpan>("TotalFocusTime")
+                        .HasColumnType("time")
+                        .HasColumnName("total_focus_time");
+
+                    b.Property<int>("TotalPomodoros")
+                        .HasColumnType("int")
+                        .HasColumnName("total_pomodoros");
+
+                    b.Property<DateOnly>("WeekOf")
+                        .HasColumnType("date")
+                        .HasColumnName("week_of");
+
+                    b.Property<TimeSpan>("WeeklyFocusTime")
+                        .HasColumnType("time")
+                        .HasColumnName("weekly_focus_time");
+
+                    b.Property<int>("WeeklyPomodoros")
+                        .HasColumnType("int")
+                        .HasColumnName("weekly_pomodoros");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LearnerId");
+
+                    b.ToTable("PomodoroInsight", (string)null);
+                });
+
+            modelBuilder.Entity("api.Models.StudySession", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("CycleCount")
+                        .HasColumnType("int")
+                        .HasColumnName("cycle_count");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("end_time");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_completed");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_deleted");
+
+                    b.Property<long>("LearnerId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("learner_id");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion")
+                        .HasColumnName("RowVersion");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("start_time");
+
+                    b.Property<long?>("TaskId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("task_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LearnerId");
+
+                    b.HasIndex("TaskId");
+
+                    b.ToTable("StudySession", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.Subgoal", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("DeletedAt");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Description");
 
                     b.Property<long>("GoalId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("GoalId");
 
                     b.Property<bool?>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsDeleted");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Status");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Title");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UpdatedAt");
 
                     b.HasKey("Id");
 
                     b.HasIndex("GoalId");
 
-                    b.ToTable("Subgoals");
+                    b.ToTable("Subgoals", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.Subtask", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("DeletedAt");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Status");
 
                     b.Property<long>("TaskId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("TaskId");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Title");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UpdatedAt");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("Subtasks");
+                    b.ToTable("Subtasks", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.Task", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<long?>("CategoryId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("CategoryId");
 
                     b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("DeletedAt");
 
                     b.Property<string>("EisenhowerStatus")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("EisenhowerStatus");
 
                     b.Property<long?>("GoalId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("GoalId");
 
                     b.Property<bool?>("IsCompleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsCompleted");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
 
                     b.Property<long?>("KanbanStatusId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("KanbanStatusId");
 
                     b.Property<long>("LearnerId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("LearnerId");
 
                     b.Property<long?>("LearningResourceId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("LearningResourceId");
 
                     b.Property<long?>("SubgoalId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("SubgoalId");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Title");
 
                     b.Property<long?>("TypeId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("TypeId");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UpdatedAt");
 
                     b.HasKey("Id");
 
@@ -798,88 +1006,133 @@ namespace api.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("Tasks", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.TaskType", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("DeletedAt");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Description");
 
                     b.Property<byte[]>("Icon")
-                        .HasColumnType("varbinary(max)");
+                        .HasColumnType("varbinary(max)")
+                        .HasColumnName("Icon");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
 
                     b.Property<long>("LearnerId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("LearnerId");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
 
                     b.HasKey("Id");
 
                     b.HasIndex("LearnerId");
 
-                    b.ToTable("TaskTypes");
+                    b.ToTable("TaskTypes", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("api.Models.TimerSettings", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("CyclesBeforeLongBreak")
+                        .HasColumnType("int")
+                        .HasColumnName("CyclesBeforeLongBreak");
+
+                    b.Property<int>("FocusMinutes")
+                        .HasColumnType("int")
+                        .HasColumnName("FocusMinutes");
+
+                    b.Property<long>("LearnerId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("LearnerId");
+
+                    b.Property<int>("LongBreakMin")
+                        .HasColumnType("int")
+                        .HasColumnName("LongBreakMin");
+
+                    b.Property<int>("ShortBreakMin")
+                        .HasColumnType("int")
+                        .HasColumnName("ShortBreakMin");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LearnerId");
+
+                    b.ToTable("TimerSettings", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<long>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<long>", b =>
                 {
-                    b.HasOne("api.Models.ApplicationUser", null)
+                    b.HasOne("api.Models.Learner", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<long>", b =>
                 {
-                    b.HasOne("api.Models.ApplicationUser", null)
+                    b.HasOne("api.Models.Learner", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<long>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<long>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("api.Models.ApplicationUser", null)
+                    b.HasOne("api.Models.Learner", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
                 {
-                    b.HasOne("api.Models.ApplicationUser", null)
+                    b.HasOne("api.Models.Learner", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -936,23 +1189,22 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.LearningResource", b =>
                 {
-                    b.HasOne("api.Models.Category", "Category")
+                    b.HasOne("api.Models.Category", null)
                         .WithMany("LearningResources")
                         .HasForeignKey("CategoryId");
 
-                    b.HasOne("api.Models.Goal", "Goal")
+                    b.HasOne("api.Models.Goal", null)
                         .WithMany("LearningResources")
-                        .HasForeignKey("GoalId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("FK_LearningResources_Goals_GoalId");
+                        .HasForeignKey("GoalId");
 
                     b.HasOne("api.Models.Learner", "Learner")
                         .WithMany("LearningResources")
                         .HasForeignKey("LearnerId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_LearningResources_Learner_LearnerId");
 
-                    b.HasOne("api.Models.Subgoal", "Subgoal")
+                    b.HasOne("api.Models.Subgoal", null)
                         .WithMany("LearningResources")
                         .HasForeignKey("SubgoalId");
 
@@ -963,13 +1215,7 @@ namespace api.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_LearningResources_LearningResourceTypes_TypeId");
 
-                    b.Navigation("Category");
-
-                    b.Navigation("Goal");
-
                     b.Navigation("Learner");
-
-                    b.Navigation("Subgoal");
 
                     b.Navigation("Type");
                 });
@@ -980,18 +1226,19 @@ namespace api.Migrations
                         .WithMany("LearningResourceTypes")
                         .HasForeignKey("LearnerId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_LearningResourceTypes_Learner_LearnerId");
 
                     b.Navigation("Learner");
                 });
 
             modelBuilder.Entity("api.Models.Note", b =>
                 {
-                    b.HasOne("api.Models.Category", "Category")
+                    b.HasOne("api.Models.Category", null)
                         .WithMany("Notes")
                         .HasForeignKey("CategoryId");
 
-                    b.HasOne("api.Models.Goal", "Goal")
+                    b.HasOne("api.Models.Goal", null)
                         .WithMany("Notes")
                         .HasForeignKey("GoalId");
 
@@ -999,45 +1246,80 @@ namespace api.Migrations
                         .WithMany("Notes")
                         .HasForeignKey("LearnerId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Notes_Learner_LearnerId");
 
-                    b.HasOne("api.Models.Subgoal", "Subgoal")
+                    b.HasOne("api.Models.Subgoal", null)
                         .WithMany("Notes")
                         .HasForeignKey("SubgoalId");
 
-                    b.HasOne("api.Models.Task", "Task")
+                    b.HasOne("api.Models.Task", null)
                         .WithMany("Notes")
                         .HasForeignKey("TaskId");
 
-                    b.Navigation("Category");
+                    b.Navigation("Learner");
+                });
 
-                    b.Navigation("Goal");
+            modelBuilder.Entity("api.Models.PomodoroCycle", b =>
+                {
+                    b.HasOne("api.Models.StudySession", "StudySession")
+                        .WithMany("PomodoroCycles")
+                        .HasForeignKey("StudySessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_PomodoroCycle_StudySession_StudySessionId");
+
+                    b.Navigation("StudySession");
+                });
+
+            modelBuilder.Entity("api.Models.PomodoroInsight", b =>
+                {
+                    b.HasOne("api.Models.Learner", "Learner")
+                        .WithMany()
+                        .HasForeignKey("LearnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_PomodoroInsight_Learner_LearnerId");
 
                     b.Navigation("Learner");
+                });
 
-                    b.Navigation("Subgoal");
+            modelBuilder.Entity("api.Models.StudySession", b =>
+                {
+                    b.HasOne("api.Models.Learner", "Learner")
+                        .WithMany()
+                        .HasForeignKey("LearnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_StudySession_Learner_LearnerId");
+
+                    b.HasOne("api.Models.Task", "Task")
+                        .WithMany()
+                        .HasForeignKey("TaskId")
+                        .HasConstraintName("FK_StudySession_Tasks_TaskId");
+
+                    b.Navigation("Learner");
 
                     b.Navigation("Task");
                 });
 
             modelBuilder.Entity("api.Models.Subgoal", b =>
                 {
-                    b.HasOne("api.Models.Goal", "Goal")
+                    b.HasOne("api.Models.Goal", null)
                         .WithMany("Subgoals")
                         .HasForeignKey("GoalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Goal");
                 });
 
             modelBuilder.Entity("api.Models.Subtask", b =>
                 {
                     b.HasOne("api.Models.Task", "Task")
-                        .WithMany("Subtasks")
+                        .WithMany("SubTasks")
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Subtasks_Tasks_TaskId");
 
                     b.Navigation("Task");
                 });
@@ -1046,45 +1328,43 @@ namespace api.Migrations
                 {
                     b.HasOne("api.Models.Category", "Category")
                         .WithMany("Tasks")
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId")
+                        .HasConstraintName("FK_Tasks_Category_CategoryId");
 
-                    b.HasOne("api.Models.Goal", "Goal")
+                    b.HasOne("api.Models.Goal", null)
                         .WithMany("Tasks")
                         .HasForeignKey("GoalId");
 
                     b.HasOne("api.Models.KanbanStatus", "KanbanStatus")
                         .WithMany("Tasks")
-                        .HasForeignKey("KanbanStatusId");
+                        .HasForeignKey("KanbanStatusId")
+                        .HasConstraintName("FK_Tasks_KanbanStatus_KanbanStatusId");
 
                     b.HasOne("api.Models.Learner", "Learner")
                         .WithMany("Tasks")
                         .HasForeignKey("LearnerId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Tasks_Learner_LearnerId");
 
-                    b.HasOne("api.Models.LearningResource", "LearningResource")
+                    b.HasOne("api.Models.LearningResource", null)
                         .WithMany("Tasks")
                         .HasForeignKey("LearningResourceId");
 
-                    b.HasOne("api.Models.Subgoal", "Subgoal")
+                    b.HasOne("api.Models.Subgoal", null)
                         .WithMany("Tasks")
                         .HasForeignKey("SubgoalId");
 
                     b.HasOne("api.Models.TaskType", "Type")
                         .WithMany("Tasks")
-                        .HasForeignKey("TypeId");
+                        .HasForeignKey("TypeId")
+                        .HasConstraintName("FK_Tasks_TaskTypes_TypeId");
 
                     b.Navigation("Category");
-
-                    b.Navigation("Goal");
 
                     b.Navigation("KanbanStatus");
 
                     b.Navigation("Learner");
-
-                    b.Navigation("LearningResource");
-
-                    b.Navigation("Subgoal");
 
                     b.Navigation("Type");
                 });
@@ -1095,7 +1375,20 @@ namespace api.Migrations
                         .WithMany("TaskTypes")
                         .HasForeignKey("LearnerId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_TaskTypes_Learner_LearnerId");
+
+                    b.Navigation("Learner");
+                });
+
+            modelBuilder.Entity("api.Models.TimerSettings", b =>
+                {
+                    b.HasOne("api.Models.Learner", "Learner")
+                        .WithMany()
+                        .HasForeignKey("LearnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_TimerSettings_Learner_LearnerId");
 
                     b.Navigation("Learner");
                 });
@@ -1158,6 +1451,11 @@ namespace api.Migrations
                     b.Navigation("LearningResources");
                 });
 
+            modelBuilder.Entity("api.Models.StudySession", b =>
+                {
+                    b.Navigation("PomodoroCycles");
+                });
+
             modelBuilder.Entity("api.Models.Subgoal", b =>
                 {
                     b.Navigation("LearningResources");
@@ -1171,7 +1469,7 @@ namespace api.Migrations
                 {
                     b.Navigation("Notes");
 
-                    b.Navigation("Subtasks");
+                    b.Navigation("SubTasks");
                 });
 
             modelBuilder.Entity("api.Models.TaskType", b =>
