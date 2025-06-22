@@ -44,10 +44,6 @@ export function HomePageClient() {
   return (
     <>
       <div className="space-y-4">
-        <Button className="w-full py-6" variant="outline">
-          <Google className="mr-2 h-5 w-5" />
-          Get Started With Google
-        </Button>
 
         <Button className="w-full" onClick={() => setIsSignUpModalOpen(true)}>
           Sign Up
