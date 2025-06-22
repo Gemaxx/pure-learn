@@ -132,11 +132,7 @@ var app = builder.Build();
 {
     if (app.Environment.IsDevelopment())
     {
-        app.UseSwagger();
-        app.UseSwaggerUI(options =>
-        {
-            options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
-        });
+        // Development-specific configurations can go here
     }
 
     app.UseHttpsRedirection();
@@ -151,4 +147,14 @@ var app = builder.Build();
     app.MapControllers();
 }
 
+// Enable Swagger in test pipeline
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
+});
+
 app.Run();
+
+// Make Program class public for testing
+public partial class Program { }
