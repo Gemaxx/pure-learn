@@ -271,14 +271,6 @@ export default function TasksPage() {
           <p className="text-muted-foreground mb-4">
             Create your first Kanban board to start organizing your tasks.
           </p>
-          <Button
-            onClick={() => setIsCreateBoardModalOpen(true)}
-            variant="outline"
-            className="w-full sm:w-auto"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Create Your First Board
-          </Button>
         </div>
       ) : (
         <div className="flex gap-4 overflow-x-auto pb-4">
