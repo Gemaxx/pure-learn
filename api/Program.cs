@@ -61,11 +61,14 @@ var builder = WebApplication.CreateBuilder(args);
                   .AllowAnyMethod()
                   .AllowAnyHeader());
     });
-
     // DbContext
+    var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+        .Replace("{DB_PASSWORD}", dbPassword);
+
     builder.Services.AddDbContext<PureLearnDbContext>(options =>
         options.UseSqlServer(
-            builder.Configuration.GetConnectionString("DefaultConnection"),
+            connectionString,
             sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
                 maxRetryCount: 5,
                 maxRetryDelay: TimeSpan.FromSeconds(30),
