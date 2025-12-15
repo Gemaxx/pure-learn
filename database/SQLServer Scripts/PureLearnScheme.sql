@@ -13,7 +13,7 @@
         profile_picture NVARCHAR(MAX),
         bio NVARCHAR(MAX),
         
-    CREATEd_at DATETIME2 DEFAULT SYSDATETIME(),
+        CREATEd_at DATETIME2 DEFAULT SYSDATETIME(),
         updated_at DATETIME2 DEFAULT SYSDATETIME(),
         last_login DATETIME2,
         deleted_at DATETIME2 NULL 
@@ -43,7 +43,7 @@
         term NVARCHAR(50) NOT NULL CHECK (term IN ('Long-Term', 'Medium-Term', 'Short-Term')), 
         status NVARCHAR(50) NOT NULL CHECK (status IN ('Not-Started', 'In-Progress', 'On-Hold', 'Done', 'Canceled')),
         completion_date DATE NULL,
-    CREATEd_at DATETIME2 DEFAULT SYSDATETIME(),
+        CREATEd_at DATETIME2 DEFAULT SYSDATETIME(),
         updated_at DATETIME2 DEFAULT SYSDATETIME(),
         category_id BIGINT NULL FOREIGN KEY REFERENCES Category(id) ON DELETE CASCADE,
         learner_id BIGINT NOT NULL FOREIGN KEY REFERENCES Learner(id) ON DELETE NO ACTION,
@@ -93,7 +93,7 @@
         CONSTRAINT CHK_Progress CHECK (progress >= 0 AND progress <= total_units)
     );
 
-    -- Tasks & Subtasks Tables
+-- Tasks & Subtasks Tables
     -- Table: KanbanStatus
     CREATE TABLE KanbanStatus (
         id BIGINT PRIMARY KEY IDENTITY(1,1),
@@ -158,7 +158,7 @@
         deleted_at DATETIME2 NULL 
     );
 
-    -- Table: Note
+-- Table: Note
 
     CREATE TABLE Note (
         id BIGINT PRIMARY KEY IDENTITY(1,1),

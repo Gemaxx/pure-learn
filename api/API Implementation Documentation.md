@@ -1,9 +1,11 @@
 # Implementation Documentation: PureLearn API
 
 ## 1. Introduction
+
 The PureLearn API is a backend service designed to support a learning and productivity platform. It provides a set of RESTful endpoints for managing learners, goals, tasks, notes, categories, kanban statuses, learning resources, and more. The API enables users to organize their learning journey, set and track goals, manage tasks and subtasks, take notes, and categorize their progress efficiently.
 
 **Technologies Used:**
+
 - **.NET 8**: The API is built using ASP.NET Core 8, leveraging modern C# features and best practices.
 - **Entity Framework Core**: Used for database access and ORM, enabling code-first and database-first workflows.
 - **SQL Server**: The primary database engine, with support for both Azure-hosted and local SQL Server Express instances.
@@ -73,6 +75,7 @@ This section describes the initial steps required to set up the PureLearn API pr
 - The API and Swagger UI will be available at the same URLs as above.
 
 ---
+
 ## 3. Application Architecture
 
 This section provides an overview of the structure and main components of the PureLearn API.
@@ -134,14 +137,15 @@ This section describes the database structure and how models are represented in 
 - The ERD provides a visual overview of the tables and their relationships.
 - You can find the simplified ERD in the [`database/DBModeling/Simplified ERD Diagram.url`](../database/DBModeling/Simplified%20ERD%20Diagram.url) file.
 
-
 ### 4.3 Model Generation
 
 - Models are generated using Entity Framework Core scaffolding, which creates C# classes based on the database schema.
 - Example command to scaffold models:
-    ```sh
-    dotnet ef dbcontext scaffold "Name=DefaultConnection" Microsoft.EntityFrameworkCore.SqlServer -o Models
-    ```
+
+  ```sh
+  dotnet ef dbcontext scaffold "Name=DefaultConnection" Microsoft.EntityFrameworkCore.SqlServer -o Models
+  ```
+
 - Each model class corresponds to a table in the database and includes properties for each column.
 
 ### 4.4 Example Model
@@ -169,10 +173,11 @@ public class Learner
 - Database schema changes are managed using Entity Framework migrations.
 - Migration files are stored in the `Migrations/` directory.
 - To apply migrations and update the database schema, use:
+
     ```sh
     dotnet ef database update
     ```
- 
+
 ---
 ### Comparison: Code-First vs Database-First Approaches in Entity Framework
 

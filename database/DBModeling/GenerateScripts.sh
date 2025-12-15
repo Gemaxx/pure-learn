@@ -1,1 +1,0 @@
-db2dbml mssql 'Server=tcp:purelearn.database.windows.net,1433;Initial Catalog=PureLearnDB;User ID=gemax;Password=Qq123@123;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;' -o PureLearn2.dbml
