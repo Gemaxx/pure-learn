@@ -31,29 +31,28 @@ namespace api.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.UseCollation("Arabic_CI_AS");
 
             modelBuilder.Entity<Category>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.ToTable("Category", tb =>
                 {
-                    tb.HasTrigger("trg_soft_delete_category");
-                    tb.HasTrigger("trg_update_category_updated_at");
+                    //tb.HasTrigger("trg_soft_delete_category");
+                   // tb.HasTrigger("trg_update_category_updated_at");
                 });
                 entity.HasIndex(e => e.LearnerId);
                 entity.HasIndex(e => e.ParentCategoryId);
 
                 entity.Property(e => e.Id).HasColumnName("id");
                 entity.Property(e => e.Color).HasMaxLength(50).HasColumnName("color");
-                entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetime())").HasColumnName("CREATEd_at");
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP").HasColumnName("CREATEd_at");
                 entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
                 entity.Property(e => e.Description).HasColumnName("description");
                 entity.Property(e => e.IsDeleted).HasDefaultValue(false).HasColumnName("is_deleted");
                 entity.Property(e => e.LearnerId).HasColumnName("learner_id");
                 entity.Property(e => e.ParentCategoryId).HasColumnName("parent_category_id");
                 entity.Property(e => e.Title).HasMaxLength(255).HasColumnName("title");
-                entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysdatetime())").HasColumnName("updated_at");
+                entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP").HasColumnName("updated_at");
 
                 entity.HasOne(d => d.Learner).WithMany(p => p.Categories)
                       .HasForeignKey(d => d.LearnerId)

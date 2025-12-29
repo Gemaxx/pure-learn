@@ -4,7 +4,6 @@ using api.Interfaces; // Interfaces for repositories
 using api.Repos;
 using api.Repository; // Repository implementations
 using Microsoft.EntityFrameworkCore;
-using api.Mapper;
 using api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -62,21 +61,9 @@ var builder = WebApplication.CreateBuilder(args);
                   .AllowAnyHeader());
     });
     // DbContext
-    var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-        .Replace("{DB_PASSWORD}", dbPassword);
 
     builder.Services.AddDbContext<PureLearnDbContext>(options =>
-        options.UseSqlServer(
-            connectionString,
-            sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
-                maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(30),
-                errorNumbersToAdd: null
-            )
-        )
-    );
-
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
     // AutoMapper
     builder.Services.AddAutoMapper(typeof(api.Mapper.MappingProfile).Assembly);
 
